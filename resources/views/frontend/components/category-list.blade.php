@@ -38,23 +38,26 @@
     @foreach ($categories as $category)
         <a 
             href="{{ $category['link'] }}" 
-            class="group relative overflow-hidden bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-600/60 hover:shadow-xl hover:shadow-brand-900/15 transition-all duration-500 ease-out flex flex-col items-center text-center cursor-pointer"
+            class="group relative overflow-hidden bg-white p-6 sm:p-7 rounded-2xl border border-slate-200/80 hover:border-transparent hover:shadow-[0_16px_36px_-8px_rgba(122,88,169,0.30)] transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] flex flex-col items-center text-center cursor-pointer"
         >
             <!-- Smooth Modern Gradient Background Overlay on Hover -->
-            <div class="absolute inset-0 bg-gradient-to-br from-brand-600 via-brand-600 to-brand-700 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out pointer-events-none"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-brand-600 via-brand-600 to-brand-700 opacity-0 group-hover:opacity-100 transition-opacity duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] pointer-events-none"></div>
+
+            <!-- Ambient Glow Element on Hover -->
+            <div class="absolute -top-12 -right-12 w-28 h-28 bg-white/10 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] pointer-events-none"></div>
 
             <!-- Icon Container (Smooth Color & Glassmorphism Dissolve) -->
-            <div class="relative z-10 w-14 h-14 rounded-2xl bg-brand-50/90 text-brand-600 border border-brand-100/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30 group-hover:backdrop-blur-sm flex items-center justify-center text-2xl mb-3.5 transition-all duration-500 ease-out shadow-2xs">
-                <i class="{{ $category['icon'] }} transition-colors duration-500 ease-out"></i>
+            <div class="relative z-10 w-14 h-14 rounded-2xl bg-brand-50/80 text-brand-600 border border-brand-100/70 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/25 group-hover:backdrop-blur-md flex items-center justify-center text-2xl mb-4 transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] shadow-2xs">
+                <i class="{{ $category['icon'] }} transition-colors duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"></i>
             </div>
             
             <!-- Category Title in Bebas Neue Brand Font (Smooth Color Crossfade) -->
-            <h3 class="relative z-10 font-brand text-xl text-slate-900 group-hover:text-white transition-colors duration-500 ease-out tracking-wide uppercase">
+            <h3 class="relative z-10 font-brand text-[22px] text-slate-900 group-hover:text-white transition-colors duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] tracking-wider uppercase leading-snug">
                 {{ $category['name'] }}
             </h3>
             
             <!-- Category Count (Smooth Color Crossfade) -->
-            <span class="relative z-10 text-xs font-semibold text-brand-700/70 group-hover:text-brand-100/90 transition-colors duration-500 ease-out mt-1">
+            <span class="relative z-10 text-xs font-semibold text-slate-400 group-hover:text-brand-100/90 transition-colors duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] mt-1.5 tracking-wide">
                 {{ $category['count'] }}
             </span>
         </a>
