@@ -33,3 +33,37 @@
 body {
     font-family: var(--font-sans);
 }
+
+/* Icon-Only / Mini Sidebar Styles on Desktop */
+@media (min-width: 1024px) {
+    .sidebar-mini {
+        width: 5rem !important; /* 80px */
+    }
+    .sidebar-mini .sidebar-label,
+    .sidebar-mini .sidebar-heading,
+    .sidebar-mini .sidebar-badge,
+    .sidebar-mini .sidebar-user-info {
+        display: none !important;
+    }
+    .sidebar-mini .sidebar-link {
+        justify-content: center !important;
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+    .sidebar-mini .sidebar-brand-text {
+        display: none !important;
+    }
+    .sidebar-mini .sidebar-header-branding {
+        justify-content: center !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+    .sidebar-mini .sidebar-toggle-btn {
+        display: none !important;
+    }
+    .sidebar-mini .sidebar-profile-box {
+        justify-content: center !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+}

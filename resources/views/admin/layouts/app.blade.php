@@ -19,7 +19,7 @@
         }
         /* Smooth transitions for collapsible layout */
         #sidebar, #main-wrapper {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s ease-in-out;
         }
     </style>
     @stack('styles')
@@ -30,7 +30,7 @@
     @include('admin.layouts.sidebar')
 
     <!-- Main Content Wrapper -->
-    <div id="main-wrapper" class="lg:pl-64 flex flex-col flex-1 min-h-screen w-full">
+    <div id="main-wrapper" class="lg:pl-64 flex flex-col flex-1 min-h-screen w-full transition-all duration-300">
         
         <!-- Header Partial -->
         @include('admin.layouts.header')
@@ -46,28 +46,27 @@
 
     <!-- Scripts -->
     <script>
-        // Check saved desktop sidebar preference
+        // Initialize desktop icon-only mini sidebar from saved preference
         document.addEventListener('DOMContentLoaded', function () {
             if (window.innerWidth >= 1024) {
-                const isCollapsed = localStorage.getItem('admin_sidebar_collapsed') === 'true';
-                if (isCollapsed) {
-                    applySidebarState(true);
+                const isMini = localStorage.getItem('admin_sidebar_mini') === 'true';
+                if (isMini) {
+                    applySidebarMini(true);
                 }
             }
         });
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
-            const mainWrapper = document.getElementById('main-wrapper');
             const backdrop = document.getElementById('sidebar-backdrop');
             const isDesktop = window.innerWidth >= 1024;
 
             if (isDesktop) {
-                const willCollapse = !sidebar.classList.contains('lg:-translate-x-full');
-                applySidebarState(willCollapse);
-                localStorage.setItem('admin_sidebar_collapsed', willCollapse);
+                const willBeMini = !sidebar.classList.contains('sidebar-mini');
+                applySidebarMini(willBeMini);
+                localStorage.setItem('admin_sidebar_mini', willBeMini);
             } else {
-                // Mobile behavior
+                // Mobile slide-over drawer toggle
                 if (sidebar.classList.contains('-translate-x-full')) {
                     sidebar.classList.remove('-translate-x-full');
                     backdrop.classList.remove('hidden');
@@ -78,18 +77,18 @@
             }
         }
 
-        function applySidebarState(collapse) {
+        function applySidebarMini(isMini) {
             const sidebar = document.getElementById('sidebar');
             const mainWrapper = document.getElementById('main-wrapper');
 
-            if (collapse) {
-                sidebar.classList.add('lg:-translate-x-full');
+            if (isMini) {
+                sidebar.classList.add('sidebar-mini');
                 mainWrapper.classList.remove('lg:pl-64');
-                mainWrapper.classList.add('lg:pl-0');
+                mainWrapper.classList.add('lg:pl-20');
             } else {
-                sidebar.classList.remove('lg:-translate-x-full');
+                sidebar.classList.remove('sidebar-mini');
                 mainWrapper.classList.add('lg:pl-64');
-                mainWrapper.classList.remove('lg:pl-0');
+                mainWrapper.classList.remove('lg:pl-20');
             }
         }
 
