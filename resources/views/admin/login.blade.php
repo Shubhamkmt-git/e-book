@@ -19,16 +19,16 @@
         }
     </style>
 </head>
-<body class="h-full antialiased text-slate-800 bg-gradient-to-br from-slate-50 via-gray-50 to-indigo-50/40 flex items-center justify-center p-4 selection:bg-indigo-600 selection:text-white relative overflow-hidden">
+<body class="h-full antialiased text-slate-800 bg-gradient-to-br from-slate-50 via-white to-brand-50/50 flex items-center justify-center p-4 selection:bg-brand-600 selection:text-white relative overflow-hidden">
 
-    <!-- Soft background decorative ambient blurs -->
-    <div class="absolute -top-32 -left-32 w-80 h-80 bg-indigo-200/40 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute -bottom-32 -right-32 w-80 h-80 bg-sky-200/40 rounded-full blur-3xl pointer-events-none"></div>
+    <!-- Soft background decorative ambient blurs with brand color -->
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-brand-200/40 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-brand-100/60 rounded-full blur-3xl pointer-events-none"></div>
 
     <div class="w-full max-w-[420px] relative z-10">
         <!-- Logo & Header -->
         <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-600 text-white shadow-xl shadow-indigo-600/25 mb-4">
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-600 text-white shadow-xl shadow-brand-600/25 mb-4">
                 <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
                 </svg>
@@ -38,7 +38,7 @@
         </div>
 
         <!-- Login Card -->
-        <div class="bg-white border border-slate-200/80 rounded-2xl p-8 shadow-xl shadow-slate-200/60">
+        <div class="bg-white border border-slate-200/90 rounded-2xl p-8 shadow-xl shadow-brand-900/5">
             
             @if (session('status'))
                 <div class="mb-6 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm flex items-center gap-2.5">
@@ -80,7 +80,7 @@
                             required 
                             value="{{ old('email', 'admin@ebook.com') }}"
                             placeholder="admin@ebook.com"
-                            class="w-full bg-white border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/10 transition duration-150 ease-in-out"
+                            class="w-full bg-white border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-600/15 transition duration-150 ease-in-out"
                         >
                     </div>
                 </div>
@@ -106,7 +106,7 @@
                             required 
                             placeholder="••••••••"
                             value="password"
-                            class="w-full bg-white border border-slate-300 rounded-xl pl-10 pr-10 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/10 transition duration-150 ease-in-out"
+                            class="w-full bg-white border border-slate-300 rounded-xl pl-10 pr-10 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-600/15 transition duration-150 ease-in-out"
                         >
                         <button 
                             type="button" 
@@ -128,7 +128,7 @@
                         <input 
                             type="checkbox" 
                             name="remember" 
-                            class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 focus:ring-offset-0"
+                            class="w-4 h-4 rounded border-slate-300 text-brand-600 focus:ring-brand-600 focus:ring-offset-0"
                         >
                         <span class="text-xs text-slate-600 font-medium">Remember me</span>
                     </label>
@@ -137,7 +137,7 @@
                 <!-- Submit Button -->
                 <button 
                     type="submit" 
-                    class="w-full group rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-sm font-semibold py-2.5 px-4 shadow-md shadow-indigo-600/20 transition-all duration-150 active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
+                    class="w-full group rounded-xl bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-sm font-semibold py-2.5 px-4 shadow-md shadow-brand-600/25 transition-all duration-150 active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer"
                 >
                     <span>Sign in to Console</span>
                     <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -148,8 +148,8 @@
 
             <!-- Demo helper card -->
             <div class="mt-6 pt-5 border-t border-slate-100 text-center">
-                <div class="inline-block px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200/80 text-xs text-slate-600">
-                    Default Credentials: <span class="font-semibold text-slate-800">admin@ebook.com</span> / <span class="font-semibold text-slate-800">password</span>
+                <div class="inline-block px-3 py-1.5 rounded-lg bg-brand-50/60 border border-brand-100 text-xs text-slate-600">
+                    Default Credentials: <span class="font-semibold text-brand-900">admin@ebook.com</span> / <span class="font-semibold text-brand-900">password</span>
                 </div>
             </div>
         </div>

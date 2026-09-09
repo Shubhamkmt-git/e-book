@@ -2,8 +2,23 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Instrument Sans', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    
+    --color-brand-50: #f8f5fc;
+    --color-brand-100: #eee7f8;
+    --color-brand-200: #dfd1f1;
+    --color-brand-300: #c9b1e6;
+    --color-brand-400: #ad89d7;
+    --color-brand-500: #9367c5;
+    --color-brand-600: #7a58a9;
+    --color-brand-700: #674791;
+    --color-brand-800: #563c78;
+    --color-brand-900: #483363;
+    --color-brand-950: #2b1b3f;
+    
+    --color-brand: #7a58a9;
+    --color-primary: #7a58a9;
 }
