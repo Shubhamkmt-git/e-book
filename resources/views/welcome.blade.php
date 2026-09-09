@@ -25,12 +25,6 @@
     <!-- Content Container (96% Width) -->
     <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4 relative z-10 py-16 sm:py-20">
         <div class="max-w-3xl text-center sm:text-left">
-            
-            <!-- Badge / Tagline -->
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/20 backdrop-blur-md border border-brand-400/30 text-xs font-semibold text-brand-300 mb-6 shadow-lg shadow-brand-950/50">
-                <span class="w-2 h-2 rounded-full bg-brand-400 animate-pulse"></span>
-                <span>Over 50,000+ Digital Titles &amp; Instant Downloads</span>
-            </div>
 
             <!-- Main Banner Title -->
             <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15] mb-6">
@@ -43,7 +37,7 @@
             </p>
 
             <!-- Primary & Secondary Buttons -->
-            <div class="flex flex-col sm:flex-row items-center gap-4 mb-8">
+            <div class="flex flex-col sm:flex-row items-center gap-4">
                 <!-- Primary Button -->
                 <a 
                     href="#browse" 
@@ -62,26 +56,6 @@
                     <i class="fa-solid fa-layer-group text-slate-300"></i>
                     <span>Browse Genres</span>
                 </a>
-            </div>
-
-            <!-- Quick Search Bar Overlay inside Hero -->
-            <div class="max-w-xl">
-                <form action="#browse" method="GET" class="relative flex items-center">
-                    <div class="absolute inset-y-0 left-0 pl-4.5 flex items-center pointer-events-none text-slate-400">
-                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
-                    </div>
-                    <input 
-                        type="text" 
-                        placeholder="Search books by title, author, or ISBN..."
-                        class="w-full bg-slate-900/80 backdrop-blur-md border border-slate-700/80 focus:border-brand-400 rounded-full pl-11 pr-32 py-3 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 transition shadow-lg"
-                    >
-                    <button 
-                        type="submit"
-                        class="absolute right-1.5 px-5 py-2 rounded-full bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold shadow-md transition cursor-pointer"
-                    >
-                        Search
-                    </button>
-                </form>
             </div>
 
         </div>
