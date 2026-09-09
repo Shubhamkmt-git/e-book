@@ -24,13 +24,19 @@
     <!-- Frontend Nav Component -->
     @include('frontend.layouts.navbar')
 
-    <!-- Main Page Content -->
-    <main class="flex-1">
+    <!-- Main Page Content (Offset for Fixed Nav) -->
+    <main class="flex-1 pt-20">
         @yield('content')
     </main>
 
     <!-- Frontend Footer Component -->
     @include('frontend.layouts.footer')
+
+    <!-- Global Auth Side Drawer Component -->
+    @include('frontend.components.auth-drawer')
+
+    <!-- Global Wishlist Side Drawer Component -->
+    @include('frontend.components.wishlist-drawer')
 
     @stack('scripts')
 </body>

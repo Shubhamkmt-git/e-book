@@ -2,33 +2,33 @@
     $categories = $categories ?? [
         [
             'name' => 'Sci-Fi & Fantasy',
+            'slug' => 'sci-fi-fantasy',
             'count' => '4,280 Titles',
             'icon' => 'fa-solid fa-rocket',
-            'link' => '#browse'
         ],
         [
             'name' => 'Tech & Coding',
+            'slug' => 'tech-coding',
             'count' => '3,120 Titles',
             'icon' => 'fa-solid fa-laptop-code',
-            'link' => '#browse'
         ],
         [
             'name' => 'Business & Finance',
+            'slug' => 'business-finance',
             'count' => '2,850 Titles',
             'icon' => 'fa-solid fa-chart-line',
-            'link' => '#browse'
         ],
         [
             'name' => 'Psychology',
+            'slug' => 'psychology',
             'count' => '5,410 Titles',
             'icon' => 'fa-solid fa-brain',
-            'link' => '#browse'
         ],
         [
             'name' => 'Design & Arts',
+            'slug' => 'design-arts',
             'count' => '1,940 Titles',
             'icon' => 'fa-solid fa-palette',
-            'link' => '#browse'
         ],
     ];
 @endphp
@@ -37,7 +37,7 @@
 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-5">
     @foreach ($categories as $category)
         <a 
-            href="{{ $category['link'] }}" 
+            href="{{ route('categories.show', $category['slug'] ?? 'tech-coding') }}" 
             class="group relative overflow-hidden bg-white p-6 sm:p-7 rounded-2xl border border-slate-200/80 hover:border-transparent hover:shadow-[0_16px_36px_-8px_rgba(122,88,169,0.30)] transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] flex flex-col items-center text-center cursor-pointer"
         >
             <!-- Smooth Modern Gradient Background Overlay on Hover -->
