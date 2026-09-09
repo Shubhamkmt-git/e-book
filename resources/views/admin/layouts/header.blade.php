@@ -1,45 +1,15 @@
 <header class="h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6 lg:px-8">
     
-    <!-- Left: Mobile Hamburger & Search -->
-    <div class="flex items-center gap-4 flex-1">
+    <!-- Left: Mobile Hamburger -->
+    <div class="flex items-center gap-4">
         <!-- Mobile Sidebar Button -->
         <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer" aria-label="Open navigation">
             <i class="fa-solid fa-bars text-lg"></i>
         </button>
-
-        <!-- Search Input -->
-        <div class="relative w-full max-w-md hidden sm:block">
-            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <i class="fa-solid fa-magnifying-glass text-xs"></i>
-            </div>
-            <input 
-                type="text" 
-                placeholder="Search e-books, authors, categories..." 
-                class="w-full bg-slate-50 hover:bg-slate-100/70 focus:bg-white border border-slate-200/90 focus:border-brand-600 rounded-xl pl-9 pr-12 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-600/15 transition shadow-2xs font-normal"
-            >
-            <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
-                <kbd class="px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 bg-white border border-slate-200 rounded-md shadow-2xs">Ctrl K</kbd>
-            </div>
-        </div>
     </div>
 
-    <!-- Right: Quick Actions & Profile Dropdown -->
+    <!-- Right: Profile Dropdown -->
     <div class="flex items-center gap-3">
-        
-        <!-- Action Button -->
-        <a href="#" class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-sm shadow-brand-600/25 transition">
-            <i class="fa-solid fa-plus text-xs"></i>
-            <span>Add Book</span>
-        </a>
-
-        <!-- Notifications -->
-        <button class="relative p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer" aria-label="View notifications">
-            <i class="fa-regular fa-bell text-base"></i>
-            <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-brand-600 ring-2 ring-white"></span>
-        </button>
-
-        <div class="h-6 w-px bg-slate-200 mx-1 hidden sm:block"></div>
-
         <!-- User Profile Dropdown Toggle -->
         <div class="relative">
             <button onclick="toggleProfileDropdown()" class="flex items-center gap-3 p-1 rounded-xl hover:bg-slate-100 transition cursor-pointer">
@@ -82,6 +52,6 @@
                 </div>
             </div>
         </div>
-
     </div>
+
 </header>
