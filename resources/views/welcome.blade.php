@@ -79,64 +79,8 @@
             </a>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-5">
-            
-            <!-- Category Card 1 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-slate-400 hover:shadow-lg transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 border border-slate-200/70 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-105 transition-all duration-200">
-                    <i class="fa-solid fa-rocket"></i>
-                </div>
-                <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
-                    Sci-Fi &amp; Fantasy
-                </h3>
-                <span class="text-xs font-semibold text-slate-400 mt-1">4,280 Titles</span>
-            </a>
-
-            <!-- Category Card 2 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-slate-400 hover:shadow-lg transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 border border-slate-200/70 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-105 transition-all duration-200">
-                    <i class="fa-solid fa-laptop-code"></i>
-                </div>
-                <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
-                    Tech &amp; Coding
-                </h3>
-                <span class="text-xs font-semibold text-slate-400 mt-1">3,120 Titles</span>
-            </a>
-
-            <!-- Category Card 3 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-slate-400 hover:shadow-lg transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 border border-slate-200/70 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-105 transition-all duration-200">
-                    <i class="fa-solid fa-chart-line"></i>
-                </div>
-                <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
-                    Business &amp; Finance
-                </h3>
-                <span class="text-xs font-semibold text-slate-400 mt-1">2,850 Titles</span>
-            </a>
-
-            <!-- Category Card 4 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-slate-400 hover:shadow-lg transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 border border-slate-200/70 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-105 transition-all duration-200">
-                    <i class="fa-solid fa-brain"></i>
-                </div>
-                <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
-                    Psychology
-                </h3>
-                <span class="text-xs font-semibold text-slate-400 mt-1">5,410 Titles</span>
-            </a>
-
-            <!-- Category Card 5 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-slate-400 hover:shadow-lg transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 border border-slate-200/70 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-105 transition-all duration-200">
-                    <i class="fa-solid fa-palette"></i>
-                </div>
-                <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
-                    Design &amp; Arts
-                </h3>
-                <span class="text-xs font-semibold text-slate-400 mt-1">1,940 Titles</span>
-            </a>
-
-        </div>
+        <!-- Category List Component -->
+        @include('frontend.components.category-list')
     </div>
 </section>
 
