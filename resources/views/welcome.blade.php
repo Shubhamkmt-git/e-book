@@ -12,7 +12,7 @@
     <!-- Ambient Glows -->
     <div class="absolute top-12 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-brand-300/25 rounded-full blur-[140px] pointer-events-none"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4 relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             
             <!-- Left Hero Content (7 Cols) -->
@@ -27,7 +27,7 @@
                     Discover, Read &amp; Collect Your Favorite <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-indigo-600">E-Books.</span>
                 </h1>
 
-                <p class="text-base sm:text-lg text-slate-600 leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
+                <p class="text-base sm:text-lg text-slate-600 leading-relaxed mb-8 max-w-2xl mx-auto lg:mx-0">
                     Access over <span class="font-bold text-slate-800">50,000+</span> digital titles, classic literature, modern fiction, and academic publications across all your devices.
                 </p>
 
@@ -129,7 +129,7 @@
      METRICS & TRUST BANNER
      ========================================== -->
 <section class="border-y border-slate-200/80 bg-white py-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
             
             <div class="p-2">
@@ -163,7 +163,7 @@
      EXPLORE GENRES & CATEGORIES
      ========================================== -->
 <section id="categories" class="py-20 bg-slate-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4">
         
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div>
@@ -176,7 +176,7 @@
             </a>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5">
             
             <!-- Category Card 1 -->
             <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200">
@@ -186,8 +186,8 @@
                     </div>
                     <span class="text-xs font-semibold text-slate-400">4,280 Books</span>
                 </div>
-                <h3 class="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Sci-Fi &amp; Cyberpunk</h3>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed">Space exploration, dystopian futures, and technological adventures.</p>
+                <h3 class="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Sci-Fi &amp; Cyberpunk</h3>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">Space exploration and dystopian adventures.</p>
             </a>
 
             <!-- Category Card 2 -->
@@ -198,8 +198,8 @@
                     </div>
                     <span class="text-xs font-semibold text-slate-400">3,120 Books</span>
                 </div>
-                <h3 class="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Computer Science &amp; AI</h3>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed">Programming, machine learning, systems architecture, and engineering.</p>
+                <h3 class="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Computer Science</h3>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">Programming, algorithms, and engineering.</p>
             </a>
 
             <!-- Category Card 3 -->
@@ -210,8 +210,8 @@
                     </div>
                     <span class="text-xs font-semibold text-slate-400">2,850 Books</span>
                 </div>
-                <h3 class="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Business &amp; Entrepreneurship</h3>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed">Startups, leadership, investing, venture capital, and market strategies.</p>
+                <h3 class="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Business &amp; Finance</h3>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">Startups, leadership, and venture capital.</p>
             </a>
 
             <!-- Category Card 4 -->
@@ -222,8 +222,8 @@
                     </div>
                     <span class="text-xs font-semibold text-slate-400">5,410 Books</span>
                 </div>
-                <h3 class="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Psychology &amp; Self-Growth</h3>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed">Habits, emotional intelligence, mindset, and peak human productivity.</p>
+                <h3 class="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Psychology &amp; Habits</h3>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">Mindset, emotional health, and productivity.</p>
             </a>
 
             <!-- Category Card 5 -->
@@ -234,8 +234,8 @@
                     </div>
                     <span class="text-xs font-semibold text-slate-400">1,940 Books</span>
                 </div>
-                <h3 class="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Art, Design &amp; Architecture</h3>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed">Visual theory, UI/UX, typography, illustration, and graphic arts.</p>
+                <h3 class="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Design &amp; Arts</h3>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">Visual theory, UI/UX, and graphic design.</p>
             </a>
 
             <!-- Category Card 6 -->
@@ -246,8 +246,8 @@
                     </div>
                     <span class="text-xs font-semibold text-slate-400">2,110 Books</span>
                 </div>
-                <h3 class="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Science &amp; Physics</h3>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed">Cosmology, quantum physics, biology, and scientific breakthroughs.</p>
+                <h3 class="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Science &amp; Physics</h3>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">Cosmology, quantum theory, and nature.</p>
             </a>
 
         </div>
@@ -258,7 +258,7 @@
      TRENDING & FEATURED E-BOOKS
      ========================================== -->
 <section id="browse" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4">
         
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div>
@@ -274,7 +274,7 @@
         </div>
 
         <!-- Book Cards Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-7">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
             
             <!-- Book 1 -->
             <div class="bg-white rounded-2xl border border-slate-200/80 p-4 hover:shadow-xl hover:shadow-brand-900/10 transition-all duration-200 flex flex-col justify-between group">
@@ -283,8 +283,8 @@
                     <div class="aspect-[3/4] rounded-xl bg-gradient-to-br from-indigo-900 to-purple-800 p-5 text-white flex flex-col justify-between relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-200 shadow-sm">
                         <span class="self-start text-[10px] font-bold px-2 py-0.5 rounded-md bg-white/20">TECH</span>
                         <div>
-                            <h4 class="font-bold text-lg leading-snug">Algorithms &amp; Elegance</h4>
-                            <p class="text-xs text-indigo-200 mt-1">Prof. Julian Hayes</p>
+                            <h4 class="font-bold text-base leading-snug">Algorithms &amp; Elegance</h4>
+                            <p class="text-[11px] text-indigo-200 mt-1">Prof. Julian Hayes</p>
                         </div>
                     </div>
 
@@ -296,15 +296,15 @@
                                 <span class="font-bold text-slate-700 ml-1">4.9</span>
                             </div>
                         </div>
-                        <h3 class="font-bold text-base text-slate-900 mt-1 group-hover:text-brand-600 transition-colors line-clamp-1">
+                        <h3 class="font-bold text-sm text-slate-900 mt-1 group-hover:text-brand-600 transition-colors line-clamp-1">
                             Algorithms &amp; Elegance
                         </h3>
                     </div>
                 </div>
 
                 <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <span class="text-base font-extrabold text-slate-900">$18.99</span>
-                    <a href="#" class="px-3.5 py-1.5 rounded-full bg-brand-50 hover:bg-brand-600 text-brand-700 hover:text-white text-xs font-semibold transition">
+                    <span class="text-sm font-extrabold text-slate-900">$18.99</span>
+                    <a href="#" class="px-3 py-1 rounded-full bg-brand-50 hover:bg-brand-600 text-brand-700 hover:text-white text-xs font-semibold transition">
                         Get Book
                     </a>
                 </div>
@@ -317,8 +317,8 @@
                     <div class="aspect-[3/4] rounded-xl bg-gradient-to-br from-brand-900 to-rose-900 p-5 text-white flex flex-col justify-between relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-200 shadow-sm">
                         <span class="self-start text-[10px] font-bold px-2 py-0.5 rounded-md bg-white/20">FICTION</span>
                         <div>
-                            <h4 class="font-bold text-lg leading-snug">Whispers of the Nebula</h4>
-                            <p class="text-xs text-rose-200 mt-1">S. K. Hawthorne</p>
+                            <h4 class="font-bold text-base leading-snug">Whispers of the Nebula</h4>
+                            <p class="text-[11px] text-rose-200 mt-1">S. K. Hawthorne</p>
                         </div>
                     </div>
 
@@ -330,15 +330,15 @@
                                 <span class="font-bold text-slate-700 ml-1">4.8</span>
                             </div>
                         </div>
-                        <h3 class="font-bold text-base text-slate-900 mt-1 group-hover:text-brand-600 transition-colors line-clamp-1">
+                        <h3 class="font-bold text-sm text-slate-900 mt-1 group-hover:text-brand-600 transition-colors line-clamp-1">
                             Whispers of the Nebula
                         </h3>
                     </div>
                 </div>
 
                 <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <span class="text-base font-extrabold text-slate-900">$12.50</span>
-                    <a href="#" class="px-3.5 py-1.5 rounded-full bg-brand-50 hover:bg-brand-600 text-brand-700 hover:text-white text-xs font-semibold transition">
+                    <span class="text-sm font-extrabold text-slate-900">$12.50</span>
+                    <a href="#" class="px-3 py-1 rounded-full bg-brand-50 hover:bg-brand-600 text-brand-700 hover:text-white text-xs font-semibold transition">
                         Get Book
                     </a>
                 </div>
@@ -351,8 +351,8 @@
                     <div class="aspect-[3/4] rounded-xl bg-gradient-to-br from-cyan-900 to-slate-900 p-5 text-white flex flex-col justify-between relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-200 shadow-sm">
                         <span class="self-start text-[10px] font-bold px-2 py-0.5 rounded-md bg-white/20">BUSINESS</span>
                         <div>
-                            <h4 class="font-bold text-lg leading-snug">The Compound Founder</h4>
-                            <p class="text-xs text-cyan-200 mt-1">Marcus Bennett</p>
+                            <h4 class="font-bold text-base leading-snug">The Compound Founder</h4>
+                            <p class="text-[11px] text-cyan-200 mt-1">Marcus Bennett</p>
                         </div>
                     </div>
 
@@ -364,15 +364,15 @@
                                 <span class="font-bold text-slate-700 ml-1">5.0</span>
                             </div>
                         </div>
-                        <h3 class="font-bold text-base text-slate-900 mt-1 group-hover:text-brand-600 transition-colors line-clamp-1">
+                        <h3 class="font-bold text-sm text-slate-900 mt-1 group-hover:text-brand-600 transition-colors line-clamp-1">
                             The Compound Founder
                         </h3>
                     </div>
                 </div>
 
                 <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <span class="text-base font-extrabold text-slate-900">$15.00</span>
-                    <a href="#" class="px-3.5 py-1.5 rounded-full bg-brand-50 hover:bg-brand-600 text-brand-700 hover:text-white text-xs font-semibold transition">
+                    <span class="text-sm font-extrabold text-slate-900">$15.00</span>
+                    <a href="#" class="px-3 py-1 rounded-full bg-brand-50 hover:bg-brand-600 text-brand-700 hover:text-white text-xs font-semibold transition">
                         Get Book
                     </a>
                 </div>
@@ -385,8 +385,8 @@
                     <div class="aspect-[3/4] rounded-xl bg-gradient-to-br from-emerald-900 to-teal-800 p-5 text-white flex flex-col justify-between relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-200 shadow-sm">
                         <span class="self-start text-[10px] font-bold px-2 py-0.5 rounded-md bg-white/20">GROWTH</span>
                         <div>
-                            <h4 class="font-bold text-lg leading-snug">Atomic Focus</h4>
-                            <p class="text-xs text-emerald-200 mt-1">Dr. Aris Thorne</p>
+                            <h4 class="font-bold text-base leading-snug">Atomic Focus</h4>
+                            <p class="text-[11px] text-emerald-200 mt-1">Dr. Aris Thorne</p>
                         </div>
                     </div>
 
@@ -398,15 +398,83 @@
                                 <span class="font-bold text-slate-700 ml-1">4.9</span>
                             </div>
                         </div>
-                        <h3 class="font-bold text-base text-slate-900 mt-1 group-hover:text-brand-600 transition-colors line-clamp-1">
+                        <h3 class="font-bold text-sm text-slate-900 mt-1 group-hover:text-brand-600 transition-colors line-clamp-1">
                             Atomic Focus
                         </h3>
                     </div>
                 </div>
 
                 <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <span class="text-base font-extrabold text-slate-900">$9.99</span>
-                    <a href="#" class="px-3.5 py-1.5 rounded-full bg-brand-50 hover:bg-brand-600 text-brand-700 hover:text-white text-xs font-semibold transition">
+                    <span class="text-sm font-extrabold text-slate-900">$9.99</span>
+                    <a href="#" class="px-3 py-1 rounded-full bg-brand-50 hover:bg-brand-600 text-brand-700 hover:text-white text-xs font-semibold transition">
+                        Get Book
+                    </a>
+                </div>
+            </div>
+
+            <!-- Book 5 -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 hover:shadow-xl hover:shadow-brand-900/10 transition-all duration-200 flex flex-col justify-between group">
+                <div>
+                    <!-- Book Cover Design -->
+                    <div class="aspect-[3/4] rounded-xl bg-gradient-to-br from-purple-900 to-indigo-950 p-5 text-white flex flex-col justify-between relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-200 shadow-sm">
+                        <span class="self-start text-[10px] font-bold px-2 py-0.5 rounded-md bg-white/20">DESIGN</span>
+                        <div>
+                            <h4 class="font-bold text-base leading-snug">Design Systems in Scale</h4>
+                            <p class="text-[11px] text-purple-200 mt-1">Clara Oswald</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-slate-400">UI/UX &amp; Code</span>
+                            <div class="flex items-center text-amber-400 text-xs">
+                                <i class="fa-solid fa-star"></i>
+                                <span class="font-bold text-slate-700 ml-1">4.9</span>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-sm text-slate-900 mt-1 group-hover:text-brand-600 transition-colors line-clamp-1">
+                            Design Systems in Scale
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <span class="text-sm font-extrabold text-slate-900">$21.00</span>
+                    <a href="#" class="px-3 py-1 rounded-full bg-brand-50 hover:bg-brand-600 text-brand-700 hover:text-white text-xs font-semibold transition">
+                        Get Book
+                    </a>
+                </div>
+            </div>
+
+            <!-- Book 6 -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 hover:shadow-xl hover:shadow-brand-900/10 transition-all duration-200 flex flex-col justify-between group">
+                <div>
+                    <!-- Book Cover Design -->
+                    <div class="aspect-[3/4] rounded-xl bg-gradient-to-br from-amber-900 to-orange-950 p-5 text-white flex flex-col justify-between relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-200 shadow-sm">
+                        <span class="self-start text-[10px] font-bold px-2 py-0.5 rounded-md bg-white/20">CLASSIC</span>
+                        <div>
+                            <h4 class="font-bold text-base leading-snug">The Odyssey Rewritten</h4>
+                            <p class="text-[11px] text-amber-200 mt-1">Homer / Trad. Alex Ross</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-slate-400">Literature</span>
+                            <div class="flex items-center text-amber-400 text-xs">
+                                <i class="fa-solid fa-star"></i>
+                                <span class="font-bold text-slate-700 ml-1">4.7</span>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-sm text-slate-900 mt-1 group-hover:text-brand-600 transition-colors line-clamp-1">
+                            The Odyssey Rewritten
+                        </h3>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <span class="text-sm font-extrabold text-slate-900">$8.99</span>
+                    <a href="#" class="px-3 py-1 rounded-full bg-brand-50 hover:bg-brand-600 text-brand-700 hover:text-white text-xs font-semibold transition">
                         Get Book
                     </a>
                 </div>
@@ -422,7 +490,7 @@
      ========================================== -->
 <section class="py-16 bg-gradient-to-r from-brand-950 via-brand-900 to-brand-950 text-white relative overflow-hidden">
     <div class="absolute inset-0 bg-grid-pattern opacity-20 pointer-events-none"></div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4 relative z-10">
         
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
@@ -445,7 +513,7 @@
                 <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
                     Quantum Frontiers: The Next Century of Human Discovery
                 </h2>
-                <p class="text-base text-brand-100 mt-4 leading-relaxed max-w-2xl">
+                <p class="text-base text-brand-100 mt-4 leading-relaxed max-w-3xl">
                     "An illuminating journey through modern theoretical physics, unraveling mysteries from entanglement to multi-dimensional space, written for both specialists and curious minds."
                 </p>
 
@@ -468,7 +536,7 @@
      PLATFORM HIGHLIGHTS / BENEFITS
      ========================================== -->
 <section class="py-20 bg-slate-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4">
         
         <div class="text-center max-w-2xl mx-auto mb-16">
             <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Why E-Book Platform</span>
@@ -517,10 +585,10 @@
      NEWSLETTER & COMMUNITY CTA
      ========================================== -->
 <section class="py-20 bg-white">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-gradient-to-br from-brand-900 via-brand-700 to-indigo-700 rounded-3xl p-8 sm:p-14 text-white text-center relative overflow-hidden shadow-2xl shadow-brand-900/20">
+    <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4">
+        <div class="bg-gradient-to-br from-brand-900 via-brand-700 to-indigo-700 rounded-3xl p-8 sm:p-14 text-white text-center relative overflow-hidden shadow-2xl shadow-brand-900/20 w-full mx-auto">
             
-            <div class="relative z-10 max-w-2xl mx-auto">
+            <div class="relative z-10 max-w-3xl mx-auto">
                 <span class="inline-block px-3 py-1 rounded-full bg-white/15 text-xs font-semibold text-brand-200 mb-4">
                     Join 120,000+ Book Enthusiasts
                 </span>
