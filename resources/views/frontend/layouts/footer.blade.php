@@ -10,7 +10,7 @@
                         <i class="fa-solid fa-book-open text-lg"></i>
                     </div>
                     <div>
-                        <span class="font-extrabold text-xl text-white tracking-tight leading-none block">
+                        <span class="font-brand text-2xl text-white tracking-wider leading-none block">
                             E-Book<span class="text-brand-500">.</span>
                         </span>
                         <span class="text-[11px] font-semibold text-brand-400 tracking-wider uppercase mt-0.5 block">

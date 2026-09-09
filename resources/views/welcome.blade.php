@@ -27,7 +27,7 @@
         <div class="max-w-3xl text-center sm:text-left">
 
             <!-- Main Banner Title -->
-            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15] mb-6">
+            <h1 class="font-brand text-5xl sm:text-7xl lg:text-8xl text-white tracking-wide uppercase leading-[0.95] mb-6">
                 Discover, Read &amp; Collect Your Favorite <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-brand-400 to-indigo-300">E-Books.</span>
             </h1>
 
@@ -41,7 +41,7 @@
                 <!-- Primary Button -->
                 <a 
                     href="#browse" 
-                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white text-sm font-bold shadow-xl shadow-brand-600/35 transition-all duration-150 transform hover:-translate-y-0.5"
+                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase shadow-xl shadow-brand-600/35 transition-all duration-150 transform hover:-translate-y-0.5"
                 >
                     <i class="fa-solid fa-book-open text-base"></i>
                     <span>Explore Library</span>
@@ -51,7 +51,7 @@
                 <!-- Secondary Button -->
                 <a 
                     href="#categories" 
-                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/25 text-white border border-white/25 backdrop-blur-md text-sm font-semibold shadow-lg transition-all duration-150 transform hover:-translate-y-0.5"
+                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/25 text-white border border-white/25 backdrop-blur-md font-brand text-xl tracking-wider uppercase shadow-lg transition-all duration-150 transform hover:-translate-y-0.5"
                 >
                     <i class="fa-solid fa-layer-group text-slate-300"></i>
                     <span>Browse Genres</span>
@@ -70,25 +70,25 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
             
             <div class="p-2">
-                <div class="text-3xl sm:text-4xl font-extrabold text-slate-900">50,000+</div>
+                <div class="font-brand text-4xl sm:text-5xl text-slate-900 tracking-wide">50,000+</div>
                 <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Digital E-Books</div>
             </div>
 
             <div class="p-2">
-                <div class="text-3xl sm:text-4xl font-extrabold text-slate-900">120,000+</div>
+                <div class="font-brand text-4xl sm:text-5xl text-slate-900 tracking-wide">120,000+</div>
                 <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Active Readers</div>
             </div>
 
             <div class="p-2">
-                <div class="text-3xl sm:text-4xl font-extrabold text-brand-600 flex items-center justify-center gap-1">
+                <div class="font-brand text-4xl sm:text-5xl text-brand-600 flex items-center justify-center gap-1.5 tracking-wide">
                     <span>4.9</span>
-                    <i class="fa-solid fa-star text-amber-400 text-2xl"></i>
+                    <i class="fa-solid fa-star text-amber-400 text-2xl mb-1"></i>
                 </div>
                 <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Reader Satisfaction</div>
             </div>
 
             <div class="p-2">
-                <div class="text-3xl sm:text-4xl font-extrabold text-slate-900">100%</div>
+                <div class="font-brand text-4xl sm:text-5xl text-slate-900 tracking-wide">100%</div>
                 <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">DRM-Free Formats</div>
             </div>
 
@@ -105,7 +105,7 @@
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div>
                 <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Browse by Subject</span>
-                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mt-1">Explore Popular Genres</h2>
+                <h2 class="font-brand text-4xl sm:text-5xl text-slate-900 tracking-wide uppercase mt-1">Explore Popular Genres</h2>
             </div>
             <a href="#browse" class="text-sm font-semibold text-brand-600 hover:text-brand-700 hover:underline flex items-center gap-1.5">
                 <span>View all 32 categories</span>
@@ -200,13 +200,13 @@
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div>
                 <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Editor's Picks</span>
-                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mt-1">Trending E-Books</h2>
+                <h2 class="font-brand text-4xl sm:text-5xl text-slate-900 tracking-wide uppercase mt-1">Trending E-Books</h2>
             </div>
-            <div class="flex items-center gap-2">
-                <button class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-semibold shadow-xs">All</button>
-                <button class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition">Fiction</button>
-                <button class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition">Non-Fiction</button>
-                <button class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition">Tech</button>
+            <div class="flex items-center gap-2 font-brand tracking-wider text-base uppercase">
+                <button class="px-4 py-1.5 rounded-xl bg-brand-600 text-white shadow-xs">All</button>
+                <button class="px-4 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition">Fiction</button>
+                <button class="px-4 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition">Non-Fiction</button>
+                <button class="px-4 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition">Tech</button>
             </div>
         </div>
 
@@ -447,7 +447,7 @@
                     <i class="fa-solid fa-crown text-amber-400"></i>
                     <span>Book of the Week</span>
                 </div>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                <h2 class="font-brand text-4xl sm:text-6xl text-white tracking-wide uppercase leading-none">
                     Quantum Frontiers: The Next Century of Human Discovery
                 </h2>
                 <p class="text-base text-brand-100 mt-4 leading-relaxed max-w-3xl">
@@ -455,10 +455,10 @@
                 </p>
 
                 <div class="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-4">
-                    <a href="#" class="px-7 py-3 rounded-full bg-white hover:bg-brand-50 text-brand-900 font-bold text-sm shadow-xl transition">
+                    <a href="#" class="px-8 py-3.5 rounded-full bg-white hover:bg-brand-50 text-brand-900 font-brand text-xl tracking-wider uppercase shadow-xl transition">
                         Start Reading Now
                     </a>
-                    <a href="#" class="px-6 py-3 rounded-full border border-white/25 hover:bg-white/10 text-white font-semibold text-sm transition">
+                    <a href="#" class="px-7 py-3.5 rounded-full border border-white/25 hover:bg-white/10 text-white font-brand text-xl tracking-wider uppercase transition">
                         Download Free Sample PDF
                     </a>
                 </div>
@@ -477,7 +477,7 @@
         
         <div class="text-center max-w-2xl mx-auto mb-16">
             <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Why E-Book Platform</span>
-            <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight mt-1">Built for the Modern Reader</h2>
+            <h2 class="font-brand text-4xl sm:text-5xl text-slate-900 tracking-wide uppercase mt-1">Built for the Modern Reader</h2>
             <p class="text-sm text-slate-500 mt-2">Enjoy a seamless digital reading experience tailored for mobile, tablet, and desktop.</p>
         </div>
 
@@ -487,7 +487,7 @@
                 <div class="w-14 h-14 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center text-2xl mx-auto mb-5">
                     <i class="fa-solid fa-cloud-arrow-down"></i>
                 </div>
-                <h3 class="text-lg font-bold text-slate-900">Offline Access</h3>
+                <h3 class="font-brand text-2xl text-slate-900 tracking-wide uppercase">Offline Access</h3>
                 <p class="text-xs text-slate-500 mt-2 leading-relaxed">
                     Download complete books in EPUB or PDF format and read uninterrupted even without an internet connection.
                 </p>
@@ -497,7 +497,7 @@
                 <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl mx-auto mb-5">
                     <i class="fa-solid fa-arrows-rotate"></i>
                 </div>
-                <h3 class="text-lg font-bold text-slate-900">Instant Cloud Sync</h3>
+                <h3 class="font-brand text-2xl text-slate-900 tracking-wide uppercase">Instant Cloud Sync</h3>
                 <p class="text-xs text-slate-500 mt-2 leading-relaxed">
                     Your reading progress, bookmarks, and personal highlights automatically sync across all your phones and tablets.
                 </p>
@@ -507,7 +507,7 @@
                 <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl mx-auto mb-5">
                     <i class="fa-solid fa-moon"></i>
                 </div>
-                <h3 class="text-lg font-bold text-slate-900">Custom Reader Mode</h3>
+                <h3 class="font-brand text-2xl text-slate-900 tracking-wide uppercase">Custom Reader Mode</h3>
                 <p class="text-xs text-slate-500 mt-2 leading-relaxed">
                     Personalize your reading comfort with dark mode, sepia tone, custom fonts, and adjustable text sizes.
                 </p>
@@ -529,7 +529,7 @@
                 <span class="inline-block px-3 py-1 rounded-full bg-white/15 text-xs font-semibold text-brand-200 mb-4">
                     Join 120,000+ Book Enthusiasts
                 </span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                <h2 class="font-brand text-4xl sm:text-6xl text-white tracking-wide uppercase leading-none">
                     Get 3 Free Bestseller E-Books Today
                 </h2>
                 <p class="text-sm sm:text-base text-brand-100 mt-3 leading-relaxed">
@@ -545,7 +545,7 @@
                     >
                     <button 
                         type="submit"
-                        class="w-full sm:w-auto px-7 py-3.5 rounded-full bg-white text-brand-900 hover:bg-brand-50 font-bold text-sm shadow-md transition whitespace-nowrap cursor-pointer"
+                        class="w-full sm:w-auto px-7 py-3 rounded-full bg-white text-brand-900 hover:bg-brand-50 font-brand text-xl tracking-wider uppercase shadow-md transition whitespace-nowrap cursor-pointer"
                     >
                         Claim Free Books
                     </button>

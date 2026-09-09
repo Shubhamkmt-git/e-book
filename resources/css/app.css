@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import '@fortawesome/fontawesome-free/css/all.min.css';
+@import '@fontsource/bebas-neue';
 @import '@fontsource/poppins/300.css';
 @import '@fontsource/poppins/400.css';
 @import '@fontsource/poppins/500.css';
@@ -13,6 +14,9 @@
 
 @theme {
     --font-sans: 'Poppins', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-brand: 'Bebas Neue', 'Poppins', sans-serif;
+    --font-display: 'Bebas Neue', 'Poppins', sans-serif;
+    --font-bebas: 'Bebas Neue', 'Poppins', sans-serif;
     
     --color-brand-50: #f8f5fc;
     --color-brand-100: #eee7f8;
@@ -28,6 +32,11 @@
     
     --color-brand: #7a58a9;
     --color-primary: #7a58a9;
+}
+
+.font-brand, .font-bebas {
+    font-family: 'Bebas Neue', 'Poppins', sans-serif;
+    letter-spacing: 0.03em;
 }
 
 body {
