@@ -38,20 +38,23 @@
     @foreach ($categories as $category)
         <a 
             href="{{ $category['link'] }}" 
-            class="group relative overflow-hidden bg-white hover:bg-brand-600 p-6 rounded-2xl border border-slate-200/80 hover:border-brand-500 hover:shadow-xl hover:shadow-brand-600/20 transition-all duration-300 ease-in-out flex flex-col items-center text-center cursor-pointer"
+            class="group relative overflow-hidden bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-600/60 hover:shadow-xl hover:shadow-brand-900/15 transition-all duration-500 ease-out flex flex-col items-center text-center cursor-pointer"
         >
-            <!-- Icon Container (Smooth Color & Border Transition Only) -->
-            <div class="w-14 h-14 rounded-2xl bg-brand-50/90 text-brand-600 border border-brand-100/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30 group-hover:backdrop-blur-xs flex items-center justify-center text-2xl mb-3.5 transition-colors duration-300 ease-in-out shadow-2xs">
-                <i class="{{ $category['icon'] }} transition-colors duration-300 ease-in-out"></i>
+            <!-- Smooth Modern Gradient Background Overlay on Hover -->
+            <div class="absolute inset-0 bg-gradient-to-br from-brand-600 via-brand-600 to-brand-700 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out pointer-events-none"></div>
+
+            <!-- Icon Container (Smooth Color & Glassmorphism Dissolve) -->
+            <div class="relative z-10 w-14 h-14 rounded-2xl bg-brand-50/90 text-brand-600 border border-brand-100/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30 group-hover:backdrop-blur-sm flex items-center justify-center text-2xl mb-3.5 transition-all duration-500 ease-out shadow-2xs">
+                <i class="{{ $category['icon'] }} transition-colors duration-500 ease-out"></i>
             </div>
             
-            <!-- Category Title in Bebas Neue Brand Font (Smooth Color Transition) -->
-            <h3 class="font-brand text-xl text-slate-900 group-hover:text-white transition-colors duration-300 ease-in-out tracking-wide uppercase">
+            <!-- Category Title in Bebas Neue Brand Font (Smooth Color Crossfade) -->
+            <h3 class="relative z-10 font-brand text-xl text-slate-900 group-hover:text-white transition-colors duration-500 ease-out tracking-wide uppercase">
                 {{ $category['name'] }}
             </h3>
             
-            <!-- Category Count (Smooth Color Transition) -->
-            <span class="text-xs font-semibold text-brand-700/70 group-hover:text-brand-100 transition-colors duration-300 ease-in-out mt-1">
+            <!-- Category Count (Smooth Color Crossfade) -->
+            <span class="relative z-10 text-xs font-semibold text-brand-700/70 group-hover:text-brand-100/90 transition-colors duration-500 ease-out mt-1">
                 {{ $category['count'] }}
             </span>
         </a>
