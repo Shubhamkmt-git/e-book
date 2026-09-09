@@ -17,14 +17,14 @@
                 </div>
             </a>
 
-            <!-- Mobile Close Button -->
-            <button onclick="toggleSidebar()" class="lg:hidden p-1.5 rounded-lg text-brand-300 hover:text-white hover:bg-white/10 transition">
-                <i class="fa-solid fa-xmark text-lg"></i>
+            <!-- Sidebar Toggle/Close Button -->
+            <button onclick="toggleSidebar()" class="p-1.5 rounded-lg text-brand-300 hover:text-white hover:bg-white/10 transition cursor-pointer" title="Collapse Sidebar" aria-label="Collapse Sidebar">
+                <i class="fa-solid fa-angles-left text-sm"></i>
             </button>
         </div>
 
         <!-- Navigation Links -->
-        <div class="px-4 py-5 space-y-6 overflow-y-auto max-h-[calc(100vh-140px)]">
+        <div class="px-4 py-5 space-y-6 overflow-y-auto max-h-[calc(100vh-160px)]">
             
             <!-- Group: Main -->
             <div>

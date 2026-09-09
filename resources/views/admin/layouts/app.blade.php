@@ -17,6 +17,10 @@
         body {
             font-family: 'Poppins', sans-serif;
         }
+        /* Smooth transitions for collapsible layout */
+        #sidebar, #main-wrapper {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
     </style>
     @stack('styles')
 </head>
@@ -26,7 +30,7 @@
     @include('admin.layouts.sidebar')
 
     <!-- Main Content Wrapper -->
-    <div class="lg:pl-64 flex flex-col flex-1 min-h-screen w-full">
+    <div id="main-wrapper" class="lg:pl-64 flex flex-col flex-1 min-h-screen w-full">
         
         <!-- Header Partial -->
         @include('admin.layouts.header')
@@ -42,15 +46,50 @@
 
     <!-- Scripts -->
     <script>
+        // Check saved desktop sidebar preference
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.innerWidth >= 1024) {
+                const isCollapsed = localStorage.getItem('admin_sidebar_collapsed') === 'true';
+                if (isCollapsed) {
+                    applySidebarState(true);
+                }
+            }
+        });
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
+            const mainWrapper = document.getElementById('main-wrapper');
             const backdrop = document.getElementById('sidebar-backdrop');
-            if (sidebar.classList.contains('-translate-x-full')) {
-                sidebar.classList.remove('-translate-x-full');
-                backdrop.classList.remove('hidden');
+            const isDesktop = window.innerWidth >= 1024;
+
+            if (isDesktop) {
+                const willCollapse = !sidebar.classList.contains('lg:-translate-x-full');
+                applySidebarState(willCollapse);
+                localStorage.setItem('admin_sidebar_collapsed', willCollapse);
             } else {
-                sidebar.classList.add('-translate-x-full');
-                backdrop.classList.add('hidden');
+                // Mobile behavior
+                if (sidebar.classList.contains('-translate-x-full')) {
+                    sidebar.classList.remove('-translate-x-full');
+                    backdrop.classList.remove('hidden');
+                } else {
+                    sidebar.classList.add('-translate-x-full');
+                    backdrop.classList.add('hidden');
+                }
+            }
+        }
+
+        function applySidebarState(collapse) {
+            const sidebar = document.getElementById('sidebar');
+            const mainWrapper = document.getElementById('main-wrapper');
+
+            if (collapse) {
+                sidebar.classList.add('lg:-translate-x-full');
+                mainWrapper.classList.remove('lg:pl-64');
+                mainWrapper.classList.add('lg:pl-0');
+            } else {
+                sidebar.classList.remove('lg:-translate-x-full');
+                mainWrapper.classList.add('lg:pl-64');
+                mainWrapper.classList.remove('lg:pl-0');
             }
         }
 

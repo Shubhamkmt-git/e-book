@@ -1,10 +1,14 @@
 <header class="h-20 bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6 lg:px-8">
     
-    <!-- Left: Mobile Hamburger -->
+    <!-- Left: Sidebar Toggle Button (Visible on both Desktop & Mobile) -->
     <div class="flex items-center gap-4">
-        <!-- Mobile Sidebar Button -->
-        <button onclick="toggleSidebar()" class="lg:hidden p-2.5 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition cursor-pointer" aria-label="Open navigation">
-            <i class="fa-solid fa-bars text-xl"></i>
+        <button 
+            onclick="toggleSidebar()" 
+            class="p-2.5 rounded-xl text-slate-500 hover:text-brand-600 hover:bg-brand-50/60 border border-slate-200/60 transition cursor-pointer flex items-center justify-center" 
+            title="Toggle Sidebar"
+            aria-label="Toggle Sidebar Navigation"
+        >
+            <i class="fa-solid fa-bars-staggered text-lg"></i>
         </button>
     </div>
 
