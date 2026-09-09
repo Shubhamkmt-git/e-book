@@ -82,8 +82,8 @@
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-5">
             
             <!-- Category Card 1 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-400 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-110 transition-all duration-200 shadow-2xs">
+            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-slate-400 hover:shadow-lg transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 border border-slate-200/70 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-105 transition-all duration-200">
                     <i class="fa-solid fa-rocket"></i>
                 </div>
                 <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
@@ -93,8 +93,8 @@
             </a>
 
             <!-- Category Card 2 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-400 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-110 transition-all duration-200 shadow-2xs">
+            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-slate-400 hover:shadow-lg transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 border border-slate-200/70 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-105 transition-all duration-200">
                     <i class="fa-solid fa-laptop-code"></i>
                 </div>
                 <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
@@ -104,8 +104,8 @@
             </a>
 
             <!-- Category Card 3 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-400 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-110 transition-all duration-200 shadow-2xs">
+            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-slate-400 hover:shadow-lg transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 border border-slate-200/70 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-105 transition-all duration-200">
                     <i class="fa-solid fa-chart-line"></i>
                 </div>
                 <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
@@ -115,8 +115,8 @@
             </a>
 
             <!-- Category Card 4 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-400 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-110 transition-all duration-200 shadow-2xs">
+            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-slate-400 hover:shadow-lg transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 border border-slate-200/70 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-105 transition-all duration-200">
                     <i class="fa-solid fa-brain"></i>
                 </div>
                 <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
@@ -126,8 +126,8 @@
             </a>
 
             <!-- Category Card 5 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-400 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200 flex flex-col items-center text-center">
-                <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-110 transition-all duration-200 shadow-2xs">
+            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-slate-400 hover:shadow-lg transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 border border-slate-200/70 group-hover:bg-slate-900 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-105 transition-all duration-200">
                     <i class="fa-solid fa-palette"></i>
                 </div>
                 <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
@@ -433,7 +433,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             
             <div class="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-xs text-center">
-                <div class="w-14 h-14 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center text-2xl mx-auto mb-5">
+                <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 border border-slate-200/70 flex items-center justify-center text-2xl mx-auto mb-5">
                     <i class="fa-solid fa-cloud-arrow-down"></i>
                 </div>
                 <h3 class="font-brand text-2xl text-slate-900 tracking-wide uppercase">Offline Access</h3>
@@ -443,7 +443,7 @@
             </div>
 
             <div class="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-xs text-center">
-                <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl mx-auto mb-5">
+                <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 border border-slate-200/70 flex items-center justify-center text-2xl mx-auto mb-5">
                     <i class="fa-solid fa-arrows-rotate"></i>
                 </div>
                 <h3 class="font-brand text-2xl text-slate-900 tracking-wide uppercase">Instant Cloud Sync</h3>
@@ -453,7 +453,7 @@
             </div>
 
             <div class="bg-white p-8 rounded-2xl border border-slate-200/80 shadow-xs text-center">
-                <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl mx-auto mb-5">
+                <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 border border-slate-200/70 flex items-center justify-center text-2xl mx-auto mb-5">
                     <i class="fa-solid fa-moon"></i>
                 </div>
                 <h3 class="font-brand text-2xl text-slate-900 tracking-wide uppercase">Custom Reader Mode</h3>
