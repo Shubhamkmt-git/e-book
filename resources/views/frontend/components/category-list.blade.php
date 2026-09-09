@@ -38,20 +38,20 @@
     @foreach ($categories as $category)
         <a 
             href="{{ $category['link'] }}" 
-            class="group bg-white hover:bg-brand-50/40 p-6 rounded-2xl border border-slate-200/80 hover:border-brand-400/80 hover:shadow-lg hover:shadow-brand-900/5 transition-all duration-200 flex flex-col items-center text-center"
+            class="group bg-white hover:bg-brand-600 p-6 rounded-2xl border border-slate-200/80 hover:border-brand-600 hover:shadow-xl hover:shadow-brand-600/25 transition-all duration-300 ease-out flex flex-col items-center text-center transform hover:-translate-y-1 cursor-pointer"
         >
-            <!-- Brand Muted Icon Container -->
-            <div class="w-14 h-14 rounded-2xl bg-brand-50/90 text-brand-600 border border-brand-100 group-hover:bg-brand-600 group-hover:text-white group-hover:border-brand-600 flex items-center justify-center text-2xl mb-3.5 group-hover:scale-105 group-hover:shadow-md group-hover:shadow-brand-600/25 transition-all duration-200">
+            <!-- Icon Container (Muted Brand -> Softer White on Card Hover) -->
+            <div class="w-14 h-14 rounded-2xl bg-brand-50/90 text-brand-600 border border-brand-100/80 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/30 group-hover:backdrop-blur-xs flex items-center justify-center text-2xl mb-3.5 group-hover:scale-105 transition-all duration-300 shadow-2xs">
                 <i class="{{ $category['icon'] }}"></i>
             </div>
             
-            <!-- Category Title in Bebas Neue Brand Font -->
-            <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
+            <!-- Category Title in Bebas Neue Brand Font (Dark -> White on Card Hover) -->
+            <h3 class="font-brand text-xl text-slate-900 group-hover:text-white transition-colors duration-300 tracking-wide uppercase">
                 {{ $category['name'] }}
             </h3>
             
-            <!-- Brand Muted Subtitle / Count -->
-            <span class="text-xs font-semibold text-brand-700/70 mt-1">
+            <!-- Category Count (Muted Brand -> Softer Light Brand White on Card Hover) -->
+            <span class="text-xs font-semibold text-brand-700/70 group-hover:text-brand-100 transition-colors duration-300 mt-1">
                 {{ $category['count'] }}
             </span>
         </a>
