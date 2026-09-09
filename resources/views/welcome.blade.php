@@ -63,40 +63,6 @@
 </section>
 
 <!-- ==========================================
-     METRICS & TRUST BANNER
-     ========================================== -->
-<section class="border-y border-slate-200/80 bg-white py-10">
-    <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
-            
-            <div class="p-2">
-                <div class="font-brand text-4xl sm:text-5xl text-slate-900 tracking-wide">50,000+</div>
-                <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Digital E-Books</div>
-            </div>
-
-            <div class="p-2">
-                <div class="font-brand text-4xl sm:text-5xl text-slate-900 tracking-wide">120,000+</div>
-                <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Active Readers</div>
-            </div>
-
-            <div class="p-2">
-                <div class="font-brand text-4xl sm:text-5xl text-brand-600 flex items-center justify-center gap-1.5 tracking-wide">
-                    <span>4.9</span>
-                    <i class="fa-solid fa-star text-amber-400 text-2xl mb-1"></i>
-                </div>
-                <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Reader Satisfaction</div>
-            </div>
-
-            <div class="p-2">
-                <div class="font-brand text-4xl sm:text-5xl text-slate-900 tracking-wide">100%</div>
-                <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">DRM-Free Formats</div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<!-- ==========================================
      EXPLORE GENRES & CATEGORIES
      ========================================== -->
 <section id="categories" class="py-20 bg-slate-50">
