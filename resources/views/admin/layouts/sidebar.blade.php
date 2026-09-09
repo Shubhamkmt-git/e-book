@@ -6,7 +6,7 @@
     
     <!-- Top Branding -->
     <div>
-        <div class="h-16 px-6 flex items-center justify-between border-b border-brand-800/60">
+        <div class="h-20 px-6 flex items-center justify-between border-b border-brand-800/60">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-xl bg-white text-brand-700 flex items-center justify-center shadow-md shadow-black/10 font-bold">
                     <i class="fa-solid fa-book-open text-base"></i>
