@@ -79,78 +79,61 @@
             </a>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-5">
             
             <!-- Category Card 1 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-rocket"></i>
-                    </div>
-                    <span class="text-xs font-semibold text-slate-400">4,280 Books</span>
+            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-400 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-110 transition-all duration-200 shadow-2xs">
+                    <i class="fa-solid fa-rocket"></i>
                 </div>
-                <h3 class="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Sci-Fi &amp; Cyberpunk</h3>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">Space exploration and dystopian adventures.</p>
+                <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
+                    Sci-Fi &amp; Fantasy
+                </h3>
+                <span class="text-xs font-semibold text-slate-400 mt-1">4,280 Titles</span>
             </a>
 
             <!-- Category Card 2 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-laptop-code"></i>
-                    </div>
-                    <span class="text-xs font-semibold text-slate-400">3,120 Books</span>
+            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-400 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-110 transition-all duration-200 shadow-2xs">
+                    <i class="fa-solid fa-laptop-code"></i>
                 </div>
-                <h3 class="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Computer Science</h3>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">Programming, algorithms, and engineering.</p>
+                <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
+                    Tech &amp; Coding
+                </h3>
+                <span class="text-xs font-semibold text-slate-400 mt-1">3,120 Titles</span>
             </a>
 
             <!-- Category Card 3 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-chart-line"></i>
-                    </div>
-                    <span class="text-xs font-semibold text-slate-400">2,850 Books</span>
+            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-400 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-110 transition-all duration-200 shadow-2xs">
+                    <i class="fa-solid fa-chart-line"></i>
                 </div>
-                <h3 class="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Business &amp; Finance</h3>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">Startups, leadership, and venture capital.</p>
+                <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
+                    Business &amp; Finance
+                </h3>
+                <span class="text-xs font-semibold text-slate-400 mt-1">2,850 Titles</span>
             </a>
 
             <!-- Category Card 4 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-brain"></i>
-                    </div>
-                    <span class="text-xs font-semibold text-slate-400">5,410 Books</span>
+            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-400 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-110 transition-all duration-200 shadow-2xs">
+                    <i class="fa-solid fa-brain"></i>
                 </div>
-                <h3 class="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Psychology &amp; Habits</h3>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">Mindset, emotional health, and productivity.</p>
+                <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
+                    Psychology
+                </h3>
+                <span class="text-xs font-semibold text-slate-400 mt-1">5,410 Titles</span>
             </a>
 
             <!-- Category Card 5 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-palette"></i>
-                    </div>
-                    <span class="text-xs font-semibold text-slate-400">1,940 Books</span>
+            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-400 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200 flex flex-col items-center text-center">
+                <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center text-2xl mb-3.5 group-hover:scale-110 transition-all duration-200 shadow-2xs">
+                    <i class="fa-solid fa-palette"></i>
                 </div>
-                <h3 class="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Design &amp; Arts</h3>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">Visual theory, UI/UX, and graphic design.</p>
-            </a>
-
-            <!-- Category Card 6 -->
-            <a href="#browse" class="group bg-white p-6 rounded-2xl border border-slate-200/80 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-900/5 transition-all duration-200">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 rounded-2xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-flask-vial"></i>
-                    </div>
-                    <span class="text-xs font-semibold text-slate-400">2,110 Books</span>
-                </div>
-                <h3 class="text-base font-bold text-slate-900 group-hover:text-brand-600 transition-colors">Science &amp; Physics</h3>
-                <p class="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2">Cosmology, quantum theory, and nature.</p>
+                <h3 class="font-brand text-xl text-slate-900 group-hover:text-brand-600 transition-colors tracking-wide uppercase">
+                    Design &amp; Arts
+                </h3>
+                <span class="text-xs font-semibold text-slate-400 mt-1">1,940 Titles</span>
             </a>
 
         </div>
