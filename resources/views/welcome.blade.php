@@ -5,120 +5,83 @@
 @section('content')
 
 <!-- ==========================================
-     HERO SECTION
+     FULL-WIDTH HERO BANNER SECTION (70% HEIGHT)
      ========================================== -->
-<section class="relative overflow-hidden pt-12 pb-20 lg:pt-16 lg:pb-28 bg-gradient-to-b from-white via-slate-50 to-brand-50/40">
+<section class="relative w-full min-h-[70vh] lg:h-[70vh] flex items-center justify-center overflow-hidden bg-slate-950">
     
-    <!-- Ambient Glows -->
-    <div class="absolute top-12 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-brand-300/25 rounded-full blur-[140px] pointer-events-none"></div>
+    <!-- Full-Width Background Banner Image with Dark Gradient & Vignette Overlay -->
+    <div class="absolute inset-0 z-0">
+        <img 
+            src="{{ asset('images/hero-banner.jpg') }}" 
+            alt="E-Book Digital Library Banner" 
+            class="w-full h-full object-cover object-center scale-105 transform motion-safe:animate-[pulse_10s_ease-in-out_infinite]"
+        >
+        <!-- Multi-layer Gradient Overlays for Readability & Brand Aesthetic -->
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/80 to-slate-950/60"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/60"></div>
+        <div class="absolute inset-0 bg-radial from-brand-600/20 via-transparent to-slate-950/80"></div>
+    </div>
 
-    <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4 relative z-10">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+    <!-- Content Container (96% Width) -->
+    <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4 relative z-10 py-16 sm:py-20">
+        <div class="max-w-3xl text-center sm:text-left">
             
-            <!-- Left Hero Content (7 Cols) -->
-            <div class="lg:col-span-7 text-center lg:text-left">
-                
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-50 border border-brand-200/80 text-xs font-semibold text-brand-700 mb-6 shadow-2xs">
-                    <span class="w-2 h-2 rounded-full bg-brand-600 animate-pulse"></span>
-                    <span>New Releases &amp; Bestsellers Added Daily</span>
-                </div>
-
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.12] mb-6">
-                    Discover, Read &amp; Collect Your Favorite <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-indigo-600">E-Books.</span>
-                </h1>
-
-                <p class="text-base sm:text-lg text-slate-600 leading-relaxed mb-8 max-w-2xl mx-auto lg:mx-0">
-                    Access over <span class="font-bold text-slate-800">50,000+</span> digital titles, classic literature, modern fiction, and academic publications across all your devices.
-                </p>
-
-                <!-- Interactive Search Bar -->
-                <div class="max-w-xl mx-auto lg:mx-0 mb-6">
-                    <form action="#browse" method="GET" class="relative flex items-center">
-                        <div class="absolute inset-y-0 left-0 pl-4.5 flex items-center pointer-events-none text-slate-400">
-                            <i class="fa-solid fa-magnifying-glass text-base"></i>
-                        </div>
-                        <input 
-                            type="text" 
-                            placeholder="Search by book title, author, or genre..."
-                            class="w-full bg-white border border-slate-300 focus:border-brand-600 rounded-full pl-12 pr-36 py-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-brand-600/15 shadow-xl shadow-slate-200/60 transition"
-                        >
-                        <button 
-                            type="submit"
-                            class="absolute right-2 px-6 py-2.5 rounded-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold shadow-md shadow-brand-600/25 transition cursor-pointer"
-                        >
-                            Explore
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Popular Tags -->
-                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2 text-xs text-slate-600">
-                    <span class="font-semibold text-slate-400">Trending:</span>
-                    <a href="#categories" class="px-3 py-1 rounded-full bg-white border border-slate-200 hover:border-brand-400 hover:text-brand-600 transition shadow-2xs font-medium">✨ Sci-Fi</a>
-                    <a href="#categories" class="px-3 py-1 rounded-full bg-white border border-slate-200 hover:border-brand-400 hover:text-brand-600 transition shadow-2xs font-medium">💻 AI &amp; Tech</a>
-                    <a href="#categories" class="px-3 py-1 rounded-full bg-white border border-slate-200 hover:border-brand-400 hover:text-brand-600 transition shadow-2xs font-medium">📈 Finance</a>
-                    <a href="#categories" class="px-3 py-1 rounded-full bg-white border border-slate-200 hover:border-brand-400 hover:text-brand-600 transition shadow-2xs font-medium">🧠 Psychology</a>
-                </div>
-
+            <!-- Badge / Tagline -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/20 backdrop-blur-md border border-brand-400/30 text-xs font-semibold text-brand-300 mb-6 shadow-lg shadow-brand-950/50">
+                <span class="w-2 h-2 rounded-full bg-brand-400 animate-pulse"></span>
+                <span>Over 50,000+ Digital Titles &amp; Instant Downloads</span>
             </div>
 
-            <!-- Right Hero 3D Book Cards Showcase (5 Cols) -->
-            <div class="lg:col-span-5 relative flex justify-center">
-                <div class="relative w-full max-w-sm">
-                    
-                    <!-- Main Book Card -->
-                    <div class="bg-white rounded-3xl p-6 shadow-2xl shadow-brand-900/10 border border-slate-200/80 relative z-20">
-                        <div class="aspect-[3/4] rounded-2xl bg-gradient-to-br from-brand-900 via-brand-700 to-indigo-800 p-6 text-white flex flex-col justify-between shadow-lg relative overflow-hidden group">
-                            <div class="absolute -right-8 -bottom-8 w-36 h-36 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
-                            
-                            <div class="flex items-center justify-between text-xs font-semibold text-brand-200">
-                                <span class="px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md">BESTSELLER</span>
-                                <span class="flex items-center gap-1"><i class="fa-solid fa-star text-amber-400"></i> 4.9</span>
-                            </div>
+            <!-- Main Banner Title -->
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15] mb-6">
+                Discover, Read &amp; Collect Your Favorite <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-brand-400 to-indigo-300">E-Books.</span>
+            </h1>
 
-                            <div>
-                                <h3 class="text-2xl font-extrabold text-white tracking-tight leading-snug">
-                                    The Architecture of Mind
-                                </h3>
-                                <p class="text-xs text-brand-200 mt-1 font-medium">By Dr. Eleanor Vance</p>
-                            </div>
+            <!-- Subtitle -->
+            <p class="text-base sm:text-lg text-slate-300 leading-relaxed mb-8 max-w-2xl font-normal">
+                Your premier digital library for bestselling novels, academic textbooks, technology guides, and independent literature. Read seamlessly across all your devices anytime, anywhere.
+            </p>
 
-                            <div class="pt-3 border-t border-white/15 flex items-center justify-between text-xs text-brand-100">
-                                <span>340 Pages &bull; EPUB / PDF</span>
-                                <span class="font-bold text-white text-sm">$14.99</span>
-                            </div>
-                        </div>
+            <!-- Primary & Secondary Buttons -->
+            <div class="flex flex-col sm:flex-row items-center gap-4 mb-8">
+                <!-- Primary Button -->
+                <a 
+                    href="#browse" 
+                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white text-sm font-bold shadow-xl shadow-brand-600/35 transition-all duration-150 transform hover:-translate-y-0.5"
+                >
+                    <i class="fa-solid fa-book-open text-base"></i>
+                    <span>Explore Library</span>
+                    <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i>
+                </a>
 
-                        <!-- Card Meta Footer -->
-                        <div class="mt-4 flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                                <span class="text-xs font-semibold text-slate-700">Instant Download</span>
-                            </div>
-                            <a href="#browse" class="text-xs font-bold text-brand-600 hover:text-brand-700">Read Preview &rarr;</a>
-                        </div>
+                <!-- Secondary Button -->
+                <a 
+                    href="#categories" 
+                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/25 text-white border border-white/25 backdrop-blur-md text-sm font-semibold shadow-lg transition-all duration-150 transform hover:-translate-y-0.5"
+                >
+                    <i class="fa-solid fa-layer-group text-slate-300"></i>
+                    <span>Browse Genres</span>
+                </a>
+            </div>
+
+            <!-- Quick Search Bar Overlay inside Hero -->
+            <div class="max-w-xl">
+                <form action="#browse" method="GET" class="relative flex items-center">
+                    <div class="absolute inset-y-0 left-0 pl-4.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
                     </div>
-
-                    <!-- Floating Badge Card 1 -->
-                    <div class="hidden sm:flex absolute -bottom-6 -left-8 bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-slate-200/80 z-30 items-center gap-3.5">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-base">
-                            <i class="fa-solid fa-bolt"></i>
-                        </div>
-                        <div>
-                            <div class="text-xs font-bold text-slate-900">Over 50K+ Downloads</div>
-                            <div class="text-[11px] text-slate-500">This month alone</div>
-                        </div>
-                    </div>
-
-                    <!-- Floating Badge Card 2 -->
-                    <div class="hidden sm:flex absolute -top-6 -right-6 bg-white/95 backdrop-blur-md rounded-2xl p-3.5 shadow-xl border border-slate-200/80 z-30 items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-500 flex items-center justify-center font-bold text-sm">
-                            <i class="fa-solid fa-award"></i>
-                        </div>
-                        <div class="text-xs font-bold text-slate-800">Editor's Choice</div>
-                    </div>
-
-                </div>
+                    <input 
+                        type="text" 
+                        placeholder="Search books by title, author, or ISBN..."
+                        class="w-full bg-slate-900/80 backdrop-blur-md border border-slate-700/80 focus:border-brand-400 rounded-full pl-11 pr-32 py-3 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 transition shadow-lg"
+                    >
+                    <button 
+                        type="submit"
+                        class="absolute right-1.5 px-5 py-2 rounded-full bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold shadow-md transition cursor-pointer"
+                    >
+                        Search
+                    </button>
+                </form>
             </div>
 
         </div>
