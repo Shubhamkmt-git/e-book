@@ -474,7 +474,7 @@ class BookController extends Controller
     }
 
     /**
-     * Display individual book detail page
+     * Display individual book detail page as a dedicated, high-converting Landing Page
      */
     public function show(string|int $identifier): View
     {
@@ -487,13 +487,111 @@ class BookController extends Controller
             $book = $this->allBooks[0];
         }
 
-        // Related books in the same category or other featured books (3 in a row)
-        $relatedBooks = collect($this->allBooks)
-            ->filter(fn ($b) => $b['id'] !== $book['id'])
-            ->shuffle()
-            ->take(3)
-            ->values()
-            ->all();
+        // Compute tailored audience & category persona
+        $categoryPersonas = [
+            'tech-coding' => [
+                'audience' => 'Software Engineers, Systems Architects, CS Students & Tech Leads',
+                'badge' => 'Engineering Excellence',
+                'author_expertise' => 'Over 15+ years architecting hyper-scale infrastructure and mentoring engineering teams worldwide.',
+                'quote' => '“Simplicity is prerequisite for reliability. Master the underlying computational patterns, and the scale takes care of itself.”',
+            ],
+            'sci-fi-fantasy' => [
+                'audience' => 'Hard Sci-Fi Enthusiasts, Speculative Fiction Readers & Worldbuilding Aficionados',
+                'badge' => 'Speculative Masterpiece',
+                'author_expertise' => 'Acclaimed author recognized for rigorous relativistic physics worldbuilding and rich character-driven storytelling.',
+                'quote' => '“At the boundary of cosmic discovery, the universe does not reveal answers—it forces humanity to ask entirely new questions.”',
+            ],
+            'business-finance' => [
+                'audience' => 'Founders, Executives, Operators, Product Leaders & Investors',
+                'badge' => 'Executive Playbook',
+                'author_expertise' => 'Serial entrepreneur and investor who has built and advised high-growth compounding ventures across global markets.',
+                'quote' => '“Compounding is the greatest leverage in business. Design systems where every customer and iteration makes the next 10x easier.”',
+            ],
+            'psychology' => [
+                'audience' => 'Knowledge Workers, High Performers, Researchers & Lifelong Learners',
+                'badge' => 'Cognitive Mastery',
+                'author_expertise' => 'Neuroscientist and behavioral consultant specializing in peak cognitive endurance and attention architecture.',
+                'quote' => '“Focus is not about willpower—it is about biological architecture and eliminating cognitive friction before it begins.”',
+            ],
+            'design-arts' => [
+                'audience' => 'Product Designers, UI/UX Specialists, Art Directors & Frontend Engineers',
+                'badge' => 'Design Masterclass',
+                'author_expertise' => 'Renowned design director and typographer whose visual systems shape award-winning products.',
+                'quote' => '“Great design is invisible until you remove it. Visual rhythm and geometric cadence create intuitive resonance.”',
+            ],
+        ];
+
+        $persona = $categoryPersonas[$book['category_slug'] ?? 'tech-coding'] ?? $categoryPersonas['tech-coding'];
+
+        $landingData = [
+            'reading_time' => sprintf('~%.1f Hours', max(2.5, ($book['pages'] ?? 300) / 65)),
+            'target_audience' => $persona['audience'],
+            'landing_badge' => $persona['badge'],
+            'author_bio' => $book['author'].' is a leading voice in '.($book['category'] ?? 'the field').'. '.$persona['author_expertise'],
+            'book_quote' => $persona['quote'],
+            'takeaways' => [
+                [
+                    'icon' => 'fa-solid fa-lightbulb',
+                    'title' => 'Core Mental Models & Principles',
+                    'desc' => 'Understand the foundational theory and mental frameworks that separate surface-level knowledge from deep mastery.',
+                ],
+                [
+                    'icon' => 'fa-solid fa-layer-group',
+                    'title' => 'Battle-Tested Actionable Frameworks',
+                    'desc' => 'Zero academic filler. Every chapter delivers concrete templates, diagrams, and blueprints you can apply immediately.',
+                ],
+                [
+                    'icon' => 'fa-solid fa-chart-line',
+                    'title' => 'Proven Case Studies & Real Scenarios',
+                    'desc' => 'Deconstruct real-world challenges, trade-offs, and breakdown points with detailed step-by-step walkthroughs.',
+                ],
+                [
+                    'icon' => 'fa-solid fa-gem',
+                    'title' => 'Compounding Long-Term Leverage',
+                    'desc' => 'Gain timeless principles and competitive advantages designed to compound in value across your entire career.',
+                ],
+            ],
+            'bonuses' => [
+                [
+                    'title' => 'Universal Multi-Format Bundle',
+                    'desc' => 'DRM-free PDF & reflowable EPUB optimized for Kindle, iPad, Kobo, and desktop readers.',
+                    'value' => 'Included',
+                ],
+                [
+                    'title' => 'Executive Summary Cheat-Sheet',
+                    'desc' => 'Printable high-resolution reference sheet summarizing every key concept and framework.',
+                    'value' => 'Free Bonus',
+                ],
+                [
+                    'title' => 'Interactive Study & Action Checklist',
+                    'desc' => 'Step-by-step implementation guide to turn book insights into daily execution.',
+                    'value' => 'Free Bonus',
+                ],
+                [
+                    'title' => 'Lifetime Free Edition Updates',
+                    'desc' => 'All future revised editions, errata corrections, and additional chapters delivered automatically.',
+                    'value' => 'Lifetime',
+                ],
+            ],
+            'faqs' => [
+                [
+                    'q' => 'What digital formats are provided upon purchase?',
+                    'a' => 'You will receive instant, DRM-free downloads in both high-resolution PDF (with standard & dark reading modes) and reflowable EPUB format compatible with Kindle, Apple Books, Kobo, Android, and all modern e-readers.',
+                ],
+                [
+                    'q' => 'How quickly will I get access to the e-book?',
+                    'a' => 'Instantly. As soon as your checkout is confirmed, your download links are presented on-screen and sent directly to your email for permanent lifetime access.',
+                ],
+                [
+                    'q' => 'Is this e-book suitable for beginners as well as advanced readers?',
+                    'a' => 'Yes. The author structures each chapter progressively—starting from intuitive, practical fundamentals before exploring advanced edge cases and nuanced strategies.',
+                ],
+                [
+                    'q' => 'Are future editions and bonus updates included?',
+                    'a' => 'Yes! When you acquire this e-book, you receive lifetime access. Any future updates, revised editions, and supplemental materials are provided at zero additional cost.',
+                ],
+            ],
+        ];
 
         $reviews = [
             [
@@ -533,7 +631,7 @@ class BookController extends Controller
 
         return view('frontend.books.show', [
             'book' => $book,
-            'relatedBooks' => $relatedBooks,
+            'landing' => $landingData,
             'reviews' => $reviews,
         ]);
     }

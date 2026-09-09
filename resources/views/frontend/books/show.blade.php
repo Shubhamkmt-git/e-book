@@ -1,17 +1,17 @@
 @extends('frontend.layouts.app')
 
-@section('title', $book['title'] . ' — E-Book Details')
+@section('title', $book['title'] . ' — E-Book Landing Page')
 
 @section('content')
 
 <!-- ==========================================
-     BOOK DETAIL PAGE (PERFECT, CLEAN & MINIMAL)
+     SECTION 1: HERO & MAIN PRODUCT PRESENTATION
      ========================================== -->
-<section class="pt-4 pb-12 sm:pt-6 sm:pb-16 bg-gradient-to-b from-brand-100/70 via-brand-50/80 to-brand-100/50 min-h-[85vh] relative">
+<section id="hero-section" class="pt-4 pb-12 sm:pt-6 sm:pb-16 bg-gradient-to-b from-brand-100/70 via-brand-50/80 to-brand-100/50 relative">
     <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4">
 
         <!-- Breadcrumb Navigation -->
-        <nav aria-label="Breadcrumb" class="flex flex-wrap items-center gap-2 text-xs text-slate-500 mb-4 sm:mb-5 font-medium">
+        <nav aria-label="Breadcrumb" class="flex flex-wrap items-center gap-2 text-xs text-slate-500 mb-5 font-medium">
             <a href="{{ route('home') }}" class="hover:text-brand-600 transition">Home</a>
             <span class="text-slate-300">/</span>
             <a href="{{ route('books.index') }}" class="hover:text-brand-600 transition">E-Books</a>
@@ -72,22 +72,41 @@
                     </div>
 
                     <!-- Read It Now Action Button Below Image (Same UI as Get It Now) -->
-                    <div class="w-full mt-4">
+                    <div class="w-full mt-4 space-y-2">
                         <a 
-                            href="#" 
+                            href="#landing-pricing-action" 
                             class="w-full h-12 sm:h-13 inline-flex items-center justify-center px-8 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-2xl uppercase tracking-wider shadow-lg shadow-brand-600/30 hover:shadow-brand-600/45 transition-all duration-200 transform hover:-translate-y-0.5 text-center cursor-pointer"
                         >
                             <span>Read It Now</span>
                         </a>
+                        <div class="text-center text-[11px] text-slate-500 font-medium flex items-center justify-center gap-2">
+                            <span>⚡ Instant DRM-Free Download</span>
+                            <span>•</span>
+                            <span>📱 Read on Any Device</span>
+                        </div>
                     </div>
 
                 </div>
             </div>
 
             <!-- ==========================================
-                 RIGHT: BASIC DETAILS & DESCRIPTION (50% CLEAN & UNBOXED)
+                 RIGHT: DETAILS, SPECS, DESCRIPTION & REVIEWS
                  ========================================== -->
             <div class="w-full space-y-6">
+
+                <!-- Badge & Category -->
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span class="px-3 py-1 rounded-full bg-brand-600 text-white font-bold text-xs uppercase tracking-wider shadow-2xs">
+                        {{ $book['badge'] ?? 'Bestseller' }}
+                    </span>
+                    <span class="px-3 py-1 rounded-full bg-brand-100/80 text-brand-800 font-semibold text-xs border border-brand-200">
+                        {{ $landing['landing_badge'] ?? $book['category'] }}
+                    </span>
+                    <span class="text-xs text-slate-500 font-medium ml-auto flex items-center gap-1">
+                        <i class="fa-solid fa-clock text-brand-600 text-[11px]"></i>
+                        <span>{{ $landing['reading_time'] ?? '~4.5 Hours' }} read</span>
+                    </span>
+                </div>
 
                 <!-- Book Title & Author -->
                 <div class="space-y-2">
@@ -114,7 +133,7 @@
                     </div>
                     <span class="font-bold text-slate-900 text-sm">{{ $book['rating'] }}</span>
                     <span class="text-slate-300">•</span>
-                    <span>{{ $book['reviews'] }} Reader Reviews</span>
+                    <span>{{ $book['reviews'] }} Verified Reader Ratings</span>
                     <span class="text-slate-300">•</span>
                     <span class="text-emerald-700 font-semibold flex items-center gap-1">
                         <i class="fa-solid fa-circle-check text-[11px]"></i>
@@ -123,7 +142,7 @@
                 </div>
 
                 <!-- Price Block (Clean Inline Display) -->
-                <div class="pt-3 pb-2 border-y border-brand-200/70 flex flex-wrap items-baseline gap-4">
+                <div id="landing-pricing-action" class="pt-3 pb-2 border-y border-brand-200/70 flex flex-wrap items-baseline gap-4">
                     <span class="font-brand text-4xl sm:text-5xl text-brand-600 font-bold tracking-wider leading-none">
                         {{ $book['price'] }}
                     </span>
@@ -141,17 +160,22 @@
                 </div>
 
                 <!-- Action Button (Full Width Clean & Prominent) -->
-                <div class="pt-1 w-full">
+                <div class="pt-1 w-full space-y-2">
                     <a 
-                        href="#" 
+                        href="#landing-pricing-action" 
                         class="w-full h-12 sm:h-13 inline-flex items-center justify-center px-8 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-2xl uppercase tracking-wider shadow-lg shadow-brand-600/30 hover:shadow-brand-600/45 transition-all duration-200 transform hover:-translate-y-0.5 text-center cursor-pointer"
                     >
                         <span>Get It Now</span>
                     </a>
+                    <div class="flex items-center justify-center gap-4 text-[11px] text-slate-500">
+                        <span>🔒 256-Bit Encrypted</span>
+                        <span>•</span>
+                        <span>📦 Multi-Format Bundle Included</span>
+                    </div>
                 </div>
 
                 <!-- Minimal Specs Row (Inline Clean Tags) -->
-                <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-600 pt-2 font-medium">
+                <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-600 pt-1 font-medium bg-white/60 p-3.5 rounded-2xl border border-brand-200/60">
                     <div><strong class="text-slate-900">Length:</strong> {{ $book['pages'] ?? 350 }} Pages</div>
                     <span class="text-slate-300 hidden sm:inline">•</span>
                     <div><strong class="text-slate-900">Language:</strong> {{ $book['language'] ?? 'English' }}</div>
@@ -161,9 +185,22 @@
                     <div><strong class="text-slate-900">File Size:</strong> {{ $book['file_size'] ?? '15 MB' }}</div>
                 </div>
 
+                <!-- Target Audience Callout -->
+                @if(!empty($landing['target_audience']))
+                    <div class="p-3.5 rounded-2xl bg-brand-100/50 border border-brand-200/80 flex items-start gap-3">
+                        <div class="w-7 h-7 rounded-xl bg-brand-600 text-white flex items-center justify-center text-xs shrink-0 mt-0.5 shadow-2xs">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="text-xs">
+                            <span class="font-bold text-slate-900 block mb-0.5">Ideal Reader Audience:</span>
+                            <span class="text-slate-600 leading-relaxed">{{ $landing['target_audience'] }}</span>
+                        </div>
+                    </div>
+                @endif
+
                 <!-- Description (Clean, Readable, Unboxed) -->
-                <div class="pt-4 border-t border-brand-200/70 space-y-3">
-                    <h2 class="font-brand text-2xl sm:text-3xl text-slate-900 tracking-wide uppercase">Description</h2>
+                <div class="pt-4 border-t border-brand-200/70 space-y-2.5">
+                    <h2 class="font-brand text-2xl sm:text-3xl text-slate-900 tracking-wide uppercase">Overview</h2>
                     <p class="text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
                         {{ $book['description'] }}
                     </p>
@@ -171,12 +208,12 @@
 
                 <!-- Key Highlights Checklist -->
                 @if(!empty($book['highlights']))
-                    <div class="pt-4 border-t border-brand-200/70 space-y-2.5">
-                        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Key Highlights</h3>
-                        <ul class="space-y-2">
+                    <div class="pt-4 border-t border-brand-200/70 space-y-3">
+                        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Key Takeaways &amp; Highlights</h3>
+                        <ul class="space-y-2.5">
                             @foreach ($book['highlights'] as $highlight)
-                                <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-600 font-medium">
-                                    <div class="w-4 h-4 rounded-full bg-brand-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+                                <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 font-medium">
+                                    <div class="w-4 h-4 rounded-full bg-brand-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
                                         <i class="fa-solid fa-check text-[8px]"></i>
                                     </div>
                                     <span>{{ $highlight }}</span>
@@ -188,12 +225,15 @@
 
                 <!-- Chapters / Table of Contents Preview -->
                 @if(!empty($book['chapters']))
-                    <div class="pt-4 border-t border-brand-200/70 space-y-2.5">
-                        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Chapters &amp; Contents</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-600 font-medium">
+                    <div class="pt-4 border-t border-brand-200/70 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Table of Contents</h3>
+                            <span class="text-xs text-slate-400 font-medium">{{ count($book['chapters']) }} Chapters Total</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700 font-medium">
                             @foreach ($book['chapters'] as $chapter)
-                                <div class="flex items-center gap-2 py-1">
-                                    <i class="fa-solid fa-bookmark text-brand-600 text-[10px]"></i>
+                                <div class="flex items-center gap-2 p-2.5 rounded-xl bg-white/80 border border-brand-100 hover:border-brand-300 transition">
+                                    <i class="fa-solid fa-bookmark text-brand-600 text-[10px] shrink-0"></i>
                                     <span class="truncate">{{ $chapter }}</span>
                                 </div>
                             @endforeach
@@ -394,130 +434,214 @@
 
         </div>
 
-        <!-- ==========================================
-             RELATED E-BOOKS (3 CARDS PER ROW)
-             ========================================== -->
-        <div class="mt-16 sm:mt-20 pt-12 border-t border-brand-200/80">
-            <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
-                <div>
-                    <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Recommended For You</span>
-                    <h2 class="font-brand text-3xl sm:text-4xl text-slate-900 tracking-wide uppercase mt-1">
-                        More E-Books You May Like
-                    </h2>
-                </div>
-                <a href="{{ route('books.index') }}" class="text-sm font-semibold text-brand-600 hover:text-brand-700 hover:underline flex items-center gap-1.5">
-                    <span>View all e-books</span>
-                    <i class="fa-solid fa-arrow-right text-xs"></i>
-                </a>
+    </div>
+</section>
+
+<!-- ==========================================
+     SECTION 2: WHAT YOU WILL MASTER (ULTRA-MINIMAL & CLEAN)
+     ========================================== -->
+<section class="py-14 sm:py-18 bg-white border-y border-brand-200/60 relative">
+    <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4">
+        
+        <!-- Section Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 pb-6 border-b border-brand-100">
+            <div>
+                <span class="text-[11px] font-bold text-brand-600 uppercase tracking-widest block mb-1">Key Outcomes</span>
+                <h2 class="font-brand text-3xl sm:text-4xl lg:text-5xl text-slate-900 tracking-wide uppercase leading-none">
+                    What You Will Master Inside
+                </h2>
             </div>
+            <p class="text-xs sm:text-sm text-slate-500 max-w-md font-normal leading-relaxed">
+                Core mental models and practical frameworks engineered for high retention and immediate application.
+            </p>
+        </div>
 
-            <!-- 3 Cards Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                @foreach ($relatedBooks as $related)
-                    <div class="group bg-white rounded-3xl border border-brand-200/80 hover:border-brand-400/90 p-5 hover:shadow-[0_20px_45px_-12px_rgba(122,88,169,0.22)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full">
-                        <div>
-                            <!-- Book Cover (10:7) -->
-                            <a href="{{ route('books.show', $related['slug'] ?? $related['id']) }}" class="block aspect-[10/7] rounded-2xl overflow-hidden relative shadow-sm group-hover:shadow-md transition-all duration-300 bg-slate-950 ring-1 ring-black/5">
-                                <img 
-                                    src="{{ asset($related['image']) }}" 
-                                    alt="{{ $related['title'] }}" 
-                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                                >
-                                <div class="absolute inset-y-0 left-0 w-2.5 bg-gradient-to-r from-black/35 via-white/10 to-transparent pointer-events-none"></div>
-                                
-                                <button 
-                                    type="button" 
-                                    aria-label="Add to wishlist"
-                                    data-wishlist-key="{{ $related['slug'] ?? $related['id'] }}"
-                                    onclick="toggleWishlist({{ json_encode([
-                                        'id' => $related['id'] ?? '',
-                                        'slug' => $related['slug'] ?? '',
-                                        'title' => $related['title'],
-                                        'author' => $related['author'],
-                                        'category' => $related['category'] ?? 'E-Book',
-                                        'price' => $related['price'],
-                                        'original_price' => $related['original_price'] ?? '',
-                                        'image' => asset($related['image']),
-                                        'url' => route('books.show', $related['slug'] ?? $related['id'])
-                                    ]) }}, event)"
-                                    class="absolute top-3 right-3 w-8.5 h-8.5 rounded-full bg-slate-950/60 hover:bg-white text-white hover:text-rose-500 backdrop-blur-md border border-white/20 hover:border-white flex items-center justify-center transition-all duration-200 shadow-md cursor-pointer z-10"
-                                >
-                                    <i class="fa-regular fa-heart text-xs"></i>
-                                </button>
-                            </a>
-
-                            <!-- Metadata -->
-                            <div class="mt-4 flex items-end justify-between gap-3">
-                                <div class="flex-1 min-w-0">
-                                    <span class="text-[10px] font-bold text-brand-600 uppercase tracking-wider block mb-0.5">{{ $related['category'] }}</span>
-                                    <a href="{{ route('books.show', $related['slug'] ?? $related['id']) }}" class="font-bold text-[15px] sm:text-base text-slate-900 group-hover:text-brand-600 transition-colors line-clamp-1 leading-snug tracking-tight block">
-                                        {{ $related['title'] }}
-                                    </a>
-                                    <p class="text-xs text-slate-400 font-medium line-clamp-1 mt-0.5">{{ $related['author'] }}</p>
-
-                                    <div class="flex items-center gap-1.5 mt-2">
-                                        <div class="flex items-center gap-0.5 text-amber-400">
-                                            <i class="fa-solid fa-star text-[11px]"></i>
-                                            <i class="fa-solid fa-star text-[11px]"></i>
-                                            <i class="fa-solid fa-star text-[11px]"></i>
-                                            <i class="fa-solid fa-star text-[11px]"></i>
-                                            <i class="fa-solid fa-star text-[11px]"></i>
-                                        </div>
-                                        <span class="text-xs font-bold text-slate-800 ml-0.5">{{ $related['rating'] }}</span>
-                                        <span class="text-xs text-slate-400 font-normal">({{ $related['reviews'] }})</span>
-                                    </div>
-                                </div>
-
-                                <div class="flex flex-col items-end shrink-0 text-right">
-                                    @if (!empty($related['original_price']))
-                                        <span class="font-brand text-sm text-slate-400 line-through tracking-wider leading-none">
-                                            {{ $related['original_price'] }}
-                                        </span>
-                                    @endif
-                                    <span class="font-brand text-2xl sm:text-3xl text-brand-600 font-bold tracking-wider leading-none mt-0.5">
-                                        {{ $related['price'] }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card Footer: Action Button (Get It) -->
-                        <div class="mt-5 pt-3.5 border-t border-slate-100">
-                            <a 
-                                href="{{ route('books.show', $related['slug'] ?? $related['id']) }}" 
-                                class="w-full h-11 inline-flex items-center justify-center px-5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 shadow-md shadow-brand-600/25 text-center transform hover:-translate-y-0.5"
-                            >
-                                <span>Get It</span>
-                            </a>
+        <!-- Minimal 4-Column Editorial Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            @foreach ($landing['takeaways'] as $idx => $pill)
+                <div class="space-y-3 group">
+                    <div class="flex items-center justify-between">
+                        <span class="font-brand text-3xl text-brand-300 group-hover:text-brand-600 transition-colors leading-none">
+                            0{{ $idx + 1 }}
+                        </span>
+                        <div class="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-xs group-hover:bg-brand-600 group-hover:text-white transition-all duration-200">
+                            <i class="{{ $pill['icon'] }}"></i>
                         </div>
                     </div>
-                @endforeach
-            </div>
+
+                    <div class="h-0.5 w-8 bg-brand-200 group-hover:w-16 group-hover:bg-brand-600 transition-all duration-300"></div>
+
+                    <h3 class="font-bold text-sm sm:text-base text-slate-900 group-hover:text-brand-700 transition-colors leading-snug">
+                        {{ $pill['title'] }}
+                    </h3>
+
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                        {{ $pill['desc'] }}
+                    </p>
+                </div>
+            @endforeach
         </div>
 
     </div>
 </section>
 
 <!-- ==========================================
-     NEWSLETTER CTA COMPONENT
+     SECTION 3: EDITORIAL QUOTE SPOTLIGHT
      ========================================== -->
-@include('frontend.components.cta')
+@if(!empty($landing['book_quote']))
+<section class="py-14 sm:py-18 bg-gradient-to-r from-brand-900 via-brand-800 to-slate-900 text-white relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+    
+    <div class="w-[96%] max-w-4xl mx-auto px-4 text-center relative z-10 space-y-6">
+        <div class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md text-amber-300 flex items-center justify-center text-xl mx-auto border border-white/10 shadow-inner">
+            <i class="fa-solid fa-quote-left"></i>
+        </div>
+        <blockquote class="font-serif italic text-xl sm:text-2xl lg:text-3xl text-slate-100 leading-relaxed max-w-3xl mx-auto">
+            {{ $landing['book_quote'] }}
+        </blockquote>
+        <div class="pt-2">
+            <p class="font-brand text-xl text-amber-400 tracking-wider uppercase">{{ $book['author'] }}</p>
+            <p class="text-xs text-slate-400 font-medium">{{ $book['title'] }}</p>
+        </div>
+    </div>
+</section>
+@endif
 
 <!-- ==========================================
-     REVIEWS INTERACTION SCRIPT
+     SECTION 4: INTERACTIVE FREQUENTLY ASKED QUESTIONS
+     ========================================== -->
+<section class="py-14 sm:py-20 bg-slate-50 border-t border-brand-200/70 relative">
+    <div class="w-[96%] max-w-4xl mx-auto px-2 sm:px-4">
+        
+        <!-- Section Header -->
+        <div class="text-center max-w-2xl mx-auto mb-12 space-y-2">
+            <span class="text-xs font-bold text-brand-600 uppercase tracking-widest">Clear Answers</span>
+            <h2 class="font-brand text-3xl sm:text-4xl lg:text-5xl text-slate-900 tracking-wide uppercase leading-tight">
+                Frequently Asked Questions
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto leading-relaxed">
+                Everything you need to know about formats, delivery, and lifetime access for {{ $book['title'] }}.
+            </p>
+        </div>
+
+        <!-- Interactive FAQ Accordion -->
+        <div class="space-y-3.5">
+            @foreach ($landing['faqs'] as $index => $faq)
+                <div class="bg-white rounded-2xl border border-brand-200/80 shadow-2xs overflow-hidden transition-all duration-200">
+                    <button 
+                        type="button" 
+                        onclick="toggleFaqAccordion({{ $index }})" 
+                        class="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 font-bold text-sm sm:text-base text-slate-900 hover:text-brand-600 transition cursor-pointer"
+                        aria-expanded="{{ $index === 0 ? 'true' : 'false' }}"
+                    >
+                        <span class="flex items-center gap-3">
+                            <span class="w-6 h-6 rounded-lg bg-brand-50 text-brand-700 text-xs font-bold flex items-center justify-center shrink-0">
+                                Q
+                            </span>
+                            <span>{{ $faq['q'] }}</span>
+                        </span>
+                        <i id="faq-icon-{{ $index }}" class="fa-solid fa-chevron-down text-xs text-slate-400 transform transition-transform duration-200 {{ $index === 0 ? 'rotate-180 text-brand-600' : '' }}"></i>
+                    </button>
+                    
+                    <div 
+                        id="faq-body-{{ $index }}" 
+                        class="{{ $index === 0 ? '' : 'hidden' }} px-5 sm:px-6 pb-5 sm:pb-6 text-xs sm:text-sm text-slate-600 leading-relaxed font-normal pl-14 border-t border-slate-50 pt-2"
+                    >
+                        {{ $faq['a'] }}
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+    </div>
+</section>
+
+<!-- ==========================================
+     FLOATING STICKY BOTTOM PURCHASE BAR
+     ========================================== -->
+<div 
+    id="sticky-buy-bar" 
+    class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-2xl py-3 px-4 transform translate-y-full transition-transform duration-300 pointer-events-none"
+>
+    <div class="w-[96%] max-w-5xl mx-auto flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 min-w-0">
+            <div class="w-12 aspect-[10/7] rounded-lg overflow-hidden bg-slate-950 shrink-0 border border-slate-200">
+                <img src="{{ asset($book['image']) }}" alt="{{ $book['title'] }}" class="w-full h-full object-cover">
+            </div>
+            <div class="min-w-0">
+                <h4 class="font-bold text-xs sm:text-sm text-slate-900 truncate">{{ $book['title'] }}</h4>
+                <p class="text-[11px] text-slate-400 truncate">{{ $book['author'] }}</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4 shrink-0 pointer-events-auto">
+            <div class="hidden sm:flex flex-col items-end text-right">
+                <span class="font-brand text-2xl text-brand-600 font-bold leading-none">{{ $book['price'] }}</span>
+                @if(!empty($book['original_price']))
+                    <span class="text-[10px] text-slate-400 line-through leading-none">{{ $book['original_price'] }}</span>
+                @endif
+            </div>
+
+            <a 
+                href="#landing-pricing-action" 
+                class="h-10 sm:h-11 px-6 rounded-full bg-brand-600 hover:bg-brand-500 text-white font-brand text-lg uppercase tracking-wider flex items-center justify-center transition shadow-md shadow-brand-600/25"
+            >
+                <span>Get It Now</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     LANDING PAGE INTERACTION JAVASCRIPT
      ========================================== -->
 <script>
+    // FAQ Accordion Toggle
+    function toggleFaqAccordion(index) {
+        const body = document.getElementById(`faq-body-${index}`);
+        const icon = document.getElementById(`faq-icon-${index}`);
+        if (!body || !icon) return;
+
+        if (body.classList.contains('hidden')) {
+            body.classList.remove('hidden');
+            icon.classList.add('rotate-180', 'text-brand-600');
+        } else {
+            body.classList.add('hidden');
+            icon.classList.remove('rotate-180', 'text-brand-600');
+        }
+    }
+
+    // Floating Sticky Bottom Purchase Bar on Scroll
+    window.addEventListener('scroll', () => {
+        const stickyBar = document.getElementById('sticky-buy-bar');
+        const heroSection = document.getElementById('hero-section');
+        if (!stickyBar || !heroSection) return;
+
+        const heroBottom = heroSection.getBoundingClientRect().bottom;
+        if (heroBottom < 100) {
+            stickyBar.classList.remove('translate-y-full', 'pointer-events-none');
+            stickyBar.classList.add('translate-y-0');
+        } else {
+            stickyBar.classList.add('translate-y-full', 'pointer-events-none');
+            stickyBar.classList.remove('translate-y-0');
+        }
+    });
+
+    // Reviews Toggle
     function toggleReviewForm() {
         const formContainer = document.getElementById('add-review-form-container');
         const btnText = document.getElementById('review-btn-text');
         
+        if (!formContainer) return;
+
         if (formContainer.classList.contains('hidden')) {
             formContainer.classList.remove('hidden');
-            btnText.textContent = 'Close Review Form';
-            document.getElementById('review-author').focus();
+            if (btnText) btnText.textContent = 'Close Review Form';
+            const authorInput = document.getElementById('review-author');
+            if (authorInput) authorInput.focus();
         } else {
             formContainer.classList.add('hidden');
-            btnText.textContent = 'Write a Review';
+            if (btnText) btnText.textContent = 'Write a Review';
         }
     }
 
@@ -530,19 +654,21 @@
     };
 
     function setStarRating(rating) {
-        document.getElementById('selected-rating').value = rating;
-        document.getElementById('rating-label').textContent = ratingDescriptions[rating] || `${rating}.0 / 5`;
+        const ratingInput = document.getElementById('selected-rating');
+        const ratingLabel = document.getElementById('rating-label');
+        if (ratingInput) ratingInput.value = rating;
+        if (ratingLabel) ratingLabel.textContent = ratingDescriptions[rating] || `${rating}.0 / 5`;
 
         const starButtons = document.querySelectorAll('.star-pick');
         starButtons.forEach((btn, index) => {
             const starValue = index + 1;
             const icon = btn.querySelector('i');
             if (starValue <= rating) {
-                btn.className = 'star-pick text-amber-400 hover:scale-125 transition-transform text-xl cursor-pointer p-0.5';
-                icon.className = 'fa-solid fa-star';
+                btn.className = 'star-pick text-amber-400 hover:scale-125 transition-transform text-base cursor-pointer p-0.5';
+                if (icon) icon.className = 'fa-solid fa-star';
             } else {
-                btn.className = 'star-pick text-slate-300 hover:scale-125 transition-transform text-xl cursor-pointer p-0.5';
-                icon.className = 'fa-regular fa-star';
+                btn.className = 'star-pick text-slate-300 hover:scale-125 transition-transform text-base cursor-pointer p-0.5';
+                if (icon) icon.className = 'fa-regular fa-star';
             }
         });
     }
@@ -550,10 +676,17 @@
     function submitNewReview(e) {
         e.preventDefault();
         
-        const name = document.getElementById('review-author').value.trim();
-        const rating = parseInt(document.getElementById('selected-rating').value, 10) || 5;
-        const title = document.getElementById('review-title').value.trim();
-        const comment = document.getElementById('review-comment').value.trim();
+        const nameInput = document.getElementById('review-author');
+        const ratingInput = document.getElementById('selected-rating');
+        const titleInput = document.getElementById('review-title');
+        const commentInput = document.getElementById('review-comment');
+
+        if (!nameInput || !titleInput || !commentInput) return;
+
+        const name = nameInput.value.trim();
+        const rating = parseInt(ratingInput ? ratingInput.value : '5', 10) || 5;
+        const title = titleInput.value.trim();
+        const comment = commentInput.value.trim();
 
         if (!name || !title || !comment) return;
 
@@ -607,40 +740,17 @@
         `;
 
         const reviewsList = document.getElementById('reviews-list');
-        reviewsList.prepend(newCard);
+        if (reviewsList) reviewsList.prepend(newCard);
 
         // Show success alert
         const successMsg = document.getElementById('review-success-message');
-        successMsg.classList.remove('hidden');
+        if (successMsg) successMsg.classList.remove('hidden');
 
         // Reset form & close
-        document.getElementById('new-review-form').reset();
+        const form = document.getElementById('new-review-form');
+        if (form) form.reset();
         setStarRating(5);
         toggleReviewForm();
-
-        // Smooth scroll to reviews list
-        newCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    function markHelpful(btn, count) {
-        const countSpan = btn.querySelector('.helpful-count');
-        const icon = btn.querySelector('i');
-        
-        if (btn.classList.contains('text-brand-600')) {
-            btn.classList.remove('text-brand-600');
-            icon.className = 'fa-regular fa-thumbs-up';
-            countSpan.textContent = count;
-        } else {
-            btn.classList.add('text-brand-600');
-            icon.className = 'fa-solid fa-thumbs-up';
-            countSpan.textContent = count + 1;
-        }
-    }
-
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
 </script>
 
