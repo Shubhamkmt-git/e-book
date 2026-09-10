@@ -93,6 +93,30 @@
                         <i class="fa-solid fa-sliders w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.app-setting.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
                         <span class="sidebar-label">App Setting</span>
                     </a>
+
+                    <!-- Categories -->
+                    <a href="{{ route('admin.categories.index') }}" title="Categories" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.categories.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
+                        <i class="fa-solid fa-layer-group w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.categories.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
+                        <span class="sidebar-label">Categories</span>
+                    </a>
+
+                    <!-- E-Books -->
+                    <a href="{{ route('admin.books.index') }}" title="E-Books" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.books.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
+                        <i class="fa-solid fa-book-bookmark w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.books.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
+                        <span class="sidebar-label">E-Books</span>
+                    </a>
+
+                    <!-- Customers -->
+                    <a href="{{ route('admin.customers.index') }}" title="Customers" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.customers.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
+                        <i class="fa-solid fa-users w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.customers.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
+                        <span class="sidebar-label">Customers</span>
+                    </a>
+
+                    <!-- Hero Banners -->
+                    <a href="{{ route('admin.hero-banners.index') }}" title="Hero Banners" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.hero-banners.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
+                        <i class="fa-solid fa-panorama w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.hero-banners.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
+                        <span class="sidebar-label">Hero Banners</span>
+                    </a>
                 </nav>
             </div>
 

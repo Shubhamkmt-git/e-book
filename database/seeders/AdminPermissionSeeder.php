@@ -54,6 +54,22 @@ class AdminPermissionSeeder extends Seeder
                 'description' => 'Full combined access to view and manage general app settings, logos, contact info, social links, and SEO configuration.',
                 'status' => 'active',
             ],
+
+            // Categories: Manage (All actions: list, view, add, edit, delete)
+            [
+                'title' => 'Category',
+                'slug' => 'category',
+                'description' => 'Full combined access to all category operations: list, view, create, edit, toggle status, and delete.',
+                'status' => 'active',
+            ],
+
+            // E-Books: Manage (All actions: list, view, add, edit, delete)
+            [
+                'title' => 'E-Book',
+                'slug' => 'ebook',
+                'description' => 'Full combined access to all e-book operations: list, view, create, edit, toggle status, and delete.',
+                'status' => 'active',
+            ],
         ];
 
         $currentSlugs = array_column($permissions, 'slug');

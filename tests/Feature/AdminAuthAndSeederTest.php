@@ -23,15 +23,17 @@ class AdminAuthAndSeederTest extends TestCase
         $this->seed(AdminUserSeeder::class);
 
         $totalPermissions = AdminPermission::count();
-        $this->assertEquals(5, $totalPermissions);
+        $this->assertEquals(7, $totalPermissions);
 
         $superAdmin = AdminRole::where('slug', 'super-admin')->firstOrFail();
-        $this->assertEquals(5, $superAdmin->permissions()->count());
+        $this->assertEquals(7, $superAdmin->permissions()->count());
         $this->assertTrue($superAdmin->permissions()->where('slug', 'dashboard')->exists());
         $this->assertTrue($superAdmin->permissions()->where('slug', 'admin-user')->exists());
         $this->assertTrue($superAdmin->permissions()->where('slug', 'role')->exists());
         $this->assertTrue($superAdmin->permissions()->where('slug', 'permission')->exists());
         $this->assertTrue($superAdmin->permissions()->where('slug', 'app-setting')->exists());
+        $this->assertTrue($superAdmin->permissions()->where('slug', 'category')->exists());
+        $this->assertTrue($superAdmin->permissions()->where('slug', 'ebook')->exists());
 
         $adminUser = AdminUser::where('email', 'admin@ebook.com')->firstOrFail();
         $this->assertEquals('super-admin', $adminUser->role);
