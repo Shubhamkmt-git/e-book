@@ -1,4 +1,4 @@
-<header class="h-20 bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+<header id="admin-header" class="h-20 bg-white/95 backdrop-blur-md border-b border-slate-200/80 fixed top-0 right-0 left-0 lg:left-64 z-30 flex items-center justify-between px-4 sm:px-6 lg:px-8 transition-all duration-300">
     
     <!-- Left: Sidebar Toggle Button (Visible on both Desktop & Mobile) -->
     <div class="flex items-center gap-4">
@@ -34,16 +34,7 @@
                     <p class="text-xs text-slate-500 truncate mt-0.5">{{ Auth::user()->email ?? 'admin@ebook.com' }}</p>
                 </div>
 
-                <div class="py-1.5">
-                    <a href="#" class="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900">
-                        <i class="fa-regular fa-user w-4 text-slate-400 text-sm"></i>
-                        <span>My Profile</span>
-                    </a>
-                    <a href="#" class="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-slate-900">
-                        <i class="fa-solid fa-sliders w-4 text-slate-400 text-sm"></i>
-                        <span>Account Settings</span>
-                    </a>
-                </div>
+
 
                 <div class="border-t border-slate-100 pt-1.5">
                     <form method="POST" action="{{ route('admin.logout') }}">

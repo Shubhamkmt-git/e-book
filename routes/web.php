@@ -1,6 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminPermissionController;
+use App\Http\Controllers\Admin\AdminRoleController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AppSettingController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Frontend\BookController;
 use App\Http\Controllers\Frontend\CategoryController;
 use Illuminate\Support\Facades\Route;
@@ -22,8 +27,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
 
     Route::middleware('auth')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::patch('admin-users/{admin_user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('admin-users.toggle-status');
+        Route::patch('admin-roles/{admin_role}/toggle-status', [AdminRoleController::class, 'toggleStatus'])->name('admin-roles.toggle-status');
+        Route::patch('admin-permissions/{admin_permission}/toggle-status', [AdminPermissionController::class, 'toggleStatus'])->name('admin-permissions.toggle-status');
+        Route::resource('admin-users', AdminUserController::class);
+        Route::resource('admin-roles', AdminRoleController::class);
+        Route::resource('admin-permissions', AdminPermissionController::class);
+
+        // App Setting Management Routes
+        Route::get('app-setting', [AppSettingController::class, 'index'])->name('app-setting.index');
+        Route::put('app-setting', [AppSettingController::class, 'update'])->name('app-setting.update');
     });
 });

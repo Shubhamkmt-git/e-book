@@ -6,25 +6,28 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Admin Portal Login - {{ config('app.name', 'E-Book') }}</title>
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts Poppins & Roboto -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
+        body, html {
+            font-family: 'Poppins', 'Roboto', sans-serif;
             background-color: #f9f9f7;
             background-image: 
                 linear-gradient(to right, rgba(0, 0, 0, 0.035) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
             background-size: 32px 32px;
         }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Roboto', 'Poppins', sans-serif;
+        }
     </style>
 </head>
-<body class="h-full antialiased text-slate-800 flex flex-col justify-between items-center min-h-screen p-4 sm:p-6 selection:bg-brand-600 selection:text-white">
+<body class="admin-scope h-full antialiased text-slate-800 flex flex-col justify-between items-center min-h-screen p-4 sm:p-6 selection:bg-brand-600 selection:text-white font-poppins">
 
     <!-- Top spacer -->
     <div class="w-full"></div>

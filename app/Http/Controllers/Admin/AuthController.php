@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminUser;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class AuthController extends Controller
@@ -27,14 +30,51 @@ class AuthController extends Controller
      */
     public function login(Request $request): RedirectResponse
     {
-        $credentials = $request->validate([
+        $request->validate([
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ]);
 
         $remember = $request->boolean('remember');
+        $email = $request->string('email')->trim()->lower()->value();
+        $password = $request->string('password')->value();
 
-        if (Auth::attempt($credentials, $remember)) {
+        // 1. Check AdminUser table
+        $adminUser = AdminUser::where('email', $email)->first();
+
+        if ($adminUser) {
+            if ($adminUser->status !== 'active') {
+                return back()->withErrors([
+                    'email' => 'Your administrative account has been deactivated. Please contact support.',
+                ])->onlyInput('email');
+            }
+
+            if (Hash::check($password, $adminUser->password)) {
+                // Ensure matching User record exists for standard Auth session
+                $user = User::firstOrCreate(
+                    ['email' => $adminUser->email],
+                    [
+                        'name' => $adminUser->name,
+                        'password' => $adminUser->password,
+                    ]
+                );
+
+                if ($user->name !== $adminUser->name || $user->password !== $adminUser->password) {
+                    $user->update([
+                        'name' => $adminUser->name,
+                        'password' => $adminUser->password,
+                    ]);
+                }
+
+                Auth::login($user, $remember);
+                $request->session()->regenerate();
+
+                return redirect()->intended(route('admin.dashboard'));
+            }
+        }
+
+        // 2. Fallback to standard User table
+        if (Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
             $request->session()->regenerate();
 
             return redirect()->intended(route('admin.dashboard'));
