@@ -7,8 +7,10 @@ use App\Http\Controllers\Admin\AdminRoleController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AppSettingController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\CtaController;
 use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\HeroBannerController;
 use App\Http\Controllers\Frontend\BookController;
 use App\Http\Controllers\Frontend\CategoryController;
@@ -45,6 +47,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('customers', AdminCustomerController::class);
         Route::patch('hero-banners/{hero_banner}/toggle-status', [HeroBannerController::class, 'toggleStatus'])->name('hero-banners.toggle-status');
         Route::resource('hero-banners', HeroBannerController::class);
+        Route::patch('faqs/{faq}/toggle-status', [FaqController::class, 'toggleStatus'])->name('faqs.toggle-status');
+        Route::resource('faqs', FaqController::class)->except(['show']);
+        Route::patch('ctas/{cta}/toggle-status', [CtaController::class, 'toggleStatus'])->name('ctas.toggle-status');
+        Route::resource('ctas', CtaController::class)->except(['show']);
 
         // App Setting Management Routes
         Route::get('app-setting', [AppSettingController::class, 'index'])->name('app-setting.index');

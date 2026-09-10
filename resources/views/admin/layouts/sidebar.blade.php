@@ -117,6 +117,18 @@
                         <i class="fa-solid fa-panorama w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.hero-banners.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
                         <span class="sidebar-label">Hero Banners</span>
                     </a>
+
+                    <!-- FAQs -->
+                    <a href="{{ route('admin.faqs.index') }}" title="FAQs" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.faqs.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
+                        <i class="fa-solid fa-circle-question w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.faqs.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
+                        <span class="sidebar-label">FAQs</span>
+                    </a>
+
+                    <!-- CTAs -->
+                    <a href="{{ route('admin.ctas.index') }}" title="CTAs" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.ctas.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
+                        <i class="fa-solid fa-bullhorn w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.ctas.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
+                        <span class="sidebar-label">CTAs</span>
+                    </a>
                 </nav>
             </div>
 
