@@ -1,148 +1,196 @@
 @extends('frontend.layouts.app')
 
-@section('title', $book['title'] . ' — E-Book Landing Page')
+@section('title', $book['title'] . ' — E-Book Details')
+
+@push('styles')
+<style>
+    @keyframes ctaShimmer {
+        0% { transform: translateX(-140%) skewX(-20deg); }
+        45%, 100% { transform: translateX(250%) skewX(-20deg); }
+    }
+    @keyframes ctaPulseGlow {
+        0%, 100% { 
+            box-shadow: 0 4px 16px -2px rgba(122, 88, 169, 0.35);
+        }
+        50% { 
+            box-shadow: 0 8px 28px 4px rgba(122, 88, 169, 0.65);
+        }
+    }
+    .btn-buy-motion {
+        position: relative;
+        overflow: hidden;
+        animation: ctaPulseGlow 1.8s infinite ease-in-out;
+    }
+    .btn-buy-motion::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+            60deg,
+            rgba(255, 255, 255, 0) 30%,
+            rgba(255, 255, 255, 0.55) 50%,
+            rgba(255, 255, 255, 0) 70%
+        );
+        transform: translateX(-140%) skewX(-20deg);
+        animation: ctaShimmer 1.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+    }
+    .btn-buy-motion:hover::after {
+        animation-duration: 1s;
+    }
+    @keyframes reviewsContinuousMarquee {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    .reviews-continuous-track {
+        display: flex;
+        width: max-content;
+        gap: 1.25rem;
+        animation: reviewsContinuousMarquee 30s linear infinite;
+        will-change: transform;
+    }
+    .reviews-continuous-track:hover,
+    .reviews-continuous-track:active {
+        animation-play-state: paused;
+    }
+    .reviews-carousel-viewport {
+        overflow: hidden;
+        mask-image: linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%);
+    }
+</style>
+@endpush
 
 @section('content')
 
-<!-- ==========================================
-     SECTION 1: HERO & MAIN PRODUCT PRESENTATION
-     ========================================== -->
-<section id="hero-section" class="pt-4 pb-12 sm:pt-6 sm:pb-16 bg-gradient-to-b from-brand-100/70 via-brand-50/80 to-brand-100/50 relative">
-    <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4">
+<section class="pt-3 pb-24 sm:pt-4 sm:pb-24 bg-gradient-to-b from-brand-100/60 via-brand-50/70 to-slate-50 min-h-screen">
+    <div class="w-[94%] sm:w-[88%] lg:w-[70%] mx-auto px-2 sm:px-4 space-y-5 sm:space-y-6">
 
-        <!-- Breadcrumb Navigation -->
-        <nav aria-label="Breadcrumb" class="flex flex-wrap items-center gap-2 text-xs text-slate-500 mb-5 font-medium">
-            <a href="{{ route('home') }}" class="hover:text-brand-600 transition">Home</a>
-            <span class="text-slate-300">/</span>
-            <a href="{{ route('books.index') }}" class="hover:text-brand-600 transition">E-Books</a>
-            <span class="text-slate-300">/</span>
-            <a href="{{ route('categories.show', $book['category_slug'] ?? 'tech-coding') }}" class="hover:text-brand-600 transition">{{ $book['category'] }}</a>
-            <span class="text-slate-300">/</span>
-            <span class="text-brand-600 font-semibold truncate max-w-[200px] sm:max-w-none">{{ $book['title'] }}</span>
-        </nav>
+        <!-- 1 & 2. Compact Centered Header: Breadcrumb + Title + Author/Rating -->
+        <div class="text-center space-y-1.5 sm:space-y-2 w-full mx-auto">
+            <!-- Breadcrumb Navigation (Centered) -->
+            <nav aria-label="Breadcrumb" class="flex flex-wrap items-center justify-center gap-1.5 text-xs text-slate-500 font-medium pb-0.5">
+                <a href="{{ route('home') }}" class="hover:text-brand-600 transition">Home</a>
+                <span class="text-slate-300">/</span>
+                <a href="{{ route('books.index') }}" class="hover:text-brand-600 transition">E-Books</a>
+                <span class="text-slate-300">/</span>
+                <a href="{{ route('categories.show', $book['category_slug'] ?? 'tech-coding') }}" class="hover:text-brand-600 transition">{{ $book['category'] }}</a>
+                <span class="text-slate-300">/</span>
+                <span class="text-brand-600 font-semibold truncate max-w-[200px] sm:max-w-none">{{ $book['title'] }}</span>
+            </nav>
 
-        <!-- Main Product Presentation (50% Left Sticky Image, 50% Right Content) -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 items-start">
+            <!-- Centered Book Title -->
+            <h1 class="font-brand text-3xl sm:text-4xl lg:text-5xl text-slate-900 uppercase tracking-wide leading-tight">
+                {{ $book['title'] }}
+            </h1>
 
-            <!-- ==========================================
-                 LEFT: BOOK COVER PRESENTATION (50% & STICKY)
-                 ========================================== -->
-            <div class="self-start lg:sticky lg:top-24 z-20 flex flex-col items-center lg:items-start w-full">
-                <div class="w-full max-w-lg lg:max-w-none flex flex-col">
-                    
-                    <!-- 10:7 Realistic Book Cover with Natural Depth & Spine -->
-                    <div class="w-full aspect-[10/7] rounded-2xl overflow-hidden relative shadow-[0_25px_60px_-15px_rgba(122,88,169,0.35)] bg-slate-950 ring-1 ring-black/10 group">
-                        <img 
-                            src="{{ asset($book['image']) }}" 
-                            alt="{{ $book['title'] }}" 
-                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                        >
-
-                        <!-- Realistic Book Spine Shading Overlay -->
-                        <div class="absolute inset-y-0 left-0 w-3.5 bg-gradient-to-r from-black/40 via-white/10 to-transparent pointer-events-none"></div>
-                        
-                        <!-- Glossy Light Reflection -->
-                        <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/20 pointer-events-none"></div>
-
-                        <!-- Top-Right Format Badge -->
-                        <div class="absolute top-3.5 right-3.5 px-3 py-1 rounded-full bg-slate-950/75 backdrop-blur-md text-white text-[11px] font-bold uppercase tracking-wider border border-white/20 shadow-md">
-                            PDF &amp; EPUB
-                        </div>
-
-                        <!-- Wishlist Heart Button -->
-                        <button 
-                            type="button" 
-                            aria-label="Add to wishlist"
-                            data-wishlist-key="{{ $book['slug'] ?? $book['id'] }}"
-                            onclick="toggleWishlist({{ json_encode([
-                                'id' => $book['id'] ?? '',
-                                'slug' => $book['slug'] ?? '',
-                                'title' => $book['title'],
-                                'author' => $book['author'],
-                                'category' => $book['category'] ?? 'E-Book',
-                                'price' => $book['price'],
-                                'original_price' => $book['original_price'] ?? '',
-                                'image' => asset($book['image']),
-                                'url' => route('books.show', $book['slug'] ?? $book['id'])
-                            ]) }}, event)"
-                            class="absolute top-3.5 left-3.5 w-9 h-9 rounded-full bg-slate-950/60 hover:bg-white text-white hover:text-rose-500 backdrop-blur-md border border-white/20 hover:border-white flex items-center justify-center transition-all duration-200 shadow-md cursor-pointer z-10"
-                        >
-                            <i class="fa-regular fa-heart text-sm"></i>
-                        </button>
+            <!-- Centered Author / Star Rating -->
+            <div class="flex items-center justify-center gap-2 text-xs sm:text-sm text-slate-600 font-medium flex-wrap">
+                <span>By <strong class="text-slate-900 font-bold">{{ $book['author'] }}</strong></span>
+                <span class="text-slate-300">•</span>
+                <div class="flex items-center gap-1 text-amber-400">
+                    <div class="flex items-center gap-0.5">
+                        <i class="fa-solid fa-star text-xs"></i>
+                        <i class="fa-solid fa-star text-xs"></i>
+                        <i class="fa-solid fa-star text-xs"></i>
+                        <i class="fa-solid fa-star text-xs"></i>
+                        <i class="fa-solid fa-star text-xs"></i>
                     </div>
+                    <span class="font-bold text-slate-900 ml-1">{{ $book['rating'] }}</span>
+                    <span class="text-slate-400 font-normal">({{ $book['reviews'] }})</span>
+                </div>
+            </div>
+        </div>
 
-                    <!-- Read It Now Action Button Below Image (Same UI as Get It Now) -->
-                    <div class="w-full mt-4 space-y-2">
-                        <a 
-                            href="#landing-pricing-action" 
-                            class="w-full h-12 sm:h-13 inline-flex items-center justify-center px-8 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-2xl uppercase tracking-wider shadow-lg shadow-brand-600/30 hover:shadow-brand-600/45 transition-all duration-200 transform hover:-translate-y-0.5 text-center cursor-pointer"
-                        >
-                            <span>Read It Now</span>
-                        </a>
-                        <div class="text-center text-[11px] text-slate-500 font-medium flex items-center justify-center gap-2">
-                            <span>⚡ Instant DRM-Free Download</span>
-                            <span>•</span>
-                            <span>📱 Read on Any Device</span>
-                        </div>
+        <!-- 3. Centered Book Cover (Height: 80% of view height) -->
+        <div id="book-hero-section" class="w-full max-w-5xl mx-auto flex flex-col items-center">
+            <div class="w-full h-[55vh] sm:h-[70vh] lg:h-[80vh] rounded-2xl sm:rounded-3xl overflow-hidden relative shadow-[0_20px_50px_-15px_rgba(122,88,169,0.35)] bg-slate-950 ring-1 ring-black/10 group">
+                <img 
+                    src="{{ asset($book['image']) }}" 
+                    alt="{{ $book['title'] }}" 
+                    class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
+                >
+
+                <!-- Realistic Book Spine Shading -->
+                <div class="absolute inset-y-0 left-0 w-3.5 bg-gradient-to-r from-black/45 via-white/10 to-transparent pointer-events-none"></div>
+                <!-- Glossy light -->
+                <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/20 pointer-events-none"></div>
+
+                <!-- Add to Favorites / Wishlist Toggle (Top Right) -->
+                <button 
+                    type="button" 
+                    aria-label="Add to wishlist"
+                    data-wishlist-key="{{ $book['slug'] ?? $book['id'] }}"
+                    onclick="toggleWishlist({{ json_encode([
+                        'id' => $book['id'] ?? '',
+                        'slug' => $book['slug'] ?? '',
+                        'title' => $book['title'],
+                        'author' => $book['author'],
+                        'category' => $book['category'] ?? 'E-Book',
+                        'price' => $book['price'],
+                        'original_price' => $book['original_price'] ?? '',
+                        'image' => asset($book['image']),
+                        'url' => route('books.show', $book['slug'] ?? $book['id'])
+                    ]) }}, event)"
+                    class="absolute top-3.5 right-3.5 w-8.5 h-8.5 rounded-full bg-slate-950/60 hover:bg-white text-white hover:text-rose-500 backdrop-blur-md border border-white/20 flex items-center justify-center transition shadow-md cursor-pointer z-10"
+                >
+                    <i class="fa-regular fa-heart text-xs"></i>
+                </button>
+
+                <!-- Bottom Image Overlay Gradient + Buy Now Button -->
+                <div class="absolute inset-x-0 bottom-0 pb-6 sm:pb-8 pt-20 bg-gradient-to-t from-slate-950/85 via-slate-950/40 to-transparent flex flex-col items-center justify-end px-4 z-10 pointer-events-auto">
+                    <a 
+                        href="#buy" 
+                        class="btn-buy-motion w-full sm:w-auto min-w-[260px] sm:min-w-[280px] h-13 sm:h-14 inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.04] active:scale-[0.98] shadow-2xl text-center cursor-pointer group/btn"
+                    >
+                        <span>Buy Now ({{ $book['price'] }}/-)</span>
+                        <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover/btn:translate-x-1 transition-transform duration-300"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. About The Book & Specifications (Centered) -->
+        <div class="w-full space-y-6 mx-auto text-center">
+            <!-- About The Book -->
+            <div class="space-y-2">
+                <h2 class="font-brand text-2xl sm:text-3xl text-slate-900 uppercase tracking-wide">
+                    About The Book
+                </h2>
+                <p class="text-sm sm:text-base text-slate-600 leading-relaxed font-normal w-full mx-auto">
+                    {{ $book['description'] }}
+                </p>
+            </div>
+
+            <!-- Book Specifications (Clean & Centered) -->
+            <div class="py-3.5 border-y border-slate-200/75 w-full">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-center">
+                    <div>
+                        <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold block mb-0.5">Length</span>
+                        <span class="text-xs sm:text-sm font-bold text-slate-900 block truncate">{{ $book['pages'] ?? 412 }} Pages</span>
                     </div>
-
+                    <div>
+                        <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold block mb-0.5">Language</span>
+                        <span class="text-xs sm:text-sm font-bold text-slate-900 block truncate">{{ $book['language'] ?? 'English' }}</span>
+                    </div>
+                    <div>
+                        <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold block mb-0.5">Format</span>
+                        <span class="text-xs sm:text-sm font-bold text-slate-900 block truncate">{{ $book['format'] ?? 'PDF, EPUB & MOBI' }}</span>
+                    </div>
+                    <div>
+                        <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold block mb-0.5">File Size</span>
+                        <span class="text-xs sm:text-sm font-bold text-slate-900 block truncate">{{ $book['file_size'] ?? '18.4 MB' }}</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- ==========================================
-                 RIGHT: DETAILS, SPECS, DESCRIPTION & REVIEWS
-                 ========================================== -->
-            <div class="w-full space-y-6">
-
-                <!-- Badge & Category -->
-                <div class="flex items-center gap-2 flex-wrap">
-                    <span class="px-3 py-1 rounded-full bg-brand-600 text-white font-bold text-xs uppercase tracking-wider shadow-2xs">
-                        {{ $book['badge'] ?? 'Bestseller' }}
-                    </span>
-                    <span class="px-3 py-1 rounded-full bg-brand-100/80 text-brand-800 font-semibold text-xs border border-brand-200">
-                        {{ $landing['landing_badge'] ?? $book['category'] }}
-                    </span>
-                    <span class="text-xs text-slate-500 font-medium ml-auto flex items-center gap-1">
-                        <i class="fa-solid fa-clock text-brand-600 text-[11px]"></i>
-                        <span>{{ $landing['reading_time'] ?? '~4.5 Hours' }} read</span>
-                    </span>
-                </div>
-
-                <!-- Book Title & Author -->
-                <div class="space-y-2">
-                    <h1 class="font-brand text-4xl sm:text-5xl lg:text-6xl text-slate-900 tracking-wide uppercase leading-none">
-                        {{ $book['title'] }}
-                    </h1>
-                    <p class="text-sm sm:text-base font-bold text-slate-700 flex flex-wrap items-center gap-2">
-                        <span>By <span class="text-brand-600">{{ $book['author'] }}</span></span>
-                        <i class="fa-solid fa-circle-check text-brand-600 text-xs" title="Verified Author"></i>
-                        @if(!empty($book['author_role']))
-                            <span class="text-xs font-normal text-slate-400">({{ $book['author_role'] }})</span>
-                        @endif
-                    </p>
-                </div>
-
-                <!-- Rating & Reviews Bar -->
-                <div class="flex flex-wrap items-center gap-2.5 text-xs text-slate-500 font-medium">
-                    <div class="flex items-center gap-0.5 text-amber-400">
-                        <i class="fa-solid fa-star text-xs"></i>
-                        <i class="fa-solid fa-star text-xs"></i>
-                        <i class="fa-solid fa-star text-xs"></i>
-                        <i class="fa-solid fa-star text-xs"></i>
-                        <i class="fa-solid fa-star text-xs"></i>
-                    </div>
-                    <span class="font-bold text-slate-900 text-sm">{{ $book['rating'] }}</span>
-                    <span class="text-slate-300">•</span>
-                    <span>{{ $book['reviews'] }} Verified Reader Ratings</span>
-                    <span class="text-slate-300">•</span>
-                    <span class="text-emerald-700 font-semibold flex items-center gap-1">
-                        <i class="fa-solid fa-circle-check text-[11px]"></i>
-                        Verified E-Book
-                    </span>
-                </div>
-
-                <!-- Price Block (Clean Inline Display) -->
-                <div id="landing-pricing-action" class="pt-3 pb-2 border-y border-brand-200/70 flex flex-wrap items-baseline gap-4">
+            <!-- Pricing & Action Buttons (Centered) -->
+            <div class="space-y-3 pt-2 max-w-md mx-auto w-full">
+                <!-- Price Display -->
+                <div class="flex items-baseline justify-center gap-3">
                     <span class="font-brand text-4xl sm:text-5xl text-brand-600 font-bold tracking-wider leading-none">
                         {{ $book['price'] }}
                     </span>
@@ -154,480 +202,669 @@
                             {{ $book['discount'] ?? '50% OFF' }}
                         </span>
                     @endif
-                    <span class="text-xs text-slate-400 font-medium ml-auto">
-                        DRM-Free • Lifetime Access
-                    </span>
                 </div>
 
-                <!-- Action Button (Full Width Clean & Prominent) -->
-                <div class="pt-1 w-full space-y-2">
-                    <a 
-                        href="#landing-pricing-action" 
-                        class="w-full h-12 sm:h-13 inline-flex items-center justify-center px-8 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-2xl uppercase tracking-wider shadow-lg shadow-brand-600/30 hover:shadow-brand-600/45 transition-all duration-200 transform hover:-translate-y-0.5 text-center cursor-pointer"
-                    >
-                        <span>Get It Now</span>
-                    </a>
-                    <div class="flex items-center justify-center gap-4 text-[11px] text-slate-500">
-                        <span>🔒 256-Bit Encrypted</span>
-                        <span>•</span>
-                        <span>📦 Multi-Format Bundle Included</span>
-                    </div>
-                </div>
+                <!-- Buy Now Button with Price & Motion -->
+                <a 
+                    href="#buy" 
+                    class="btn-buy-motion w-full h-13 sm:h-14 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-2xl sm:text-3xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] text-center cursor-pointer group"
+                >
+                    <span>Buy Now ({{ $book['price'] }}/-)</span>
+                    <i class="fa-solid fa-arrow-right text-base text-white/80 group-hover:translate-x-1.5 transition-transform duration-300"></i>
+                </a>
 
-                <!-- Minimal Specs Row (Inline Clean Tags) -->
-                <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-600 pt-1 font-medium bg-white/60 p-3.5 rounded-2xl border border-brand-200/60">
-                    <div><strong class="text-slate-900">Length:</strong> {{ $book['pages'] ?? 350 }} Pages</div>
-                    <span class="text-slate-300 hidden sm:inline">•</span>
-                    <div><strong class="text-slate-900">Language:</strong> {{ $book['language'] ?? 'English' }}</div>
-                    <span class="text-slate-300 hidden sm:inline">•</span>
-                    <div><strong class="text-slate-900">Format:</strong> {{ $book['format'] ?? 'PDF, EPUB' }}</div>
-                    <span class="text-slate-300 hidden sm:inline">•</span>
-                    <div><strong class="text-slate-900">File Size:</strong> {{ $book['file_size'] ?? '15 MB' }}</div>
-                </div>
-
-                <!-- Target Audience Callout -->
-                @if(!empty($landing['target_audience']))
-                    <div class="p-3.5 rounded-2xl bg-brand-100/50 border border-brand-200/80 flex items-start gap-3">
-                        <div class="w-7 h-7 rounded-xl bg-brand-600 text-white flex items-center justify-center text-xs shrink-0 mt-0.5 shadow-2xs">
-                            <i class="fa-solid fa-users"></i>
-                        </div>
-                        <div class="text-xs">
-                            <span class="font-bold text-slate-900 block mb-0.5">Ideal Reader Audience:</span>
-                            <span class="text-slate-600 leading-relaxed">{{ $landing['target_audience'] }}</span>
-                        </div>
-                    </div>
-                @endif
-
-                <!-- Description (Clean, Readable, Unboxed) -->
-                <div class="pt-4 border-t border-brand-200/70 space-y-2.5">
-                    <h2 class="font-brand text-2xl sm:text-3xl text-slate-900 tracking-wide uppercase">Overview</h2>
-                    <p class="text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
-                        {{ $book['description'] }}
-                    </p>
-                </div>
-
-                <!-- Key Highlights Checklist -->
-                @if(!empty($book['highlights']))
-                    <div class="pt-4 border-t border-brand-200/70 space-y-3">
-                        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Key Takeaways &amp; Highlights</h3>
-                        <ul class="space-y-2.5">
-                            @foreach ($book['highlights'] as $highlight)
-                                <li class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 font-medium">
-                                    <div class="w-4 h-4 rounded-full bg-brand-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
-                                        <i class="fa-solid fa-check text-[8px]"></i>
-                                    </div>
-                                    <span>{{ $highlight }}</span>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
-                <!-- Chapters / Table of Contents Preview -->
-                @if(!empty($book['chapters']))
-                    <div class="pt-4 border-t border-brand-200/70 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Table of Contents</h3>
-                            <span class="text-xs text-slate-400 font-medium">{{ count($book['chapters']) }} Chapters Total</span>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700 font-medium">
-                            @foreach ($book['chapters'] as $chapter)
-                                <div class="flex items-center gap-2 p-2.5 rounded-xl bg-white/80 border border-brand-100 hover:border-brand-300 transition">
-                                    <i class="fa-solid fa-bookmark text-brand-600 text-[10px] shrink-0"></i>
-                                    <span class="truncate">{{ $chapter }}</span>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-
-                <!-- Minimal Guarantees Strip -->
-                <div class="pt-5 border-t border-brand-200/70 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-slate-500 font-medium">
-                    <div class="flex items-center gap-1.5">
-                        <i class="fa-solid fa-cloud-arrow-down text-brand-600"></i>
-                        <span>Instant PDF/EPUB</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <i class="fa-solid fa-shield-halved text-brand-600"></i>
-                        <span>Secure Checkout</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <i class="fa-solid fa-infinity text-brand-600"></i>
-                        <span>Lifetime Access</span>
-                    </div>
-                </div>
-
-                <!-- ==========================================
-                     CLEAN & MINIMAL READER REVIEWS
-                     ========================================== -->
-                <div id="reviews-section" class="pt-6 border-t border-brand-200/80 space-y-4">
-                    
-                    <!-- Top Summary & Action Bar -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-brand-50/50 rounded-2xl p-4 border border-brand-100">
-                        <div class="flex items-center gap-3">
-                            <div class="flex items-baseline gap-1.5">
-                                <span class="font-brand text-3xl text-slate-900 leading-none">{{ $book['rating'] }}</span>
-                                <span class="text-xs text-slate-400 font-medium">/ 5.0</span>
-                            </div>
-                            <div class="h-6 w-px bg-brand-200/60"></div>
-                            <div>
-                                <div class="flex items-center gap-1 text-amber-400 text-xs">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <span class="text-[11px] text-slate-500 font-medium">{{ $book['reviews'] }} verified ratings</span>
-                            </div>
-                        </div>
-
-                        <button 
-                            type="button" 
-                            onclick="toggleReviewForm()" 
-                            class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-white hover:bg-brand-600 text-brand-700 hover:text-white border border-brand-200 hover:border-brand-600 font-semibold text-xs transition-all duration-200 shadow-2xs cursor-pointer group"
-                        >
-                            <i class="fa-solid fa-pen text-[10px] group-hover:scale-110 transition-transform"></i>
-                            <span id="review-btn-text">Write a Review</span>
-                        </button>
-                    </div>
-
-                    <!-- Collapsible Clean Form -->
-                    <div id="add-review-form-container" class="hidden bg-white rounded-2xl border border-brand-200 p-4 sm:p-5 shadow-sm space-y-3">
-                        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-                            <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">Write Your Review</span>
-                            <button 
-                                type="button" 
-                                onclick="toggleReviewForm()" 
-                                class="w-6 h-6 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center text-xs cursor-pointer transition"
-                            >
-                                <i class="fa-solid fa-xmark"></i>
-                            </button>
-                        </div>
-
-                        <form id="new-review-form" onsubmit="submitNewReview(event)" class="space-y-3">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs text-slate-500 font-medium">Your Rating:</span>
-                                <input type="hidden" id="selected-rating" value="5">
-                                <div class="flex items-center gap-1" id="star-rating-picker">
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        <button 
-                                            type="button" 
-                                            onclick="setStarRating({{ $i }})" 
-                                            data-rating="{{ $i }}"
-                                            class="star-pick text-amber-400 hover:scale-125 transition-transform text-base cursor-pointer p-0.5"
-                                        >
-                                            <i class="fa-solid fa-star"></i>
-                                        </button>
-                                    @endfor
-                                </div>
-                                <span id="rating-label" class="text-xs font-semibold text-slate-700 ml-1">5.0 / 5 (Excellent)</span>
-                            </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                                <div>
-                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Your Name</label>
-                                    <input 
-                                        type="text" 
-                                        id="review-author" 
-                                        required 
-                                        placeholder="e.g. Alex Morgan" 
-                                        class="w-full px-3 py-2 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:outline-none transition font-medium"
-                                    >
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Review Title</label>
-                                    <input 
-                                        type="text" 
-                                        id="review-title" 
-                                        required 
-                                        placeholder="e.g. Practical and insightful" 
-                                        class="w-full px-3 py-2 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:outline-none transition font-medium"
-                                    >
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="block text-[11px] font-semibold text-slate-600 mb-1">Your Feedback</label>
-                                <textarea 
-                                    id="review-comment" 
-                                    rows="3" 
-                                    required 
-                                    placeholder="What did you like or learn from this book?" 
-                                    class="w-full px-3 py-2 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:outline-none transition font-medium resize-none"
-                                ></textarea>
-                            </div>
-
-                            <div class="flex items-center justify-end gap-2 pt-1">
-                                <button 
-                                    type="button" 
-                                    onclick="toggleReviewForm()" 
-                                    class="px-3 py-1.5 text-xs text-slate-500 hover:text-slate-800 font-medium cursor-pointer"
-                                >
-                                    Cancel
-                                </button>
-                                <button 
-                                    type="submit" 
-                                    class="px-5 py-2 rounded-full bg-brand-600 hover:bg-brand-500 text-white font-brand text-base tracking-wider uppercase transition cursor-pointer shadow-sm shadow-brand-600/20"
-                                >
-                                    Submit Review
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- Success Alert Placeholder (Dynamic) -->
-                    <div id="review-success-message" class="hidden p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium flex items-center gap-2">
-                        <i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i>
-                        <span>Thank you! Your review has been successfully submitted.</span>
-                    </div>
-
-                    <!-- Clean & Legible Reviews List -->
-                    <div id="reviews-list" class="divide-y divide-brand-100/70">
-                        @foreach ($reviews as $rev)
-                            <div class="py-4 first:pt-1 last:pb-0 space-y-2">
-                                <div class="flex items-start justify-between gap-3">
-                                    <div class="flex items-center gap-2.5">
-                                        <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-700 font-bold text-xs flex items-center justify-center shrink-0">
-                                            {{ strtoupper(substr($rev['name'] ?? 'U', 0, 1)) }}
-                                        </div>
-                                        <div>
-                                            <div class="flex items-center gap-1.5 flex-wrap">
-                                                <span class="font-bold text-xs sm:text-sm text-slate-900">{{ $rev['name'] }}</span>
-                                                @if(!empty($rev['verified']))
-                                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-semibold border border-emerald-200/60">
-                                                        <i class="fa-solid fa-circle-check text-[9px]"></i>
-                                                        Verified
-                                                    </span>
-                                                @endif
-                                            </div>
-                                            <span class="text-[11px] text-slate-400 font-normal">{{ $rev['date'] }}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex items-center gap-0.5 text-amber-400 text-xs shrink-0">
-                                        @for ($s = 1; $s <= 5; $s++)
-                                            @if ($s <= ($rev['rating'] ?? 5))
-                                                <i class="fa-solid fa-star"></i>
-                                            @else
-                                                <i class="fa-regular fa-star text-slate-300"></i>
-                                            @endif
-                                        @endfor
-                                    </div>
-                                </div>
-
-                                <div class="pl-10 space-y-1">
-                                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 leading-snug">
-                                        {{ $rev['title'] }}
-                                    </h4>
-                                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                                        {{ $rev['comment'] }}
-                                    </p>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-
-                </div>
-
+                <!-- Download Sample Button Below Buy -->
+                <a 
+                    href="{{ route('books.preview', $book['slug'] ?? $book['id']) }}" 
+                    download
+                    class="w-full h-11 inline-flex items-center justify-center gap-2 px-6 rounded-full bg-white hover:bg-brand-50 text-brand-700 font-bold text-xs uppercase tracking-wider border border-brand-200 hover:border-brand-400 transition shadow-2xs cursor-pointer"
+                >
+                    <i class="fa-solid fa-file-arrow-down text-brand-600"></i>
+                    <span>Download Sample (PDF)</span>
+                </a>
             </div>
-
         </div>
 
-    </div>
-</section>
-
-<!-- ==========================================
-     SECTION 2: WHAT YOU WILL MASTER (ULTRA-MINIMAL & CLEAN)
-     ========================================== -->
-<section class="py-14 sm:py-18 bg-white border-y border-brand-200/60 relative">
-    <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4">
-        
-        <!-- Section Header -->
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 pb-6 border-b border-brand-100">
-            <div>
-                <span class="text-[11px] font-bold text-brand-600 uppercase tracking-widest block mb-1">Key Outcomes</span>
-                <h2 class="font-brand text-3xl sm:text-4xl lg:text-5xl text-slate-900 tracking-wide uppercase leading-none">
-                    What You Will Master Inside
+        <!-- 5. Key Highlights (Minimal & Clean - Center Aligned) -->
+        @if(!empty($book['highlights']))
+        <div class="w-full pt-8 pb-3 border-t border-slate-200/75 space-y-5 mx-auto">
+            <div class="text-center space-y-1">
+                <h2 class="font-brand text-2xl sm:text-3xl text-slate-900 uppercase tracking-wide">
+                    Key Highlights
                 </h2>
+                <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
+                    Core concepts and practical techniques you will master
+                </p>
             </div>
-            <p class="text-xs sm:text-sm text-slate-500 max-w-md font-normal leading-relaxed">
-                Core mental models and practical frameworks engineered for high retention and immediate application.
-            </p>
-        </div>
 
-        <!-- Minimal 4-Column Editorial Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            @foreach ($landing['takeaways'] as $idx => $pill)
-                <div class="space-y-3 group">
-                    <div class="flex items-center justify-between">
-                        <span class="font-brand text-3xl text-brand-300 group-hover:text-brand-600 transition-colors leading-none">
-                            0{{ $idx + 1 }}
-                        </span>
-                        <div class="w-8 h-8 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-xs group-hover:bg-brand-600 group-hover:text-white transition-all duration-200">
-                            <i class="{{ $pill['icon'] }}"></i>
-                        </div>
+            <div class="space-y-2.5 pt-2 w-full mx-auto">
+                @foreach ($book['highlights'] as $highlight)
+                <div class="flex items-start justify-center gap-3.5 py-2 border-b border-slate-100 last:border-0 text-left">
+                    <div class="w-5 h-5 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-[10px]">
+                        <i class="fa-solid fa-check"></i>
                     </div>
-
-                    <div class="h-0.5 w-8 bg-brand-200 group-hover:w-16 group-hover:bg-brand-600 transition-all duration-300"></div>
-
-                    <h3 class="font-bold text-sm sm:text-base text-slate-900 group-hover:text-brand-700 transition-colors leading-snug">
-                        {{ $pill['title'] }}
-                    </h3>
-
-                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                        {{ $pill['desc'] }}
+                    <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal flex-1">
+                        {{ $highlight }}
                     </p>
                 </div>
-            @endforeach
-        </div>
+                @endforeach
+            </div>
 
-    </div>
-</section>
-
-<!-- ==========================================
-     SECTION 3: EDITORIAL QUOTE SPOTLIGHT
-     ========================================== -->
-@if(!empty($landing['book_quote']))
-<section class="py-14 sm:py-18 bg-gradient-to-r from-brand-900 via-brand-800 to-slate-900 text-white relative overflow-hidden">
-    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
-    
-    <div class="w-[96%] max-w-4xl mx-auto px-4 text-center relative z-10 space-y-6">
-        <div class="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md text-amber-300 flex items-center justify-center text-xl mx-auto border border-white/10 shadow-inner">
-            <i class="fa-solid fa-quote-left"></i>
+            <!-- Buy Now CTA after Highlights -->
+            <div class="pt-3 flex justify-center">
+                <a 
+                    href="#buy" 
+                    class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
+                >
+                    <span>Buy Now ({{ $book['price'] }}/-)</span>
+                    <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover:translate-x-1 transition-transform duration-300"></i>
+                </a>
+            </div>
         </div>
-        <blockquote class="font-serif italic text-xl sm:text-2xl lg:text-3xl text-slate-100 leading-relaxed max-w-3xl mx-auto">
-            {{ $landing['book_quote'] }}
-        </blockquote>
-        <div class="pt-2">
-            <p class="font-brand text-xl text-amber-400 tracking-wider uppercase">{{ $book['author'] }}</p>
-            <p class="text-xs text-slate-400 font-medium">{{ $book['title'] }}</p>
-        </div>
-    </div>
-</section>
-@endif
+        @endif
 
-<!-- ==========================================
-     SECTION 4: INTERACTIVE FREQUENTLY ASKED QUESTIONS
-     ========================================== -->
-<section class="py-14 sm:py-20 bg-slate-50 border-t border-brand-200/70 relative">
-    <div class="w-[96%] max-w-4xl mx-auto px-2 sm:px-4">
-        
-        <!-- Section Header -->
-        <div class="text-center max-w-2xl mx-auto mb-12 space-y-2">
-            <span class="text-xs font-bold text-brand-600 uppercase tracking-widest">Clear Answers</span>
-            <h2 class="font-brand text-3xl sm:text-4xl lg:text-5xl text-slate-900 tracking-wide uppercase leading-tight">
-                Frequently Asked Questions
-            </h2>
-            <p class="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto leading-relaxed">
-                Everything you need to know about formats, delivery, and lifetime access for {{ $book['title'] }}.
-            </p>
-        </div>
+        <!-- 6. Table of Contents (Clean Minimal Table with Visible Grid Lines) -->
+        @if(!empty($book['chapters']))
+        <div class="w-full pt-8 pb-3 border-t border-slate-200/80 space-y-5 mx-auto">
+            <div class="text-center space-y-1">
+                <h2 class="font-brand text-2xl sm:text-3xl text-slate-900 uppercase tracking-wide">
+                    Table of Contents
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
+                    Comprehensive breakdown of all modules and topics
+                </p>
+            </div>
 
-        <!-- Interactive FAQ Accordion -->
-        <div class="space-y-3.5">
-            @foreach ($landing['faqs'] as $index => $faq)
-                <div class="bg-white rounded-2xl border border-brand-200/80 shadow-2xs overflow-hidden transition-all duration-200">
-                    <button 
-                        type="button" 
-                        onclick="toggleFaqAccordion({{ $index }})" 
-                        class="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 font-bold text-sm sm:text-base text-slate-900 hover:text-brand-600 transition cursor-pointer"
-                        aria-expanded="{{ $index === 0 ? 'true' : 'false' }}"
-                    >
-                        <span class="flex items-center gap-3">
-                            <span class="w-6 h-6 rounded-lg bg-brand-50 text-brand-700 text-xs font-bold flex items-center justify-center shrink-0">
-                                Q
-                            </span>
-                            <span>{{ $faq['q'] }}</span>
-                        </span>
-                        <i id="faq-icon-{{ $index }}" class="fa-solid fa-chevron-down text-xs text-slate-400 transform transition-transform duration-200 {{ $index === 0 ? 'rotate-180 text-brand-600' : '' }}"></i>
-                    </button>
-                    
+            <div class="overflow-x-auto pt-1">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-xs font-bold tracking-wider text-slate-500 uppercase">
+                            <th class="pb-2.5 pr-3 w-12 text-center">#</th>
+                            <th class="pb-2.5 px-3">Title</th>
+                            <th class="pb-2.5 pl-3 text-right w-24">Pages</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        @foreach ($book['chapters'] as $ch)
+                        @php
+                        $isArr = is_array($ch);
+                        $num = $isArr ? ($ch['number'] ?? $loop->iteration) : $loop->iteration;
+                        $title = $isArr ? ($ch['title'] ?? '') : $ch;
+                        $rawPages = $isArr ? ($ch['pages'] ?? null) : null;
+                        $pages = $rawPages ? preg_replace('/^pp\.\s*/i', '', $rawPages) : null;
+                        @endphp
+                        <tr class="hover:bg-slate-50/80 transition">
+                            <td class="py-3 pr-3 font-bold text-xs text-brand-600 tracking-wider align-middle text-center">
+                                {{ str_pad($num, 2, '0', STR_PAD_LEFT) }}.
+                            </td>
+                            <td class="py-3 px-3 font-medium text-xs sm:text-sm text-slate-800 align-middle">
+                                {{ $title }}
+                            </td>
+                            <td class="py-3 pl-3 text-right text-xs text-slate-500 font-medium whitespace-nowrap align-middle">
+                                {{ $pages ?? '—' }}
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Buy Now CTA after Table of Contents -->
+            <div class="pt-3 flex justify-center">
+                <a 
+                    href="#buy" 
+                    class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
+                >
+                    <span>Buy Now ({{ $book['price'] }}/-)</span>
+                    <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover:translate-x-1 transition-transform duration-300"></i>
+                </a>
+            </div>
+        </div>
+        @endif
+
+
+        <!-- 7. "Suggested For" Section (Who This Book Is Relevant To - 8 Mini-Cards) -->
+        @php
+            $profiles = $suggestedFor ?? [
+                ['title' => 'Software Engineers', 'icon' => 'fa-solid fa-code'],
+                ['title' => 'System Architects', 'icon' => 'fa-solid fa-server'],
+                ['title' => 'CS Students', 'icon' => 'fa-solid fa-graduation-cap'],
+                ['title' => 'Backend Developers', 'icon' => 'fa-solid fa-database'],
+                ['title' => 'Tech Leads & CTOs', 'icon' => 'fa-solid fa-laptop-code'],
+                ['title' => 'Self-Taught Devs', 'icon' => 'fa-solid fa-terminal'],
+                ['title' => 'Performance Leads', 'icon' => 'fa-solid fa-gauge-high'],
+                ['title' => 'Problem Solvers', 'icon' => 'fa-solid fa-puzzle-piece'],
+            ];
+        @endphp
+        <div class="w-full pt-8 pb-3 border-t border-slate-200/80 space-y-6 mx-auto">
+            <!-- Centered Header -->
+            <div class="text-center space-y-1">
+                <h2 class="font-brand text-2xl sm:text-3xl text-slate-900 uppercase tracking-wide">
+                    Suggested For
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
+                    Who will get the most value and practical mastery from this book
+                </p>
+            </div>
+
+            <!-- 8 Mini-Cards Grid (4 Per Row on Desktop/Tablet, 2 on Mobile - Category Card Style with Icon & Title Only) -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-4 pt-1">
+                @foreach ($profiles as $item)
                     <div 
-                        id="faq-body-{{ $index }}" 
-                        class="{{ $index === 0 ? '' : 'hidden' }} px-5 sm:px-6 pb-5 sm:pb-6 text-xs sm:text-sm text-slate-600 leading-relaxed font-normal pl-14 border-t border-slate-50 pt-2"
+                        class="group relative overflow-hidden bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 hover:border-transparent hover:shadow-[0_16px_36px_-8px_rgba(122,88,169,0.30)] transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] flex flex-col items-center text-center cursor-default"
                     >
-                        {{ $faq['a'] }}
+                        <!-- Smooth Modern Gradient Background Overlay on Hover -->
+                        <div class="absolute inset-0 bg-gradient-to-br from-brand-600 via-brand-600 to-brand-700 opacity-0 group-hover:opacity-100 transition-opacity duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] pointer-events-none"></div>
+
+                        <!-- Ambient Glow Element on Hover -->
+                        <div class="absolute -top-10 -right-10 w-24 h-24 bg-white/10 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] pointer-events-none"></div>
+
+                        <!-- Category-Style Icon Container -->
+                        <div class="relative z-10 w-12 h-12 rounded-2xl bg-brand-50/80 text-brand-600 border border-brand-100/70 group-hover:bg-white/20 group-hover:text-white group-hover:border-white/25 group-hover:backdrop-blur-md flex items-center justify-center text-xl mb-3 transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] shadow-2xs">
+                            <i class="{{ $item['icon'] }} transition-colors duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"></i>
+                        </div>
+                        
+                        <!-- Target Title (Clean unbold) -->
+                        <h3 class="relative z-10 font-normal text-xs sm:text-sm text-slate-900 group-hover:text-white transition-colors duration-500 line-clamp-2 leading-snug">
+                            {{ $item['title'] }}
+                        </h3>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Buy Now CTA after Suggested Section -->
+            <div class="pt-4 flex justify-center">
+                <a 
+                    href="#buy" 
+                    class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
+                >
+                    <span>Buy Now ({{ $book['price'] }}/-)</span>
+                    <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover:translate-x-1 transition-transform duration-300"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- 8. Reader Reviews & Feedback (Center-Aligned Carousel) -->
+        <div id="reviews-section" class="w-full pt-8 pb-3 border-t border-slate-200/80 space-y-6 mx-auto">
+            <!-- Centered Header -->
+            <div class="text-center space-y-1">
+                <h2 class="font-brand text-2xl sm:text-3xl text-slate-900 uppercase tracking-wide">
+                    Reader Reviews &amp; Feedback
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
+                    Verified ratings and thoughts from our readers
+                </p>
+            </div>
+
+            <!-- Centered Rating & Action Bar -->
+            <div class="flex items-center justify-center flex-wrap gap-4 py-1">
+                <div class="flex items-center gap-3">
+                    <div class="flex items-baseline gap-1">
+                        <span class="font-brand text-3xl sm:text-4xl text-slate-900 leading-none">{{ $book['rating'] }}</span>
+                        <span class="text-xs text-slate-400">/ 5.0</span>
+                    </div>
+                    <div class="h-6 w-px bg-slate-200"></div>
+                    <div class="flex items-center gap-1 text-amber-400 text-xs">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <span class="text-xs text-slate-500 font-medium">({{ $book['reviews'] }} reviews)</span>
+                </div>
+
+                <div class="hidden sm:block h-5 w-px bg-slate-200"></div>
+
+                <button
+                    type="button"
+                    onclick="toggleReviewForm()"
+                    class="px-4 py-2 rounded-full bg-white hover:bg-brand-50 text-slate-700 hover:text-brand-700 border border-slate-200 hover:border-brand-300 font-bold text-xs uppercase tracking-wider transition cursor-pointer shadow-2xs inline-flex items-center gap-1.5">
+                    <i class="fa-solid fa-pen text-[10px]"></i>
+                    <span id="review-btn-text">Write a Review</span>
+                </button>
+            </div>
+
+            <!-- Collapsible Clean Form -->
+            <div id="add-review-form-container" class="hidden bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shadow-sm max-w-2xl mx-auto">
+                <form id="new-review-form" onsubmit="submitNewReview(event)" class="space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <input
+                            type="text"
+                            id="review-author"
+                            required
+                            placeholder="Your Name"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:outline-none focus:border-brand-500 font-medium">
+                        <input
+                            type="text"
+                            id="review-title"
+                            required
+                            placeholder="Review Title"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:outline-none focus:border-brand-500 font-medium">
+                    </div>
+                    <textarea
+                        id="review-comment"
+                        rows="2"
+                        required
+                        placeholder="What did you learn from this book?"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:outline-none focus:border-brand-500 font-medium resize-none"></textarea>
+                    <div class="flex items-center justify-end gap-2">
+                        <button type="button" onclick="toggleReviewForm()" class="px-3.5 py-1 text-xs text-slate-500 cursor-pointer">Cancel</button>
+                        <button type="submit" class="px-4 py-2 rounded-full bg-brand-600 text-white font-brand text-base uppercase tracking-wider cursor-pointer shadow-2xs hover:bg-brand-500 transition">Submit Review</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Continuous Reviews Carousel Viewport -->
+            <div class="relative w-full pt-1">
+                <div class="reviews-carousel-viewport py-2">
+                    <div id="reviews-continuous-track" class="reviews-continuous-track">
+                        @for ($loop_i = 0; $loop_i < 2; $loop_i++)
+                            @foreach ($reviews as $rev)
+                            <div 
+                                class="review-card-item w-[290px] sm:w-[350px] shrink-0 bg-white rounded-2xl border border-slate-200/90 hover:border-brand-400/90 p-5 sm:p-6 shadow-2xs transition-colors duration-300 flex flex-col justify-between text-left group cursor-default"
+                            >
+                                <div class="space-y-3">
+                                    <!-- Header: Avatar + Name + Verified Badge + Date -->
+                                    <div class="flex items-center justify-between gap-2.5">
+                                        <div class="flex items-center gap-2.5 min-w-0">
+                                            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-600 to-brand-400 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                                                {{ $rev['avatar'] ?? strtoupper(substr($rev['name'] ?? 'U', 0, 2)) }}
+                                            </div>
+                                            <div class="min-w-0">
+                                                <h4 class="font-bold text-xs sm:text-sm text-slate-900 truncate leading-tight">{{ $rev['name'] }}</h4>
+                                                <div class="flex items-center gap-1.5 mt-0.5">
+                                                    <span class="inline-flex items-center gap-0.5 text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                                                        <i class="fa-solid fa-circle-check text-[8px] text-emerald-600"></i> Verified
+                                                    </span>
+                                                    <span class="text-[10px] text-slate-400">{{ $rev['date'] ?? 'Recent' }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- 5 Gold Stars -->
+                                        <div class="flex items-center gap-0.5 text-amber-400 text-xs shrink-0">
+                                            @for ($s = 1; $s <= ($rev['rating'] ?? 5); $s++)
+                                                <i class="fa-solid fa-star text-[10px]"></i>
+                                            @endfor
+                                        </div>
+                                    </div>
+
+                                    <!-- Review Title & Comment -->
+                                    <div class="space-y-1 text-left">
+                                        <h5 class="font-bold text-xs sm:text-sm text-slate-900 leading-snug line-clamp-1 group-hover:text-brand-600 transition-colors">{{ $rev['title'] }}</h5>
+                                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal line-clamp-4">{{ $rev['comment'] }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Card Footer -->
+                                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
+                                    <span class="inline-flex items-center gap-1 text-[11px] text-slate-500">
+                                        <i class="fa-regular fa-thumbs-up text-[10px] text-slate-400"></i> Helpful ({{ $rev['helpful'] ?? 14 }})
+                                    </span>
+                                    <span class="text-[10px] text-brand-600 font-semibold uppercase tracking-wider">Verified Purchase</span>
+                                </div>
+                            </div>
+                            @endforeach
+                        @endfor
                     </div>
                 </div>
-            @endforeach
+
+
+            </div>
+
+            <!-- Buy Now CTA after Reviews -->
+            <div class="pt-6 flex justify-center">
+                <a 
+                    href="#buy" 
+                    class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
+                >
+                    <span>Buy Now ({{ $book['price'] }}/-)</span>
+                    <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover:translate-x-1 transition-transform duration-300"></i>
+                </a>
+            </div>
         </div>
 
     </div>
 </section>
 
 <!-- ==========================================
-     FLOATING STICKY BOTTOM PURCHASE BAR
+     INTERACTIVE "LOOK INSIDE" MODAL
+     ========================================== -->
+<div
+    id="sample-reader-modal"
+    class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-6"
+    onclick="handleModalBackdropClick(event)">
+    <div
+        class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden animate-[fadeIn_0.3s_ease-out]"
+        onclick="event.stopPropagation()">
+        <!-- Modal Top Bar -->
+        <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between gap-4 bg-slate-50">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-7 rounded-md bg-slate-900 overflow-hidden shrink-0 border border-slate-200">
+                    <img src="{{ asset($book['image']) }}" alt="{{ $book['title'] }}" class="w-full h-full object-cover">
+                </div>
+                <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                        <h3 class="font-bold text-xs sm:text-sm text-slate-900 truncate">{{ $book['title'] }}</h3>
+                        <span class="px-2 py-0.5 rounded-full bg-brand-100 text-brand-700 text-[10px] font-bold uppercase shrink-0">Sample Preview</span>
+                    </div>
+                    <p class="text-[11px] text-slate-500 truncate">By {{ $book['author'] }} &bull; {{ $book['sample_pages'] ?? 25 }} Pages Excerpt</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+                <a
+                    href="{{ route('books.preview', $book['slug'] ?? $book['id']) }}"
+                    download
+                    class="px-3.5 py-1.5 rounded-full bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs flex items-center gap-1.5 transition shadow-2xs">
+                    <i class="fa-solid fa-file-arrow-down text-xs"></i>
+                    <span>Download PDF</span>
+                </a>
+
+                <button
+                    type="button"
+                    onclick="closeSampleReaderModal()"
+                    class="w-8 h-8 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-700 flex items-center justify-center transition cursor-pointer"
+                    aria-label="Close modal">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal Scrollable Reader Body -->
+        <div class="p-6 sm:p-8 overflow-y-auto space-y-6 font-serif text-slate-800 leading-relaxed max-h-[calc(90vh-140px)] selection:bg-brand-200 selection:text-brand-900">
+            <div class="text-center space-y-2 border-b border-slate-100 pb-6">
+                <span class="font-sans text-[11px] font-bold text-brand-600 uppercase tracking-widest">Free Sample Preview</span>
+                <h2 class="font-sans font-bold text-2xl sm:text-3xl text-slate-900 uppercase tracking-tight">
+                    {{ $book['title'] }}
+                </h2>
+                <p class="font-sans text-xs text-slate-500">
+                    Written by {{ $book['author'] }} &bull; Published by E-Book Press ({{ $book['release_date'] ?? '2026' }})
+                </p>
+            </div>
+
+            <!-- Table of Contents in Preview -->
+            <div class="bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200 font-sans space-y-2">
+                <h4 class="font-bold text-xs uppercase tracking-wider text-slate-700">Included in Full Edition ({{ $book['pages'] ?? 350 }} Pages):</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-slate-600">
+                    @foreach($book['chapters'] as $ch)
+                    @php
+                    $isArr = is_array($ch);
+                    $name = $isArr ? ($ch['number'] ?? '') . '. ' . ($ch['title'] ?? '') : $ch;
+                    @endphp
+                    <div class="truncate {{ ($isArr && !empty($ch['is_sample'])) ? 'text-brand-700 font-bold' : '' }}">
+                        &bull; {{ $name }} {{ ($isArr && !empty($ch['is_sample'])) ? '(★ In this sample)' : '' }}
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Sample Chapter 1 Text -->
+            @if(!empty($book['sample_content']))
+            <div class="space-y-4 pt-2">
+                <div class="font-sans text-xs font-bold text-brand-600 uppercase tracking-wider">
+                    {{ $book['sample_content']['chapter_title'] }}
+                </div>
+
+                <p class="text-base sm:text-lg font-medium text-slate-900 leading-relaxed">
+                    {{ $book['sample_content']['intro'] }}
+                </p>
+
+                @if(!empty($book['sample_content']['sections']))
+                @foreach($book['sample_content']['sections'] as $s)
+                <h3 class="font-sans font-bold text-base sm:text-lg text-slate-900 pt-2">
+                    {{ $s['heading'] }}
+                </h3>
+                <p class="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
+                    {{ $s['content'] }}
+                </p>
+                @endforeach
+                @endif
+            </div>
+            @endif
+
+            <!-- Modal Bottom Call to Action -->
+            <div class="mt-8 p-6 rounded-2xl bg-gradient-to-br from-brand-900 via-brand-800 to-slate-900 text-white text-center font-sans space-y-3">
+                <span class="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-bold text-[10px] uppercase tracking-wider inline-block">
+                    End of Sample Preview
+                </span>
+                <h3 class="font-brand text-3xl uppercase tracking-wide">
+                    Unlock All {{ $book['pages'] ?? 350 }} Pages
+                </h3>
+                <p class="text-xs text-slate-300 max-w-md mx-auto">
+                    Get the complete book in DRM-free PDF, EPUB and MOBI formats, plus all bonus materials.
+                </p>
+                <div class="pt-2 flex items-center justify-center gap-3">
+                    <a
+                        href="#buy"
+                        onclick="closeSampleReaderModal()"
+                        class="btn-buy-motion px-6 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-brand text-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] shadow-md inline-flex items-center gap-2 group">
+                        <span>Buy Now ({{ $book['price'] }}/-)</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     STICKY BOTTOM DRAWER / FLOATING PURCHASE BAR (ALWAYS OPEN)
      ========================================== -->
 <div 
-    id="sticky-buy-bar" 
-    class="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-2xl py-3 px-4 transform translate-y-full transition-transform duration-300 pointer-events-none"
+    id="sticky-bottom-drawer" 
+    class="fixed bottom-0 inset-x-0 z-40 bg-white/70 backdrop-blur-xl border-t border-slate-200/60 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] py-3 px-4 sm:px-8"
 >
-    <div class="w-[96%] max-w-5xl mx-auto flex items-center justify-between gap-4">
-        <div class="flex items-center gap-3 min-w-0">
-            <div class="w-12 aspect-[10/7] rounded-lg overflow-hidden bg-slate-950 shrink-0 border border-slate-200">
+    <div class="w-[94%] sm:w-[88%] lg:w-[70%] mx-auto flex items-center justify-between gap-4">
+        <!-- Book Info (Left - Hidden on mobile, visible on tablet/desktop) -->
+        <div class="hidden sm:flex items-center gap-3.5 min-w-0">
+            <div class="w-14 h-10 rounded-lg overflow-hidden bg-slate-950 shrink-0 border border-slate-200 shadow-2xs aspect-[10/7]">
                 <img src="{{ asset($book['image']) }}" alt="{{ $book['title'] }}" class="w-full h-full object-cover">
             </div>
             <div class="min-w-0">
-                <h4 class="font-bold text-xs sm:text-sm text-slate-900 truncate">{{ $book['title'] }}</h4>
-                <p class="text-[11px] text-slate-400 truncate">{{ $book['author'] }}</p>
+                <h3 class="font-normal text-xs sm:text-sm text-slate-900 truncate leading-tight">
+                    {{ $book['title'] }}
+                </h3>
+                <p class="text-[11px] text-slate-500 truncate mt-0.5">
+                    By {{ $book['author'] }} &bull; <span class="text-amber-500 font-semibold"><i class="fa-solid fa-star text-[10px]"></i> {{ $book['rating'] }}</span>
+                </p>
             </div>
         </div>
 
-        <div class="flex items-center gap-4 shrink-0 pointer-events-auto">
-            <div class="hidden sm:flex flex-col items-end text-right">
-                <span class="font-brand text-2xl text-brand-600 font-bold leading-none">{{ $book['price'] }}</span>
-                @if(!empty($book['original_price']))
-                    <span class="text-[10px] text-slate-400 line-through leading-none">{{ $book['original_price'] }}</span>
+        <!-- Pricing & Action (Full width on mobile, right-aligned on tablet/desktop) -->
+        <div class="w-full sm:w-auto flex items-center justify-between sm:justify-end gap-3 sm:gap-4 shrink-0">
+            <!-- Price Display (Desktop) -->
+            <div class="text-right hidden sm:block">
+                <div class="flex items-baseline gap-1.5 justify-end">
+                    <span class="font-brand text-2xl text-brand-600 font-bold tracking-wider leading-none">
+                        {{ $book['price'] }}
+                    </span>
+                    @if(!empty($book['original_price']))
+                        <span class="text-xs text-slate-400 line-through">
+                            {{ $book['original_price'] }}
+                        </span>
+                    @endif
+                </div>
+                @if(!empty($book['discount']))
+                    <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                        {{ $book['discount'] }}
+                    </span>
                 @endif
             </div>
 
+            <!-- Buy Now Button (Full-width on mobile) -->
             <a 
-                href="#landing-pricing-action" 
-                class="h-10 sm:h-11 px-6 rounded-full bg-brand-600 hover:bg-brand-500 text-white font-brand text-lg uppercase tracking-wider flex items-center justify-center transition shadow-md shadow-brand-600/25"
+                href="#buy" 
+                class="btn-buy-motion w-full sm:w-auto text-center px-5 sm:px-7 py-3 sm:py-2.5 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-1.5 group"
             >
-                <span>Get It Now</span>
+                <span>Buy Now ({{ $book['price'] }}/-)</span>
+                <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover:translate-x-1 transition-transform duration-300"></i>
             </a>
         </div>
     </div>
 </div>
 
 <!-- ==========================================
-     LANDING PAGE INTERACTION JAVASCRIPT
+     LIVE SOCIAL PROOF PURCHASE TOAST (TOP-LEFT)
+     ========================================== -->
+<div 
+    id="purchase-toast-popup" 
+    class="fixed top-22 left-3 sm:left-6 z-50 transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] transform -translate-x-16 opacity-0 pointer-events-none scale-95 max-w-[320px] sm:max-w-[360px]"
+    role="status"
+    aria-live="polite"
+>
+    <div class="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-[0_14px_36px_-6px_rgba(0,0,0,0.16)] p-3 sm:p-3.5 flex items-center gap-3 relative ring-1 ring-black/5 group">
+        <!-- Book Miniature Cover -->
+        <div class="w-11 h-8 rounded-lg overflow-hidden bg-slate-950 shrink-0 border border-slate-200 shadow-2xs aspect-[10/7]">
+            <img id="toast-book-image" src="{{ asset($book['image']) }}" alt="{{ $book['title'] }}" class="w-full h-full object-cover">
+        </div>
+
+        <!-- Notification Content -->
+        <div class="min-w-0 flex-1 pr-4">
+            <p class="text-xs text-slate-800 leading-snug truncate">
+                <strong id="toast-buyer-name" class="font-bold text-slate-900">Alex Rivera</strong> 
+                <span id="toast-buyer-city" class="text-slate-500 text-[11px] font-normal">from San Francisco</span>
+            </p>
+            <p class="text-[11px] text-slate-600 truncate mt-0.5">
+                bought <strong id="toast-book-title" class="text-brand-600 font-semibold truncate">{{ $book['title'] }}</strong>
+            </p>
+            <div class="flex items-center gap-2 mt-1">
+                <span id="toast-time-ago" class="text-[10px] text-slate-400 font-medium">Just now</span>
+                <span class="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                    <i class="fa-solid fa-circle-check text-[8px] text-emerald-600"></i> Verified
+                </span>
+            </div>
+        </div>
+
+        <!-- Dismiss Close Button -->
+        <button 
+            type="button" 
+            onclick="hidePurchaseToast()" 
+            class="absolute top-2 right-2 text-slate-300 hover:text-slate-600 transition p-1 cursor-pointer"
+            aria-label="Close notification"
+        >
+            <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+    </div>
+</div>
+
+<!-- ==========================================
+     INTERACTION JAVASCRIPT
      ========================================== -->
 <script>
-    // FAQ Accordion Toggle
-    function toggleFaqAccordion(index) {
-        const body = document.getElementById(`faq-body-${index}`);
-        const icon = document.getElementById(`faq-icon-${index}`);
-        if (!body || !icon) return;
 
-        if (body.classList.contains('hidden')) {
-            body.classList.remove('hidden');
-            icon.classList.add('rotate-180', 'text-brand-600');
-        } else {
-            body.classList.add('hidden');
-            icon.classList.remove('rotate-180', 'text-brand-600');
+    // Live Social Proof Purchase Notification with Irregular 3-8s Intervals
+    (function initPurchaseNotification() {
+        const toast = document.getElementById('purchase-toast-popup');
+        const buyerNameEl = document.getElementById('toast-buyer-name');
+        const buyerCityEl = document.getElementById('toast-buyer-city');
+        const timeAgoEl = document.getElementById('toast-time-ago');
+
+        if (!toast || !buyerNameEl || !buyerCityEl || !timeAgoEl) return;
+
+        const buyers = [
+            { name: 'Alex Rivera', city: 'from San Francisco' },
+            { name: 'Priya Sharma', city: 'from Bengaluru' },
+            { name: 'Marcus Vance', city: 'from Austin' },
+            { name: 'Sofia Chen', city: 'from Singapore' },
+            { name: 'David Miller', city: 'from London' },
+            { name: 'Aarav Patel', city: 'from Mumbai' },
+            { name: 'Emily Watson', city: 'from Toronto' },
+            { name: 'Rohan Gupta', city: 'from New Delhi' },
+            { name: 'Liam O’Connor', city: 'from Dublin' },
+            { name: 'Ananya Iyer', city: 'from Hyderabad' },
+            { name: 'Daniel Kim', city: 'from Seoul' },
+            { name: 'Carlos Mendez', city: 'from Madrid' },
+            { name: 'Kavita Deshmukh', city: 'from Pune' },
+            { name: 'Oliver Smith', city: 'from Sydney' },
+            { name: 'Aditya Verma', city: 'from Bengaluru' }
+        ];
+
+        const relativeTimes = [
+            'Just now',
+            'Just now',
+            '2 min ago',
+            '3 min ago',
+            '5 min ago',
+            '8 min ago',
+            '14 min ago',
+            '22 min ago',
+            '1 hr ago'
+        ];
+
+        let lastBuyerIndex = -1;
+        let hideTimeout = null;
+
+        window.hidePurchaseToast = function() {
+            toast.classList.add('-translate-x-16', 'opacity-0', 'pointer-events-none', 'scale-95');
+            toast.classList.remove('translate-x-0', 'opacity-100', 'pointer-events-auto', 'scale-100');
+        };
+
+        function showNextNotification() {
+            // Pick a different buyer than previous
+            let buyerIndex = Math.floor(Math.random() * buyers.length);
+            if (buyerIndex === lastBuyerIndex) {
+                buyerIndex = (buyerIndex + 1) % buyers.length;
+            }
+            lastBuyerIndex = buyerIndex;
+
+            const buyer = buyers[buyerIndex];
+            const timeAgo = relativeTimes[Math.floor(Math.random() * relativeTimes.length)];
+
+            buyerNameEl.textContent = buyer.name;
+            buyerCityEl.textContent = buyer.city;
+            timeAgoEl.textContent = timeAgo;
+
+            // Show Toast
+            toast.classList.remove('-translate-x-16', 'opacity-0', 'pointer-events-none', 'scale-95');
+            toast.classList.add('translate-x-0', 'opacity-100', 'pointer-events-auto', 'scale-100');
+
+            // Visible for ~3.5 seconds
+            if (hideTimeout) clearTimeout(hideTimeout);
+            hideTimeout = setTimeout(() => {
+                window.hidePurchaseToast();
+
+                // Next notification in random irregular gap (3 to 8 seconds)
+                const nextDelay = Math.floor(Math.random() * (8000 - 3000 + 1)) + 3000;
+                setTimeout(showNextNotification, nextDelay);
+            }, 3500);
+        }
+
+        // Start initial popup after 3-5 seconds on page load
+        const initialDelay = Math.floor(Math.random() * (5000 - 3000 + 1)) + 3000;
+        setTimeout(showNextNotification, initialDelay);
+    })();
+
+    // Sample Reader Modal Handlers
+    function openSampleReaderModal() {
+        const modal = document.getElementById('sample-reader-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
     }
 
-    // Floating Sticky Bottom Purchase Bar on Scroll
-    window.addEventListener('scroll', () => {
-        const stickyBar = document.getElementById('sticky-buy-bar');
-        const heroSection = document.getElementById('hero-section');
-        if (!stickyBar || !heroSection) return;
+    function closeSampleReaderModal() {
+        const modal = document.getElementById('sample-reader-modal');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    }
 
-        const heroBottom = heroSection.getBoundingClientRect().bottom;
-        if (heroBottom < 100) {
-            stickyBar.classList.remove('translate-y-full', 'pointer-events-none');
-            stickyBar.classList.add('translate-y-0');
-        } else {
-            stickyBar.classList.add('translate-y-full', 'pointer-events-none');
-            stickyBar.classList.remove('translate-y-0');
+    function handleModalBackdropClick(event) {
+        if (event.target.id === 'sample-reader-modal') {
+            closeSampleReaderModal();
+        }
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeSampleReaderModal();
         }
     });
 
-    // Reviews Toggle
+    // Reviews Form Toggle
     function toggleReviewForm() {
         const formContainer = document.getElementById('add-review-form-container');
         const btnText = document.getElementById('review-btn-text');
@@ -636,7 +873,7 @@
 
         if (formContainer.classList.contains('hidden')) {
             formContainer.classList.remove('hidden');
-            if (btnText) btnText.textContent = 'Close Review Form';
+            if (btnText) btnText.textContent = 'Close Form';
             const authorInput = document.getElementById('review-author');
             if (authorInput) authorInput.focus();
         } else {
@@ -645,111 +882,97 @@
         }
     }
 
-    const ratingDescriptions = {
-        1: '1.0 / 5 (Poor)',
-        2: '2.0 / 5 (Fair)',
-        3: '3.0 / 5 (Good)',
-        4: '4.0 / 5 (Very Good)',
-        5: '5.0 / 5 (Excellent)'
-    };
-
-    function setStarRating(rating) {
-        const ratingInput = document.getElementById('selected-rating');
-        const ratingLabel = document.getElementById('rating-label');
-        if (ratingInput) ratingInput.value = rating;
-        if (ratingLabel) ratingLabel.textContent = ratingDescriptions[rating] || `${rating}.0 / 5`;
-
-        const starButtons = document.querySelectorAll('.star-pick');
-        starButtons.forEach((btn, index) => {
-            const starValue = index + 1;
-            const icon = btn.querySelector('i');
-            if (starValue <= rating) {
-                btn.className = 'star-pick text-amber-400 hover:scale-125 transition-transform text-base cursor-pointer p-0.5';
-                if (icon) icon.className = 'fa-solid fa-star';
-            } else {
-                btn.className = 'star-pick text-slate-300 hover:scale-125 transition-transform text-base cursor-pointer p-0.5';
-                if (icon) icon.className = 'fa-regular fa-star';
-            }
-        });
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
+
+    // ==========================================
+    // CONTINUOUS REVIEWS CAROUSEL HANDLERS
+    // ==========================================
+    const reviewsContinuousTrack = document.getElementById('reviews-continuous-track');
+    let isReviewsMarqueePaused = false;
+
+    window.toggleReviewsMarquee = function() {
+        if (!reviewsContinuousTrack) return;
+        const icon = document.getElementById('reviews-marquee-toggle-icon');
+        const text = document.getElementById('reviews-marquee-toggle-text');
+
+        isReviewsMarqueePaused = !isReviewsMarqueePaused;
+
+        if (isReviewsMarqueePaused) {
+            reviewsContinuousTrack.style.animationPlayState = 'paused';
+            if (icon) icon.className = 'fa-solid fa-play text-[10px]';
+            if (text) text.textContent = 'Play';
+        } else {
+            reviewsContinuousTrack.style.animationPlayState = 'running';
+            if (icon) icon.className = 'fa-solid fa-pause text-[10px]';
+            if (text) text.textContent = 'Pause';
+        }
+    };
 
     function submitNewReview(e) {
         e.preventDefault();
         
         const nameInput = document.getElementById('review-author');
-        const ratingInput = document.getElementById('selected-rating');
         const titleInput = document.getElementById('review-title');
         const commentInput = document.getElementById('review-comment');
 
         if (!nameInput || !titleInput || !commentInput) return;
 
         const name = nameInput.value.trim();
-        const rating = parseInt(ratingInput ? ratingInput.value : '5', 10) || 5;
         const title = titleInput.value.trim();
         const comment = commentInput.value.trim();
 
         if (!name || !title || !comment) return;
 
-        // Create initials
-        const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2) || 'U';
-
-        // Star icons string
-        let starsHtml = '';
-        for (let i = 1; i <= 5; i++) {
-            if (i <= rating) {
-                starsHtml += '<i class="fa-solid fa-star"></i>';
-            } else {
-                starsHtml += '<i class="fa-regular fa-star text-slate-300"></i>';
-            }
-        }
-
-        // New clean review item
-        const newCard = document.createElement('div');
-        newCard.className = 'py-4 first:pt-1 last:pb-0 space-y-2 transition-all animate-[fadeIn_0.5s_ease-out]';
-        newCard.innerHTML = `
-            <div class="flex items-start justify-between gap-3">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-700 font-bold text-xs flex items-center justify-center shrink-0">
-                        ${escapeHtml(initials)}
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-1.5 flex-wrap">
-                            <span class="font-bold text-xs sm:text-sm text-slate-900">${escapeHtml(name)}</span>
-                            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-semibold border border-emerald-200/60">
-                                <i class="fa-solid fa-circle-check text-[9px]"></i>
-                                Just Now
-                            </span>
+        const createCardHTML = () => `
+            <div class="review-card-item w-[290px] sm:w-[350px] shrink-0 bg-white rounded-2xl border border-brand-200 hover:border-brand-400/90 p-5 sm:p-6 shadow-2xs transition-colors duration-300 flex flex-col justify-between text-left group cursor-default animate-[fadeIn_0.4s_ease-out]">
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between gap-2.5">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-600 to-brand-400 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                                ${escapeHtml(name.substring(0, 2).toUpperCase())}
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="font-bold text-xs sm:text-sm text-slate-900 truncate leading-tight">${escapeHtml(name)}</h4>
+                                <div class="flex items-center gap-1.5 mt-0.5">
+                                    <span class="inline-flex items-center gap-0.5 text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+                                        <i class="fa-solid fa-circle-check text-[8px] text-emerald-600"></i> Verified
+                                    </span>
+                                    <span class="text-[10px] text-slate-400">Just now</span>
+                                </div>
+                            </div>
                         </div>
-                        <span class="text-[11px] text-slate-400 font-normal">Just now</span>
+                        <div class="flex items-center gap-0.5 text-amber-400 text-xs shrink-0">
+                            <i class="fa-solid fa-star text-[10px]"></i>
+                            <i class="fa-solid fa-star text-[10px]"></i>
+                            <i class="fa-solid fa-star text-[10px]"></i>
+                            <i class="fa-solid fa-star text-[10px]"></i>
+                            <i class="fa-solid fa-star text-[10px]"></i>
+                        </div>
+                    </div>
+                    <div class="space-y-1 text-left">
+                        <h5 class="font-bold text-xs sm:text-sm text-slate-900 leading-snug line-clamp-1 group-hover:text-brand-600 transition-colors">${escapeHtml(title)}</h5>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal line-clamp-4">${escapeHtml(comment)}</p>
                     </div>
                 </div>
-
-                <div class="flex items-center gap-0.5 text-amber-400 text-xs shrink-0">
-                    ${starsHtml}
+                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
+                    <span class="inline-flex items-center gap-1 text-[11px] text-slate-500">
+                        <i class="fa-regular fa-thumbs-up text-[10px] text-slate-400"></i> Helpful (1)
+                    </span>
+                    <span class="text-[10px] text-brand-600 font-semibold uppercase tracking-wider">Verified Purchase</span>
                 </div>
-            </div>
-
-            <div class="pl-10 space-y-1">
-                <h4 class="font-bold text-xs sm:text-sm text-slate-900 leading-snug">
-                    ${escapeHtml(title)}
-                </h4>
-                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                    ${escapeHtml(comment)}
-                </p>
             </div>
         `;
 
-        const reviewsList = document.getElementById('reviews-list');
-        if (reviewsList) reviewsList.prepend(newCard);
+        if (reviewsContinuousTrack) {
+            reviewsContinuousTrack.insertAdjacentHTML('afterbegin', createCardHTML());
+        }
 
-        // Show success alert
-        const successMsg = document.getElementById('review-success-message');
-        if (successMsg) successMsg.classList.remove('hidden');
-
-        // Reset form & close
         const form = document.getElementById('new-review-form');
         if (form) form.reset();
-        setStarRating(5);
         toggleReviewForm();
     }
 </script>

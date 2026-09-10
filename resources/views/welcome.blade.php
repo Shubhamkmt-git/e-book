@@ -65,10 +65,10 @@
 <!-- ==========================================
      EXPLORE GENRES & CATEGORIES
      ========================================== -->
-<section id="categories" class="py-20 bg-slate-50">
+<section id="categories" class="pt-5 pb-12 sm:pt-6 sm:pb-16 bg-slate-50">
     <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4">
         
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-6 sm:mb-8 gap-4">
             <div>
                 <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">Browse by Subject</span>
                 <h2 class="font-brand text-4xl sm:text-5xl text-slate-900 tracking-wide uppercase mt-1">Explore Popular Genres</h2>
@@ -209,7 +209,7 @@
                                 href="{{ route('books.show', 'quantum-frontiers-next-century') }}" 
                                 class="flex-1 sm:flex-none h-12 inline-flex items-center justify-center px-8 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 text-center shadow-lg shadow-brand-600/30 transform hover:-translate-y-0.5"
                             >
-                                <span>Get Book</span>
+                                <span>Buy Now</span>
                             </a>
                             <a 
                                 href="#" 

@@ -316,7 +316,7 @@
                         <!-- Book Info -->
                         <div class="flex-1 min-w-0">
                             <span class="text-[9px] font-bold text-brand-600 uppercase tracking-wider block truncate">${escapeHtml(item.category || 'E-Book')}</span>
-                            <a href="${escapeHtml(bookUrl)}" class="font-bold text-xs sm:text-sm text-slate-900 hover:text-brand-600 transition truncate block leading-snug">
+                            <a href="${escapeHtml(bookUrl)}" class="font-normal text-xs sm:text-sm text-slate-800 hover:text-brand-600 transition truncate block leading-snug">
                                 ${escapeHtml(item.title)}
                             </a>
                             <p class="text-[11px] text-slate-400 truncate mt-0.5">${escapeHtml(item.author || '')}</p>
@@ -333,7 +333,7 @@
                                 href="${escapeHtml(bookUrl)}" 
                                 class="px-3 py-1 rounded-full bg-brand-600 hover:bg-brand-500 text-white font-brand text-sm uppercase tracking-wider transition shadow-2xs"
                             >
-                                Get It
+                                Buy Now
                             </a>
                             <button 
                                 type="button" 
@@ -395,17 +395,17 @@
             const inWishlist = isBookInWishlist(key);
 
             if (inWishlist) {
-                btn.classList.add('bg-rose-500', 'text-white', 'border-rose-400');
-                btn.classList.remove('bg-slate-950/60', 'text-white/90', 'hover:bg-white');
+                btn.classList.remove('bg-rose-500', 'text-white', 'border-rose-400', 'border-white/20');
+                btn.classList.add('bg-slate-950/70', 'text-rose-500', 'border-rose-500/40');
                 if (icon) {
-                    icon.className = 'fa-solid fa-heart text-white';
+                    icon.className = 'fa-solid fa-heart text-xs text-rose-500';
                 }
                 btn.setAttribute('title', 'Remove from Wishlist');
             } else {
-                btn.classList.remove('bg-rose-500', 'text-white', 'border-rose-400');
-                btn.classList.add('bg-slate-950/60', 'text-white', 'hover:bg-white');
+                btn.classList.remove('bg-rose-500', 'text-rose-500', 'border-rose-500/40');
+                btn.classList.add('bg-slate-950/60', 'text-white/90', 'border-white/20');
                 if (icon) {
-                    icon.className = 'fa-regular fa-heart text-xs sm:text-sm group-hover:text-rose-500';
+                    icon.className = 'fa-regular fa-heart text-xs';
                 }
                 btn.setAttribute('title', 'Add to Wishlist');
             }

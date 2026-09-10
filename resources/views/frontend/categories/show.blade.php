@@ -75,7 +75,7 @@
                             <!-- Left: Title, Author & Rating -->
                             <div class="flex-1 min-w-0">
                                 <span class="text-[10px] font-bold text-brand-600 uppercase tracking-wider block mb-0.5">{{ $category['name'] }}</span>
-                                <a href="{{ route('books.show', $book['slug'] ?? \Illuminate\Support\Str::slug($book['title'])) }}" class="font-bold text-[15px] sm:text-base text-slate-900 group-hover:text-brand-600 transition-colors line-clamp-1 leading-snug tracking-tight block">
+                                <a href="{{ route('books.show', $book['slug'] ?? \Illuminate\Support\Str::slug($book['title'])) }}" class="font-normal text-[15px] sm:text-base text-slate-800 group-hover:text-brand-600 transition-colors line-clamp-1 leading-snug tracking-tight block">
                                     {{ $book['title'] }}
                                 </a>
                                 <p class="text-xs text-slate-400 font-medium line-clamp-1 mt-0.5">{{ $book['author'] }}</p>
@@ -108,13 +108,13 @@
                         </div>
                     </div>
 
-                    <!-- Card Footer: Action Button (Get It) -->
+                    <!-- Card Footer: Action Button (Buy Now) -->
                     <div class="mt-5 pt-3.5 border-t border-slate-100">
                         <a 
                             href="{{ route('books.show', $book['slug'] ?? \Illuminate\Support\Str::slug($book['title'])) }}" 
                             class="w-full h-11 inline-flex items-center justify-center px-5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 shadow-md shadow-brand-600/25 text-center transform hover:-translate-y-0.5"
                         >
-                            <span>Get It</span>
+                            <span>Buy Now</span>
                         </a>
                     </div>
 

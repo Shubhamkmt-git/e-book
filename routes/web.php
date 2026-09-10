@@ -11,6 +11,7 @@ Route::get('/', function () {
 
 Route::get('/ebooks', [BookController::class, 'index'])->name('books.index');
 Route::get('/ebooks/{identifier}', [BookController::class, 'show'])->name('books.show');
+Route::get('/ebooks/{identifier}/preview', [BookController::class, 'downloadPreview'])->name('books.preview');
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/{slug}', [CategoryController::class, 'show'])->name('categories.show');
 
