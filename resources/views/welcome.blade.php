@@ -11,11 +11,19 @@
     
     <!-- Full-Width Background Banner Image with Dark Gradient & Vignette Overlay -->
     <div class="absolute inset-0 z-0">
-        <img 
-            src="{{ asset('images/hero-banner.jpg') }}" 
-            alt="E-Book Digital Library Banner" 
-            class="w-full h-full object-cover object-center scale-105 transform motion-safe:animate-[pulse_10s_ease-in-out_infinite]"
-        >
+        @if(!empty($heroBanner) && $heroBanner->banner_image)
+            <img
+                src="{{ $heroBanner->banner_image_url }}"
+                alt="{{ $heroBanner->title }}"
+                class="w-full h-full object-cover object-center scale-105 transform motion-safe:animate-[pulse_10s_ease-in-out_infinite]"
+            >
+        @else
+            <img
+                src="{{ asset('images/hero-banner.jpg') }}"
+                alt="E-Book Digital Library Banner"
+                class="w-full h-full object-cover object-center scale-105 transform motion-safe:animate-[pulse_10s_ease-in-out_infinite]"
+            >
+        @endif
         <!-- Multi-layer Gradient Overlays for Readability & Brand Aesthetic -->
         <div class="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/80 to-slate-950/60"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/60"></div>
@@ -28,34 +36,56 @@
 
             <!-- Main Banner Title -->
             <h1 class="font-brand text-5xl sm:text-7xl lg:text-8xl text-white tracking-wide uppercase leading-[0.95] mb-6">
-                Discover, Read &amp; Collect Your Favorite <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-brand-400 to-indigo-300">E-Books.</span>
+                @if(!empty($heroBanner) && $heroBanner->title)
+                    {{ $heroBanner->title }}
+                    @if($heroBanner->title_l2)
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-brand-400 to-indigo-300">{{ $heroBanner->title_l2 }}</span>
+                    @endif
+                @else
+                    Discover, Read &amp; Collect Your Favorite <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-brand-400 to-indigo-300">E-Books.</span>
+                @endif
             </h1>
 
             <!-- Subtitle -->
             <p class="text-base sm:text-lg text-slate-300 leading-relaxed mb-8 max-w-3xl font-normal">
-                Your premier digital library for bestselling novels, academic textbooks, technology guides, and independent literature. Read seamlessly across all your devices anytime, anywhere.
+                @if(!empty($heroBanner) && $heroBanner->description)
+                    {{ $heroBanner->description }}
+                @else
+                    Your premier digital library for bestselling novels, academic textbooks, technology guides, and independent literature. Read seamlessly across all your devices anytime, anywhere.
+                @endif
             </p>
 
             <!-- Primary & Secondary Buttons -->
             <div class="flex flex-col sm:flex-row items-center gap-4">
-                <!-- Primary Button -->
-                <a 
-                    href="#browse" 
-                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase shadow-xl shadow-brand-600/35 transition-all duration-150 transform hover:-translate-y-0.5"
-                >
-                    <i class="fa-solid fa-book-open text-base"></i>
-                    <span>Explore Library</span>
-                    <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i>
-                </a>
+                @if(!empty($heroBanner) && $heroBanner->primary_button)
+                    <a href="{{ $heroBanner->primary_button_link ?: '#browse' }}"
+                       class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase shadow-xl shadow-brand-600/35 transition-all duration-150 transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-book-open text-base"></i>
+                        <span>{{ $heroBanner->primary_button }}</span>
+                        <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i>
+                    </a>
+                @else
+                    <a href="#browse"
+                       class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase shadow-xl shadow-brand-600/35 transition-all duration-150 transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-book-open text-base"></i>
+                        <span>Explore Library</span>
+                        <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i>
+                    </a>
+                @endif
 
-                <!-- Secondary Button -->
-                <a 
-                    href="{{ route('categories.index') }}" 
-                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/25 text-white border border-white/25 backdrop-blur-md font-brand text-xl tracking-wider uppercase shadow-lg transition-all duration-150 transform hover:-translate-y-0.5"
-                >
-                    <i class="fa-solid fa-layer-group text-slate-300"></i>
-                    <span>Browse Genres</span>
-                </a>
+                @if(!empty($heroBanner) && $heroBanner->secondary_button)
+                    <a href="{{ $heroBanner->secondary_button_link ?: route('categories.index') }}"
+                       class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/25 text-white border border-white/25 backdrop-blur-md font-brand text-xl tracking-wider uppercase shadow-lg transition-all duration-150 transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-layer-group text-slate-300"></i>
+                        <span>{{ $heroBanner->secondary_button }}</span>
+                    </a>
+                @else
+                    <a href="{{ route('categories.index') }}"
+                       class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/25 text-white border border-white/25 backdrop-blur-md font-brand text-xl tracking-wider uppercase shadow-lg transition-all duration-150 transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-layer-group text-slate-300"></i>
+                        <span>Browse Genres</span>
+                    </a>
+                @endif
             </div>
 
         </div>

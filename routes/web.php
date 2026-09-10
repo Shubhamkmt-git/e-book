@@ -14,11 +14,10 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\HeroBannerController;
 use App\Http\Controllers\Frontend\BookController;
 use App\Http\Controllers\Frontend\CategoryController;
+use App\Http\Controllers\Frontend\HomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/ebooks', [BookController::class, 'index'])->name('books.index');
 Route::get('/ebooks/{identifier}', [BookController::class, 'show'])->name('books.show');

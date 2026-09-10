@@ -21,6 +21,9 @@ class DatabaseSeeder extends Seeder
             AppSettingSeeder::class,
             CategorySeeder::class,
             BookSeeder::class,
+            HeroBannerSeeder::class,
+            FaqSeeder::class,
+            CtaSeeder::class,
         ]);
     }
 }

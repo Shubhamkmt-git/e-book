@@ -1,26 +1,53 @@
-<!-- Minimal Newsletter & Community CTA Component -->
+<!-- Dynamic CTA Component -->
 <section class="py-16 sm:py-20 bg-slate-50">
     <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4">
         
-        <!-- Minimal CTA Card (Light Brand Gradient & Soft Border) -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-50/90 via-white to-brand-100/50 border border-brand-200/80 p-8 sm:p-12 lg:p-14 text-center shadow-[0_20px_50px_-20px_rgba(122,88,169,0.12)]">
+        <!-- Minimal CTA Card -->
+        <div class="relative overflow-hidden rounded-3xl border p-8 sm:p-12 lg:p-14 text-center shadow-[0_20px_50px_-20px_rgba(122,88,169,0.12)]"
+             style="@if(!empty($cta) && $cta->bg_image) background-image: url('{{ $cta->bg_image_url }}'); background-size: cover; background-position: center; @else background: linear-gradient(135deg, #f5f3ff 0%, #fff 50%, #ede9fe 100%); @endif border-color: rgb(196 181 253 / 0.8);">
             
+            @if(!empty($cta) && $cta->bg_image)
+                <div class="absolute inset-0 bg-slate-950/60 rounded-3xl"></div>
+            @endif
+
             <div class="relative z-10 max-w-2xl mx-auto">
-                <!-- Top Tag -->
-                <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-brand-100/80 border border-brand-200 text-brand-700 text-xs font-bold uppercase tracking-wider mb-4">
-                    <i class="fa-solid fa-sparkles text-brand-600 text-xs"></i>
-                    <span>Exclusive Reader Gift</span>
-                </div>
+                @if(!empty($cta) && $cta->label)
+                    <!-- Top Tag -->
+                    <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full border text-xs font-bold uppercase tracking-wider mb-4
+                                {{ $cta->bg_image ? 'bg-white/20 border-white/30 text-white backdrop-blur-sm' : 'bg-brand-100/80 border-brand-200 text-brand-700' }}">
+                        <i class="fa-solid fa-sparkles text-xs"></i>
+                        <span>{{ $cta->label }}</span>
+                    </div>
+                @else
+                    <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-brand-100/80 border border-brand-200 text-brand-700 text-xs font-bold uppercase tracking-wider mb-4">
+                        <i class="fa-solid fa-sparkles text-brand-600 text-xs"></i>
+                        <span>Exclusive Reader Gift</span>
+                    </div>
+                @endif
 
                 <!-- Main Heading -->
-                <h2 class="font-brand text-4xl sm:text-5xl lg:text-6xl text-slate-900 tracking-wide uppercase leading-[0.95]">
-                    Get 3 Free Bestseller <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-indigo-600">E-Books Today</span>
-                </h2>
+                @if(!empty($cta) && $cta->title)
+                    <h2 class="font-brand text-4xl sm:text-5xl lg:text-6xl tracking-wide uppercase leading-[0.95]
+                               {{ $cta->bg_image ? 'text-white' : 'text-slate-900' }}">
+                        {{ $cta->title }}
+                    </h2>
+                @else
+                    <h2 class="font-brand text-4xl sm:text-5xl lg:text-6xl text-slate-900 tracking-wide uppercase leading-[0.95]">
+                        Get 3 Free Bestseller <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-indigo-600">E-Books Today</span>
+                    </h2>
+                @endif
 
-                <!-- Description -->
-                <p class="text-sm sm:text-base text-slate-600 mt-3.5 font-normal leading-relaxed">
-                    Join over 120,000+ passionate readers. Receive hand-picked book summaries, author releases, and special reader discounts directly in your inbox.
-                </p>
+                <!-- Description / Subtitle -->
+                @if(!empty($cta) && $cta->subtitle)
+                    <p class="text-sm sm:text-base mt-3.5 font-normal leading-relaxed
+                              {{ $cta->bg_image ? 'text-white/80' : 'text-slate-600' }}">
+                        {{ $cta->subtitle }}
+                    </p>
+                @else
+                    <p class="text-sm sm:text-base text-slate-600 mt-3.5 font-normal leading-relaxed">
+                        Join over 120,000+ passionate readers. Receive hand-picked book summaries, author releases, and special reader discounts directly in your inbox.
+                    </p>
+                @endif
 
                 <!-- Clean Email Form -->
                 <form class="mt-8 flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto" onsubmit="event.preventDefault();">
@@ -39,13 +66,14 @@
                 </form>
 
                 <!-- Reassurance Micro-copy -->
-                <div class="flex items-center justify-center gap-4 text-xs text-slate-400 mt-4">
+                <div class="flex items-center justify-center gap-4 text-xs mt-4
+                            {{ !empty($cta) && $cta->bg_image ? 'text-white/60' : 'text-slate-400' }}">
                     <span class="flex items-center gap-1.5">
-                        <i class="fa-solid fa-bolt text-brand-600 text-[11px]"></i> Instant Delivery
+                        <i class="fa-solid fa-bolt text-brand-400 text-[11px]"></i> Instant Delivery
                     </span>
                     <span>•</span>
                     <span class="flex items-center gap-1.5">
-                        <i class="fa-solid fa-shield-halved text-brand-600 text-[11px]"></i> No Spam Ever
+                        <i class="fa-solid fa-shield-halved text-brand-400 text-[11px]"></i> No Spam Ever
                     </span>
                 </div>
             </div>

@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-6">
 
-    {{-- Header --}}
+    {{-- Top Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <div class="flex items-center gap-2.5">
@@ -26,88 +26,137 @@
         </div>
     </div>
 
-    {{-- Filters --}}
-    <div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <form method="GET" action="{{ route('admin.faqs.index') }}" class="w-full sm:w-auto flex flex-col sm:flex-row gap-3">
-            <div class="relative w-full sm:w-64">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search FAQs..."
-                       class="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition">
+    {{-- Search & Filter Bar --}}
+    <div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs">
+        <form method="GET" action="{{ route('admin.faqs.index') }}" class="flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Search by question or answer…"
+                    class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-brand-400 transition"
+                >
             </div>
-            <select name="status" class="px-4 py-2 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition" onchange="this.form.submit()">
+            <select name="status" onchange="this.form.submit()"
+                    class="px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-400 transition cursor-pointer">
                 <option value="">All Statuses</option>
                 @foreach($statuses as $key => $label)
                     <option value="{{ $key }}" {{ request('status') === $key ? 'selected' : '' }}>{{ $label }}</option>
                 @endforeach
             </select>
-            @if(request()->hasAny(['search', 'status']))
-                <a href="{{ route('admin.faqs.index') }}" class="px-4 py-2 rounded-xl text-slate-500 hover:bg-slate-100 text-sm font-semibold transition flex items-center justify-center">Clear</a>
-            @endif
+            <div class="flex gap-2">
+                <button type="submit"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold shadow-sm transition cursor-pointer">
+                    <i class="fa-solid fa-search text-xs"></i>
+                    Search
+                </button>
+                @if(request()->hasAny(['search', 'status']))
+                    <a href="{{ route('admin.faqs.index') }}"
+                       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                        Clear
+                    </a>
+                @endif
+            </div>
         </form>
     </div>
 
-    {{-- List --}}
+    {{-- Table --}}
     <div class="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden">
         @if($faqs->count())
-            <div class="divide-y divide-slate-100">
-                @foreach($faqs as $faq)
-                    <div class="p-5 flex flex-col sm:flex-row gap-4 hover:bg-slate-50/50 transition">
-                        <div class="flex-1 space-y-1.5">
-                            <div class="flex items-start justify-between gap-4">
-                                <h3 class="text-sm font-bold text-slate-800">{{ $faq->question }}</h3>
-                                <div class="shrink-0 flex items-center gap-2">
-                                    <span class="px-2 py-1 rounded-lg bg-slate-100 text-slate-500 text-[10px] font-bold">#{{ $faq->sort_order }}</span>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200">
+                            <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">#</th>
+                            <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Question</th>
+                            <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 hidden md:table-cell">Answer</th>
+                            <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Status</th>
+                            <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 hidden sm:table-cell">Order</th>
+                            <th class="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @foreach($faqs as $faq)
+                        <tr class="hover:bg-slate-50/70 transition group">
+                            <td class="px-5 py-4 text-xs text-slate-400 font-mono">{{ $loop->iteration + ($faqs->currentPage() - 1) * $faqs->perPage() }}</td>
+                            <td class="px-5 py-4 max-w-xs">
+                                <p class="font-semibold text-slate-800 line-clamp-2">{{ $faq->question }}</p>
+                            </td>
+                            <td class="px-5 py-4 hidden md:table-cell max-w-sm">
+                                <p class="text-slate-500 text-xs line-clamp-2">{{ $faq->answer }}</p>
+                            </td>
+                            <td class="px-5 py-4">
+                                <form method="POST" action="{{ route('admin.faqs.toggle-status', $faq) }}">
+                                    @csrf @method('PATCH')
                                     @if($faq->status === 'active')
-                                        <span class="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">Active</span>
+                                        <button type="submit" title="Click to deactivate"
+                                                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-bold border border-emerald-200 hover:bg-emerald-100 transition cursor-pointer">
+                                            <i class="fa-solid fa-circle-check text-[10px]"></i> Active
+                                        </button>
                                     @else
-                                        <span class="px-2 py-1 rounded-lg bg-slate-100 text-slate-500 border border-slate-200 text-[10px] font-bold">Inactive</span>
+                                        <button type="submit" title="Click to activate"
+                                                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[11px] font-bold border border-slate-200 hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 transition cursor-pointer">
+                                            <i class="fa-solid fa-circle-xmark text-[10px]"></i> Inactive
+                                        </button>
                                     @endif
+                                </form>
+                            </td>
+                            <td class="px-5 py-4 hidden sm:table-cell">
+                                <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{{ $faq->sort_order }}</span>
+                            </td>
+                            <td class="px-5 py-4">
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="{{ route('admin.faqs.edit', $faq) }}"
+                                       title="Edit"
+                                       class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-500 flex items-center justify-center transition text-xs">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <form method="POST" action="{{ route('admin.faqs.destroy', $faq) }}"
+                                          onsubmit="return confirm('Delete this FAQ? This cannot be undone.')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" title="Delete"
+                                                class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-500 flex items-center justify-center transition text-xs cursor-pointer">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
                                 </div>
-                            </div>
-                            <p class="text-sm text-slate-500 line-clamp-2">{{ $faq->answer }}</p>
-                        </div>
-                        <div class="shrink-0 flex items-center justify-end sm:justify-start gap-2 border-t sm:border-t-0 sm:border-l border-slate-100 pt-3 sm:pt-0 sm:pl-4 mt-2 sm:mt-0">
-                            <form method="POST" action="{{ route('admin.faqs.toggle-status', $faq) }}">
-                                @csrf @method('PATCH')
-                                <button type="submit" title="Toggle Status"
-                                        class="w-8 h-8 rounded-lg flex items-center justify-center transition cursor-pointer {{ $faq->status === 'active' ? 'text-emerald-600 hover:bg-emerald-50' : 'text-slate-400 hover:bg-slate-100' }}">
-                                    <i class="fa-solid fa-power-off"></i>
-                                </button>
-                            </form>
-                            <a href="{{ route('admin.faqs.edit', $faq) }}" title="Edit"
-                               class="w-8 h-8 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 flex items-center justify-center transition cursor-pointer">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
-                            <form method="POST" action="{{ route('admin.faqs.destroy', $faq) }}" onsubmit="return confirm('Delete this FAQ?')">
-                                @csrf @method('DELETE')
-                                <button type="submit" title="Delete"
-                                        class="w-8 h-8 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition cursor-pointer">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                @endforeach
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
-            
+
             {{-- Pagination --}}
             @if($faqs->hasPages())
-                <div class="p-4 border-t border-slate-100 bg-slate-50/50">
-                    {{ $faqs->links() }}
-                </div>
+            <div class="px-5 py-4 border-t border-slate-100 flex items-center justify-between gap-4">
+                <p class="text-xs text-slate-500">Showing {{ $faqs->firstItem() }}–{{ $faqs->lastItem() }} of {{ $faqs->total() }} FAQs</p>
+                {{ $faqs->links() }}
+            </div>
             @endif
         @else
-            <div class="p-10 text-center flex flex-col items-center">
-                <div class="w-16 h-16 rounded-full bg-slate-50 text-slate-300 flex items-center justify-center text-2xl mb-3">
+            <div class="py-20 flex flex-col items-center text-center gap-3">
+                <div class="w-16 h-16 rounded-full bg-indigo-50 text-indigo-400 flex items-center justify-center text-2xl">
                     <i class="fa-solid fa-circle-question"></i>
                 </div>
-                <h3 class="text-sm font-bold text-slate-700">No FAQs found</h3>
-                <p class="text-xs text-slate-500 mt-1">Get started by creating a new frequently asked question.</p>
-                <a href="{{ route('admin.faqs.create') }}" class="mt-4 px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-semibold hover:bg-brand-700 transition">
-                    Add FAQ
+                <p class="text-base font-semibold text-slate-700">No FAQs found</p>
+                <p class="text-sm text-slate-400">
+                    @if(request()->hasAny(['search', 'status']))
+                        No FAQs match your search. <a href="{{ route('admin.faqs.index') }}" class="text-brand-600 hover:underline">Clear filters</a>
+                    @else
+                        Get started by creating your first frequently asked question.
+                    @endif
+                </p>
+                <a href="{{ route('admin.faqs.create') }}"
+                   class="mt-2 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold shadow-sm transition">
+                    <i class="fa-solid fa-plus text-xs"></i> Add FAQ
                 </a>
             </div>
         @endif
     </div>
+
 </div>
 @endsection
