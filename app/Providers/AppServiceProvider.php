@@ -31,8 +31,8 @@ class AppServiceProvider extends ServiceProvider
 
             return null;
         });
-        // Share branding settings with admin and frontend layouts.
-        View::composer(['admin.*', 'frontend.layouts.*'], function ($view) {
+        // Share branding settings with all views.
+        View::composer('*', function ($view) {
             $view->with('appSetting', AppSetting::getSettings());
         });
 
