@@ -138,10 +138,10 @@
                         <div class="grid grid-cols-2 gap-2">
                             
                             <!-- Razorpay Official Logo Card -->
-                            <label class="relative flex flex-col justify-between p-2.5 rounded-xl border-2 cursor-pointer transition has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50/40 border-slate-200 bg-white hover:border-slate-300">
-                                <input type="radio" name="payment_gateway_choice" value="razorpay" class="sr-only" checked onchange="updateGatewayChoice('razorpay')">
+                            <label class="relative flex flex-col justify-between p-2.5 rounded-xl border-2 cursor-pointer transition-all has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50/50 has-[:checked]:shadow-2xs border-slate-200 bg-white hover:border-slate-300">
+                                <input type="radio" name="payment_gateway_choice" value="razorpay" class="peer sr-only" checked onchange="updateGatewayChoice('razorpay')">
                                 <div class="flex items-center justify-between">
-                                    <div class="h-4.5 flex items-center">
+                                    <div class="h-5 flex items-center">
                                         <!-- Razorpay Official SVG Wordmark & Emblem -->
                                         <svg class="h-4 w-auto" viewBox="0 0 120 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M14.5 0L5.2 13.8L9.8 18.4L20 0H14.5Z" fill="#0284C7"/>
@@ -150,18 +150,18 @@
                                             <text x="24" y="20" font-family="'Poppins', sans-serif" font-weight="700" font-size="15" fill="#0c2340">Razorpay</text>
                                         </svg>
                                     </div>
-                                    <span class="w-3.5 h-3.5 rounded-full border border-slate-300 flex items-center justify-center peer-checked:border-sky-600">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-sky-600"></span>
-                                    </span>
+                                    <div class="w-4 h-4 rounded-full border-2 border-slate-300 peer-checked:border-sky-600 flex items-center justify-center transition-colors">
+                                        <div class="w-2 h-2 rounded-full bg-sky-600 scale-0 peer-checked:scale-100 transition-transform"></div>
+                                    </div>
                                 </div>
-                                <span class="text-[9px] text-slate-400 mt-1 block leading-none">UPI, Cards, NetBanking</span>
+                                <span class="text-[9px] text-slate-400 mt-1 block leading-none font-medium">UPI, Cards, NetBanking</span>
                             </label>
 
                             <!-- Easebuzz Official Logo Card -->
-                            <label class="relative flex flex-col justify-between p-2.5 rounded-xl border-2 cursor-pointer transition has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/40 border-slate-200 bg-white hover:border-slate-300">
-                                <input type="radio" name="payment_gateway_choice" value="easebuzz" class="sr-only" onchange="updateGatewayChoice('easebuzz')">
+                            <label class="relative flex flex-col justify-between p-2.5 rounded-xl border-2 cursor-pointer transition-all has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/50 has-[:checked]:shadow-2xs border-slate-200 bg-white hover:border-slate-300">
+                                <input type="radio" name="payment_gateway_choice" value="easebuzz" class="peer sr-only" onchange="updateGatewayChoice('easebuzz')">
                                 <div class="flex items-center justify-between">
-                                    <div class="h-4.5 flex items-center">
+                                    <div class="h-5 flex items-center">
                                         <!-- Easebuzz Official SVG Logo & Wordmark -->
                                         <svg class="h-4 w-auto" viewBox="0 0 120 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <rect x="2" y="3" width="22" height="22" rx="5" fill="#FF5722"/>
@@ -169,11 +169,11 @@
                                             <text x="28" y="19" font-family="'Poppins', sans-serif" font-weight="700" font-size="14" fill="#1E293B">ease<tspan fill="#FF5722">buzz</tspan></text>
                                         </svg>
                                     </div>
-                                    <span class="w-3.5 h-3.5 rounded-full border border-slate-300 flex items-center justify-center peer-checked:border-orange-500">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
-                                    </span>
+                                    <div class="w-4 h-4 rounded-full border-2 border-slate-300 peer-checked:border-orange-500 flex items-center justify-center transition-colors">
+                                        <div class="w-2 h-2 rounded-full bg-orange-500 scale-0 peer-checked:scale-100 transition-transform"></div>
+                                    </div>
                                 </div>
-                                <span class="text-[9px] text-slate-400 mt-1 block leading-none">UPI, Cards, Wallets</span>
+                                <span class="text-[9px] text-slate-400 mt-1 block leading-none font-medium">UPI, Cards, Wallets</span>
                             </label>
 
                         </div>
@@ -190,17 +190,6 @@
                     <span id="checkout-submit-btn-text">Proceed to Payment</span>
                     <i class="fa-solid fa-arrow-right text-xs"></i>
                 </button>
-
-                <!-- Trust Guarantee Notice -->
-                <div class="flex items-center justify-center gap-2.5 pt-0.5 text-[10px] text-slate-400">
-                    <span class="flex items-center gap-1">
-                        <i class="fa-solid fa-lock text-emerald-500 text-[9px]"></i> 256-Bit SSL Encrypted
-                    </span>
-                    <span>&bull;</span>
-                    <span class="flex items-center gap-1">
-                        <i class="fa-solid fa-bolt text-amber-500 text-[9px]"></i> Instant Download
-                    </span>
-                </div>
 
             </form>
 
