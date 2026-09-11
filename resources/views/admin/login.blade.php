@@ -4,7 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Admin Portal Login - {{ config('app.name', 'E-Book') }}</title>
+    <title>Admin Portal Login - {{ $appSetting->app_name ?? config('app.name', 'E-Book') }}</title>
+
+    @if(!empty($appSetting?->favicon_url))
+        <link rel="icon" href="{{ $appSetting->favicon_url }}">
+        <link rel="shortcut icon" href="{{ $appSetting->favicon_url }}">
+    @endif
 
     <!-- Google Fonts Poppins & Roboto -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,16 +41,22 @@
     <div class="w-full max-w-[430px] my-auto">
         <div class="bg-white rounded-2xl p-8 sm:p-10 shadow-2xl shadow-slate-900/[0.06] border border-slate-200/70">
             
-            <!-- Logo Icon Circle -->
-            <div class="flex justify-center mb-4">
-                <div class="w-14 h-14 rounded-full bg-brand-50 border border-brand-100 flex items-center justify-center shadow-xs">
-                    <i class="fa-solid fa-book-open text-2xl text-brand-600"></i>
-                </div>
-            </div>
-
-            <!-- Title & Subtitle -->
-            <div class="text-center mb-7">
-                <p class="text-xs font-semibold text-slate-700 tracking-normal uppercase">{{ config('app.name', 'E-Book Platform') }}</p>
+            <!-- Logo & Brand Header -->
+            <div class="flex flex-col items-center justify-center mb-7">
+                @if(!empty($appSetting?->logo_light_url) || !empty($appSetting?->logo_dark_url))
+                    <a href="{{ route('home') }}" target="_blank" title="{{ $appSetting->app_name ?? 'Storefront' }}" class="inline-block mb-3.5 transition hover:opacity-90">
+                        <img 
+                            src="{{ $appSetting->logo_light_url ?? $appSetting->logo_dark_url }}" 
+                            alt="{{ $appSetting->app_name ?? 'Logo' }}" 
+                            class="h-12 w-auto max-w-[200px] object-contain"
+                        >
+                    </a>
+                @else
+                    <div class="w-14 h-14 rounded-full bg-brand-50 border border-brand-100 flex items-center justify-center shadow-xs mb-3.5">
+                        <i class="fa-solid fa-book-open text-2xl text-brand-600"></i>
+                    </div>
+                @endif
+                <p class="text-xs font-semibold text-slate-500 tracking-normal uppercase">{{ $appSetting->app_name ?? config('app.name', 'E-Book Platform') }}</p>
                 <h1 class="text-2xl font-bold text-slate-900 tracking-tight mt-1">Admin Portal Login</h1>
             </div>
 
@@ -140,7 +151,7 @@
     <!-- Bottom Footer Copyright -->
     <footer class="w-full text-center py-4">
         <p class="text-xs text-slate-400 font-normal">
-            &copy; {{ date('Y') }} {{ config('app.name', 'E-Book Platform') }}. All rights reserved.
+            &copy; {{ date('Y') }} {{ $appSetting->app_name ?? config('app.name', 'E-Book Platform') }}. All rights reserved.
         </p>
     </footer>
 

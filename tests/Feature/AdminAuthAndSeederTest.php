@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\AdminPermission;
 use App\Models\AdminRole;
 use App\Models\AdminUser;
+use App\Models\AppSetting;
 use Database\Seeders\AdminPermissionSeeder;
 use Database\Seeders\AdminRoleSeeder;
 use Database\Seeders\AdminUserSeeder;
@@ -46,6 +47,20 @@ class AdminAuthAndSeederTest extends TestCase
         $adminUser = AdminUser::where('email', 'admin@ebook.com')->firstOrFail();
         $this->assertEquals('super-admin', $adminUser->role);
         $this->assertEquals('active', $adminUser->status);
+    }
+
+    public function test_login_page_renders_dynamic_logo_and_app_name(): void
+    {
+        $setting = AppSetting::getSettings();
+        $setting->update([
+            'app_name' => 'Luminary Press E-Books',
+        ]);
+
+        $response = $this->get(route('admin.login'));
+
+        $response->assertOk();
+        $response->assertSee('Luminary Press E-Books');
+        $response->assertSee('Admin Portal Login');
     }
 
     public function test_can_dynamically_login_as_admin_user(): void
