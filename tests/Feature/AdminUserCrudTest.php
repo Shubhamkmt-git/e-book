@@ -133,4 +133,20 @@ class AdminUserCrudTest extends TestCase
             'id' => $adminUser->id,
         ]);
     }
+
+    public function test_profile_image_is_rendered_in_header_and_sidebar(): void
+    {
+        AdminUser::factory()->create([
+            'email' => $this->admin->email,
+            'name' => $this->admin->name,
+            'profile_image' => 'https://example.com/admin-avatar.jpg',
+            'status' => 'active',
+            'role' => 'super-admin',
+        ]);
+
+        $response = $this->actingAs($this->admin)->get(route('admin.dashboard'));
+
+        $response->assertOk();
+        $response->assertSee('https://example.com/admin-avatar.jpg');
+    }
 }

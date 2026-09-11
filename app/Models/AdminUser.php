@@ -34,15 +34,27 @@ class AdminUser extends Authenticatable
      */
     public function getAvatarUrlAttribute(): string
     {
-        if ($this->profile_image && Storage::disk('public')->exists($this->profile_image)) {
-            return Storage::disk('public')->url($this->profile_image);
+        if (! $this->profile_image) {
+            return '';
         }
 
-        if ($this->profile_image && (str_starts_with($this->profile_image, 'http://') || str_starts_with($this->profile_image, 'https://'))) {
+        if (str_starts_with($this->profile_image, 'http://') || str_starts_with($this->profile_image, 'https://') || str_starts_with($this->profile_image, 'data:image/')) {
             return $this->profile_image;
         }
 
-        return '';
+        if (Storage::disk('public')->exists($this->profile_image)) {
+            return Storage::disk('public')->url($this->profile_image);
+        }
+
+        if (file_exists(public_path($this->profile_image))) {
+            return asset($this->profile_image);
+        }
+
+        if (file_exists(public_path('storage/'.$this->profile_image))) {
+            return asset('storage/'.$this->profile_image);
+        }
+
+        return Storage::disk('public')->url($this->profile_image);
     }
 
     /**
@@ -65,6 +77,23 @@ class AdminUser extends Authenticatable
     public function adminRole(): ?AdminRole
     {
         return AdminRole::where('slug', $this->role)->first();
+    }
+
+    /**
+     * Get user role display title.
+     */
+    public function getRoleTitleAttribute(): string
+    {
+        $roleModel = $this->adminRole();
+        if ($roleModel && ! empty($roleModel->title)) {
+            return (string) $roleModel->title;
+        }
+
+        if (! empty($this->role)) {
+            return ucwords(str_replace(['-', '_'], ' ', (string) $this->role));
+        }
+
+        return 'Super Admin';
     }
 
     /**

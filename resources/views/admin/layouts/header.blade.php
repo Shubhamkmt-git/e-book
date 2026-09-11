@@ -14,27 +14,53 @@
 
     <!-- Right: Profile Dropdown -->
     <div class="flex items-center gap-4">
+        @php
+            $authUser = Auth::user();
+            $avatarUrl = $authUser?->avatar_url;
+            $initials = $authUser?->initials ?? strtoupper(substr($authUser->name ?? 'A', 0, 1));
+            $roleTitle = $authUser?->role_title ?? 'Super Admin';
+        @endphp
+
         <!-- User Profile Dropdown Toggle -->
         <div class="relative">
             <button onclick="toggleProfileDropdown()" class="flex items-center gap-3.5 p-1.5 rounded-xl hover:bg-slate-100/80 transition cursor-pointer">
-                <div class="w-10 h-10 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
-                    {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
-                </div>
+                @if(!empty($avatarUrl))
+                    <img 
+                        src="{{ $avatarUrl }}" 
+                        alt="{{ $authUser->name ?? 'Administrator' }}" 
+                        class="w-10 h-10 rounded-full object-cover border border-brand-200 shadow-2xs shrink-0"
+                    >
+                @else
+                    <div class="w-10 h-10 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-sm shadow-xs shrink-0">
+                        {{ $initials }}
+                    </div>
+                @endif
                 <div class="text-left hidden md:block">
-                    <span class="block text-sm font-semibold text-slate-800 leading-tight">{{ Auth::user()->name ?? 'Administrator' }}</span>
-                    <span class="block text-xs text-slate-500 leading-tight mt-0.5">Super Admin</span>
+                    <span class="block text-sm font-semibold text-slate-800 leading-tight">{{ $authUser->name ?? 'Administrator' }}</span>
+                    <span class="block text-xs text-slate-500 leading-tight mt-0.5">{{ $roleTitle }}</span>
                 </div>
                 <i class="fa-solid fa-chevron-down text-xs text-slate-400 hidden md:block"></i>
             </button>
 
             <!-- Dropdown Menu -->
-            <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-60 bg-white rounded-2xl shadow-xl shadow-slate-900/10 border border-slate-200/80 py-2.5 z-50">
-                <div class="px-5 py-3 border-b border-slate-100">
-                    <p class="text-sm font-bold text-slate-900">{{ Auth::user()->name ?? 'Administrator' }}</p>
-                    <p class="text-xs text-slate-500 truncate mt-0.5">{{ Auth::user()->email ?? 'admin@ebook.com' }}</p>
+            <div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl shadow-slate-900/10 border border-slate-200/80 py-2.5 z-50">
+                <div class="px-5 py-3 border-b border-slate-100 flex items-center gap-3">
+                    @if(!empty($avatarUrl))
+                        <img 
+                            src="{{ $avatarUrl }}" 
+                            alt="{{ $authUser->name ?? 'Admin' }}" 
+                            class="w-10 h-10 rounded-full object-cover border border-slate-200 shrink-0"
+                        >
+                    @else
+                        <div class="w-10 h-10 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                            {{ $initials }}
+                        </div>
+                    @endif
+                    <div class="min-w-0 flex-1">
+                        <p class="text-sm font-bold text-slate-900 truncate">{{ $authUser->name ?? 'Administrator' }}</p>
+                        <p class="text-xs text-slate-500 truncate">{{ $authUser->email ?? 'admin@ebook.com' }}</p>
+                    </div>
                 </div>
-
-
 
                 <div class="border-t border-slate-100 pt-1.5">
                     <form method="POST" action="{{ route('admin.logout') }}">

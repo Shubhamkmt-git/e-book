@@ -39,6 +39,58 @@ class User extends Authenticatable
     }
 
     /**
+     * Get avatar image URL for the user.
+     */
+    public function getAvatarUrlAttribute(): string
+    {
+        $adminUser = $this->adminUser();
+        if ($adminUser && $adminUser->avatar_url) {
+            return $adminUser->avatar_url;
+        }
+
+        return '';
+    }
+
+    /**
+     * Get user initials.
+     */
+    public function getInitialsAttribute(): string
+    {
+        $adminUser = $this->adminUser();
+        if ($adminUser) {
+            return $adminUser->initials;
+        }
+
+        $parts = explode(' ', trim($this->name));
+        $initials = '';
+        foreach (array_slice($parts, 0, 2) as $part) {
+            $initials .= mb_substr($part, 0, 1);
+        }
+
+        return strtoupper($initials ?: 'AD');
+    }
+
+    /**
+     * Get user role display title.
+     */
+    public function getRoleTitleAttribute(): string
+    {
+        $adminUser = $this->adminUser();
+        if ($adminUser) {
+            $roleModel = $adminUser->adminRole();
+            if ($roleModel && ! empty($roleModel->title)) {
+                return (string) $roleModel->title;
+            }
+
+            if (! empty($adminUser->role)) {
+                return ucwords(str_replace(['-', '_'], ' ', (string) $adminUser->role));
+            }
+        }
+
+        return 'Super Admin';
+    }
+
+    /**
      * Check if user has given admin permission.
      *
      * @param  string|array<int, string>  $permission

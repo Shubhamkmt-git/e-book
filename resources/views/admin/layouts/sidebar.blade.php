@@ -193,14 +193,28 @@
 
     <!-- Bottom Admin Profile Widget -->
     <div class="p-4 border-t border-brand-800/60 bg-brand-950/50 sidebar-profile-box">
+        @php
+            $sidebarUser = Auth::user();
+            $sidebarAvatarUrl = $sidebarUser?->avatar_url;
+            $sidebarInitials = $sidebarUser?->initials ?? strtoupper(substr($sidebarUser->name ?? 'Admin', 0, 2));
+        @endphp
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-3.5 overflow-hidden">
-                <div class="w-10 h-10 rounded-full bg-white text-brand-900 flex items-center justify-center font-bold text-sm shrink-0 shadow-xs" title="{{ Auth::user()->name ?? 'Administrator' }}">
-                    {{ strtoupper(substr(Auth::user()->name ?? 'Admin', 0, 2)) }}
-                </div>
+                @if(!empty($sidebarAvatarUrl))
+                    <img 
+                        src="{{ $sidebarAvatarUrl }}" 
+                        alt="{{ $sidebarUser->name ?? 'Administrator' }}" 
+                        class="w-10 h-10 rounded-full object-cover shrink-0 border border-white/20 shadow-xs" 
+                        title="{{ $sidebarUser->name ?? 'Administrator' }}"
+                    >
+                @else
+                    <div class="w-10 h-10 rounded-full bg-white text-brand-900 flex items-center justify-center font-bold text-sm shrink-0 shadow-xs" title="{{ $sidebarUser->name ?? 'Administrator' }}">
+                        {{ $sidebarInitials }}
+                    </div>
+                @endif
                 <div class="sidebar-user-info truncate">
-                    <p class="text-sm font-semibold text-white truncate leading-tight">{{ Auth::user()->name ?? 'Administrator' }}</p>
-                    <p class="text-xs text-brand-300 truncate mt-0.5">{{ Auth::user()->email ?? 'admin@ebook.com' }}</p>
+                    <p class="text-sm font-semibold text-white truncate leading-tight">{{ $sidebarUser->name ?? 'Administrator' }}</p>
+                    <p class="text-xs text-brand-300 truncate mt-0.5">{{ $sidebarUser->email ?? 'admin@ebook.com' }}</p>
                 </div>
             </div>
 
