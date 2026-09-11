@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Razorpay\Api\Api;
@@ -267,9 +268,11 @@ class PaymentController extends Controller
                 }
             }
 
+            session(['recent_purchase_id' => $purchase->id]);
+
             return redirect()->route('books.show', $purchase->book_identifier)->with([
                 'payment_success' => '🎉 Payment completed successfully! Your e-book is ready.',
-                'auto_download_url' => route('purchases.download', $purchase),
+                'auto_download_url' => URL::signedRoute('purchases.download', ['purchase' => $purchase->id], now()->addHours(24)),
                 'purchased_book_title' => $purchase->book_title,
                 'customer_email' => $customer?->email ?? '',
             ]);
@@ -616,9 +619,11 @@ class PaymentController extends Controller
                 }
             }
 
+            session(['recent_purchase_id' => $purchase->id]);
+
             return redirect()->route('books.show', $purchase->book_identifier)->with([
                 'payment_success' => '🎉 Payment completed successfully via Razorpay! Your e-book is ready.',
-                'auto_download_url' => route('purchases.download', $purchase),
+                'auto_download_url' => URL::signedRoute('purchases.download', ['purchase' => $purchase->id], now()->addHours(24)),
                 'purchased_book_title' => $purchase->book_title,
                 'customer_email' => $customer?->email ?? '',
             ]);
@@ -790,9 +795,11 @@ class PaymentController extends Controller
                 }
             }
 
+            session(['recent_purchase_id' => $purchase->id]);
+
             return redirect()->route('books.show', $purchase->book_identifier)->with([
                 'payment_success' => '🎉 Payment completed successfully via Razorpay! Your e-book is ready.',
-                'auto_download_url' => route('purchases.download', $purchase),
+                'auto_download_url' => URL::signedRoute('purchases.download', ['purchase' => $purchase->id], now()->addHours(24)),
                 'purchased_book_title' => $purchase->book_title,
                 'customer_email' => $customer?->email ?? '',
             ]);
@@ -811,12 +818,39 @@ class PaymentController extends Controller
     }
 
     /**
-     * Download the full purchased e-book.
+     * Download the full purchased e-book (authorized customers, signed URLs, or admins only).
      */
-    public function downloadPurchasedEbook(Purchase $purchase): Response
+    public function downloadPurchasedEbook(Request $request, Purchase $purchase): Response|RedirectResponse
     {
         if ($purchase->status !== 'paid') {
             abort(403, 'This purchase has not been paid or verified.');
+        }
+
+        // Authorization check:
+        // 1. Valid signed URL (e.g. from email delivery or checkout callback)
+        $isSigned = $request->hasValidSignature();
+
+        // 2. Authenticated Customer who owns the purchase
+        $isCustomerOwner = Auth::guard('customer')->check() && (
+            Auth::guard('customer')->id() === $purchase->customer_id ||
+            strtolower((string) Auth::guard('customer')->user()->email) === strtolower((string) $purchase->customer?->email)
+        );
+
+        // 3. Authenticated Admin
+        $isAdmin = Auth::guard('web')->check();
+
+        // 4. In-session immediate purchase (after completing checkout)
+        $isSessionPurchase = (int) session('recent_purchase_id') === (int) $purchase->id;
+
+        if (! $isSigned && ! $isCustomerOwner && ! $isAdmin && ! $isSessionPurchase) {
+            if (! Auth::guard('customer')->check()) {
+                return redirect()->route('home')->with([
+                    'error' => 'Please sign in with your customer account to download your purchased e-book.',
+                    'open_auth_drawer' => true,
+                ]);
+            }
+
+            abort(403, 'You are not authorized to download this e-book. Please log into the account used to make this purchase.');
         }
 
         $dbBook = Book::where('slug', $purchase->book_identifier)
@@ -1024,9 +1058,11 @@ class PaymentController extends Controller
                 }
             }
 
+            session(['recent_purchase_id' => $purchase->id]);
+
             return redirect()->route('books.show', $purchase->book_identifier)->with([
                 'payment_success' => '🎉 Payment completed successfully! Your e-book is ready.',
-                'auto_download_url' => route('purchases.download', $purchase),
+                'auto_download_url' => URL::signedRoute('purchases.download', ['purchase' => $purchase->id], now()->addHours(24)),
                 'purchased_book_title' => $purchase->book_title,
                 'customer_email' => $customer?->email ?? '',
             ]);

@@ -190,15 +190,25 @@
                     <i class="fa-regular fa-heart text-xs"></i>
                 </button>
 
-                <!-- Bottom Image Overlay Gradient + Buy Now Button -->
+                <!-- Bottom Image Overlay Gradient + Buy / Download Button -->
                 <div class="absolute inset-x-0 bottom-0 pb-4 sm:pb-8 pt-14 sm:pt-20 bg-gradient-to-t from-slate-950/85 via-slate-950/40 to-transparent flex flex-col items-center justify-end px-4 z-10 pointer-events-auto">
-                    <a 
-                        href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
-                        class="btn-buy-motion w-full sm:w-auto min-w-[220px] sm:min-w-[280px] h-12 sm:h-14 inline-flex items-center justify-center gap-2.5 px-6 sm:px-10 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-lg sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.04] active:scale-[0.98] shadow-2xl text-center cursor-pointer group/btn"
-                    >
-                        <span>Buy Now ({{ $book['price'] }}/-)</span>
-                        <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover/btn:translate-x-1 transition-transform duration-300"></i>
-                    </a>
+                    @if($hasPurchased ?? false)
+                        <a 
+                            href="{{ route('purchases.download', $userPurchase->id) }}"
+                            class="w-full sm:w-auto min-w-[220px] sm:min-w-[280px] h-12 sm:h-14 inline-flex items-center justify-center gap-2.5 px-6 sm:px-10 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-brand text-lg sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.04] active:scale-[0.98] shadow-2xl text-center cursor-pointer group/btn"
+                        >
+                            <i class="fa-solid fa-download text-base"></i>
+                            <span>Download Full E-Book (PDF)</span>
+                        </a>
+                    @else
+                        <a 
+                            href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
+                            class="btn-buy-motion w-full sm:w-auto min-w-[220px] sm:min-w-[280px] h-12 sm:h-14 inline-flex items-center justify-center gap-2.5 px-6 sm:px-10 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-lg sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.04] active:scale-[0.98] shadow-2xl text-center cursor-pointer group/btn"
+                        >
+                            <span>Buy Now ({{ $book['price'] }}/-)</span>
+                            <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover/btn:translate-x-1 transition-transform duration-300"></i>
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -239,39 +249,67 @@
 
             <!-- Pricing & Action Buttons (Centered) -->
             <div class="space-y-3 pt-2 max-w-md mx-auto w-full">
-                <!-- Price Display -->
-                <div class="flex items-baseline justify-center gap-3">
-                    <span class="font-brand text-4xl sm:text-5xl text-brand-600 font-bold tracking-wider leading-none">
-                        {{ $book['price'] }}
-                    </span>
-                    @if(!empty($book['original_price']))
-                        <span class="font-brand text-2xl text-slate-400 line-through tracking-wider">
-                            {{ $book['original_price'] }}
-                        </span>
-                        <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">
-                            {{ $book['discount'] ?? '50% OFF' }}
-                        </span>
-                    @endif
-                </div>
+                @if($hasPurchased ?? false)
+                    <!-- Already Owned Banner & Instant Full Download -->
+                    <div class="p-4 sm:p-5 rounded-2xl bg-emerald-50/90 border border-emerald-200/90 text-center space-y-3 shadow-2xs">
+                        <div class="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold uppercase tracking-wider shadow-2xs">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>You Own This E-Book</span>
+                        </div>
+                        <p class="text-xs text-emerald-800 font-medium leading-relaxed">
+                            Purchased on {{ $userPurchase?->created_at ? $userPurchase->created_at->format('M d, Y') : 'Recent order' }}. You have lifetime access.
+                        </p>
 
-                <!-- Buy Now Button with Price & Motion -->
-                <a 
-                    href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
-                    class="btn-buy-motion w-full h-13 sm:h-14 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-2xl sm:text-3xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] text-center cursor-pointer group"
-                >
-                    <span>Buy Now ({{ $book['price'] }}/-)</span>
-                    <i class="fa-solid fa-arrow-right text-base text-white/80 group-hover:translate-x-1.5 transition-transform duration-300"></i>
-                </a>
+                        <!-- Download Full E-Book Button -->
+                        <a 
+                            href="{{ route('purchases.download', $userPurchase->id) }}"
+                            class="w-full h-13 sm:h-14 inline-flex items-center justify-center gap-2.5 px-8 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-brand text-2xl sm:text-3xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] text-center cursor-pointer shadow-md group"
+                        >
+                            <i class="fa-solid fa-download text-lg group-hover:translate-y-0.5 transition-transform"></i>
+                            <span>Download Full E-Book (PDF)</span>
+                        </a>
 
-                <!-- Download Sample Button Below Buy -->
-                <a 
-                    href="{{ route('books.preview', $book['slug'] ?? $book['id']) }}" 
-                    download
-                    class="w-full h-11 inline-flex items-center justify-center gap-2 px-6 rounded-full bg-white hover:bg-brand-50 text-brand-700 font-bold text-xs uppercase tracking-wider border border-brand-200 hover:border-brand-400 transition shadow-2xs cursor-pointer"
-                >
-                    <i class="fa-solid fa-file-arrow-down text-brand-600"></i>
-                    <span>Download Sample (PDF)</span>
-                </a>
+                        <div class="flex items-center justify-center gap-4 text-xs font-semibold text-slate-500 pt-1">
+                            <a href="{{ route('customer.profile') }}" class="text-emerald-700 hover:text-emerald-800 underline underline-offset-2">
+                                <i class="fa-solid fa-book-open mr-1"></i>View in My Library
+                            </a>
+                        </div>
+                    </div>
+                @else
+                    <!-- Price Display -->
+                    <div class="flex items-baseline justify-center gap-3">
+                        <span class="font-brand text-4xl sm:text-5xl text-brand-600 font-bold tracking-wider leading-none">
+                            {{ $book['price'] }}
+                        </span>
+                        @if(!empty($book['original_price']))
+                            <span class="font-brand text-2xl text-slate-400 line-through tracking-wider">
+                                {{ $book['original_price'] }}
+                            </span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider">
+                                {{ $book['discount'] ?? '50% OFF' }}
+                            </span>
+                        @endif
+                    </div>
+
+                    <!-- Buy Now Button with Price & Motion -->
+                    <a 
+                        href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
+                        class="btn-buy-motion w-full h-13 sm:h-14 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-2xl sm:text-3xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] text-center cursor-pointer group"
+                    >
+                        <span>Buy Now ({{ $book['price'] }}/-)</span>
+                        <i class="fa-solid fa-arrow-right text-base text-white/80 group-hover:translate-x-1.5 transition-transform duration-300"></i>
+                    </a>
+
+                    <!-- Download Sample Button Below Buy -->
+                    <a 
+                        href="{{ route('books.preview', $book['slug'] ?? $book['id']) }}" 
+                        download
+                        class="w-full h-11 inline-flex items-center justify-center gap-2 px-6 rounded-full bg-white hover:bg-brand-50 text-brand-700 font-bold text-xs uppercase tracking-wider border border-brand-200 hover:border-brand-400 transition shadow-2xs cursor-pointer"
+                    >
+                        <i class="fa-solid fa-file-arrow-down text-brand-600"></i>
+                        <span>Download Sample (PDF)</span>
+                    </a>
+                @endif
             </div>
         </div>
 
@@ -300,15 +338,25 @@
                 @endforeach
             </div>
 
-            <!-- Buy Now CTA after Highlights -->
+            <!-- Buy / Download CTA after Highlights -->
             <div class="pt-3 flex justify-center">
-                <a 
-                    href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
-                    class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
-                >
-                    <span>Buy Now ({{ $book['price'] }}/-)</span>
-                    <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover:translate-x-1 transition-transform duration-300"></i>
-                </a>
+                @if($hasPurchased ?? false)
+                    <a 
+                        href="{{ route('purchases.download', $userPurchase->id) }}"
+                        class="w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group shadow-md"
+                    >
+                        <i class="fa-solid fa-download text-sm"></i>
+                        <span>Download Full E-Book (PDF)</span>
+                    </a>
+                @else
+                    <a 
+                        href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
+                        class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
+                    >
+                        <span>Buy Now ({{ $book['price'] }}/-)</span>
+                        <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover:translate-x-1 transition-transform duration-300"></i>
+                    </a>
+                @endif
             </div>
         </div>
         @endif
@@ -391,15 +439,25 @@
                 </table>
             </div>
 
-            <!-- Buy Now CTA after Table of Contents -->
+            <!-- Buy / Download CTA after Table of Contents -->
             <div class="pt-3 flex justify-center">
-                <a 
-                    href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
-                    class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
-                >
-                    <span>Buy Now ({{ $book['price'] }}/-)</span>
-                    <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover:translate-x-1 transition-transform duration-300"></i>
-                </a>
+                @if($hasPurchased ?? false)
+                    <a 
+                        href="{{ route('purchases.download', $userPurchase->id) }}"
+                        class="w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group shadow-md"
+                    >
+                        <i class="fa-solid fa-download text-sm"></i>
+                        <span>Download Full E-Book (PDF)</span>
+                    </a>
+                @else
+                    <a 
+                        href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
+                        class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
+                    >
+                        <span>Buy Now ({{ $book['price'] }}/-)</span>
+                        <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover:translate-x-1 transition-transform duration-300"></i>
+                    </a>
+                @endif
             </div>
         </div>
         @endif
@@ -454,15 +512,25 @@
                 @endforeach
             </div>
 
-            <!-- Buy Now CTA after Suggested Section -->
+            <!-- Buy / Download CTA after Suggested Section -->
             <div class="pt-4 flex justify-center">
-                <a 
-                    href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
-                    class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
-                >
-                    <span>Buy Now ({{ $book['price'] }}/-)</span>
-                    <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover:translate-x-1 transition-transform duration-300"></i>
-                </a>
+                @if($hasPurchased ?? false)
+                    <a 
+                        href="{{ route('purchases.download', $userPurchase->id) }}"
+                        class="w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group shadow-md"
+                    >
+                        <i class="fa-solid fa-download text-sm"></i>
+                        <span>Download Full E-Book (PDF)</span>
+                    </a>
+                @else
+                    <a 
+                        href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
+                        class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
+                    >
+                        <span>Buy Now ({{ $book['price'] }}/-)</span>
+                        <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover:translate-x-1 transition-transform duration-300"></i>
+                    </a>
+                @endif
             </div>
         </div>
 
@@ -608,15 +676,25 @@
 
             </div>
 
-            <!-- Buy Now CTA after Reviews -->
+            <!-- Buy Now / Download Full E-Book CTA after Reviews -->
             <div class="pt-6 flex justify-center">
-                <a 
-                    href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
-                    class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
-                >
-                    <span>Buy Now ({{ $book['price'] }}/-)</span>
-                    <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover:translate-x-1 transition-transform duration-300"></i>
-                </a>
+                @if($hasPurchased ?? false)
+                    <a 
+                        href="{{ route('purchases.download', $userPurchase->id) }}"
+                        class="w-full sm:w-auto min-w-[280px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group shadow-md"
+                    >
+                        <i class="fa-solid fa-download text-sm"></i>
+                        <span>Download Full E-Book (PDF)</span>
+                    </a>
+                @else
+                    <a 
+                        href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
+                        class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
+                    >
+                        <span>Buy Now ({{ $book['price'] }}/-)</span>
+                        <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover:translate-x-1 transition-transform duration-300"></i>
+                    </a>
+                @endif
             </div>
         </div>
 
@@ -731,12 +809,21 @@
                     Get the complete book in DRM-free PDF, EPUB and MOBI formats, plus all bonus materials.
                 </p>
                 <div class="pt-2 flex items-center justify-center gap-3">
-                    <a
-                        href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
-                        onclick="closeSampleReaderModal()"
-                        class="btn-buy-motion px-6 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-brand text-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] shadow-md inline-flex items-center gap-2 group">
-                        <span>Buy Now ({{ $book['price'] }}/-)</span>
-                    </a>
+                    @if($hasPurchased ?? false)
+                        <a
+                            href="{{ route('purchases.download', $userPurchase->id) }}"
+                            class="px-6 py-2.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-white font-brand text-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] shadow-md inline-flex items-center gap-2 group">
+                            <i class="fa-solid fa-download text-sm"></i>
+                            <span>Download Full E-Book (PDF)</span>
+                        </a>
+                    @else
+                        <a
+                            href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
+                            onclick="closeSampleReaderModal()"
+                            class="btn-buy-motion px-6 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-brand text-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] shadow-md inline-flex items-center gap-2 group">
+                            <span>Buy Now ({{ $book['price'] }}/-)</span>
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -784,33 +871,51 @@
 
         <!-- Pricing & Action (Full width on mobile, right-aligned on tablet/desktop) -->
         <div class="w-full sm:w-auto flex items-center justify-between sm:justify-end gap-3 sm:gap-4 shrink-0">
-            <!-- Price Display (Desktop) -->
-            <div class="text-right hidden sm:block">
-                <div class="flex items-baseline gap-1.5 justify-end">
-                    <span class="font-brand text-2xl text-brand-600 font-bold tracking-wider leading-none">
-                        {{ $book['price'] }}
+            @if($hasPurchased ?? false)
+                <!-- Owned Status & Download (Desktop) -->
+                <div class="text-right hidden sm:block">
+                    <span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                        <i class="fa-solid fa-circle-check text-[10px]"></i> Purchased
                     </span>
-                    @if(!empty($book['original_price']))
-                        <span class="text-xs text-slate-400 line-through">
-                            {{ $book['original_price'] }}
+                </div>
+
+                <!-- Download Button (Full-width on mobile) -->
+                <a 
+                    href="{{ route('purchases.download', $userPurchase->id) }}"
+                    class="w-full sm:w-auto text-center px-5 sm:px-7 py-3 sm:py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-brand text-xl sm:text-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-2 shadow-md group"
+                >
+                    <i class="fa-solid fa-download text-sm"></i>
+                    <span>Download E-Book</span>
+                </a>
+            @else
+                <!-- Price Display (Desktop) -->
+                <div class="text-right hidden sm:block">
+                    <div class="flex items-baseline gap-1.5 justify-end">
+                        <span class="font-brand text-2xl text-brand-600 font-bold tracking-wider leading-none">
+                            {{ $book['price'] }}
+                        </span>
+                        @if(!empty($book['original_price']))
+                            <span class="text-xs text-slate-400 line-through">
+                                {{ $book['original_price'] }}
+                            </span>
+                        @endif
+                    </div>
+                    @if(!empty($book['discount']))
+                        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                            {{ $book['discount'] }}
                         </span>
                     @endif
                 </div>
-                @if(!empty($book['discount']))
-                    <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                        {{ $book['discount'] }}
-                    </span>
-                @endif
-            </div>
 
-            <!-- Buy Now Button (Full-width on mobile) -->
-            <a 
-                href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
-                class="btn-buy-motion w-full sm:w-auto text-center px-5 sm:px-7 py-3 sm:py-2.5 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-1.5 group"
-            >
-                <span>Buy Now ({{ $book['price'] }}/-)</span>
-                <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover:translate-x-1 transition-transform duration-300"></i>
-            </a>
+                <!-- Buy Now Button (Full-width on mobile) -->
+                <a 
+                    href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
+                    class="btn-buy-motion w-full sm:w-auto text-center px-5 sm:px-7 py-3 sm:py-2.5 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-1.5 group"
+                >
+                    <span>Buy Now ({{ $book['price'] }}/-)</span>
+                    <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover:translate-x-1 transition-transform duration-300"></i>
+                </a>
+            @endif
         </div>
     </div>
 </div>

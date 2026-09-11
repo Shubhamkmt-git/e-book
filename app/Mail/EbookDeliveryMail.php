@@ -11,6 +11,7 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\URL;
 
 class EbookDeliveryMail extends Mailable
 {
@@ -55,7 +56,7 @@ class EbookDeliveryMail extends Mailable
                 'purchase' => $this->purchase,
                 'book' => $this->book,
                 'customer' => $this->customer,
-                'downloadUrl' => route('purchases.download', $this->purchase),
+                'downloadUrl' => URL::signedRoute('purchases.download', ['purchase' => $this->purchase->id], now()->addDays(365)),
             ],
         );
     }

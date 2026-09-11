@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Category;
+use App\Models\Purchase;
 use App\Models\Testimonial;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class BookController extends Controller
@@ -204,6 +206,21 @@ class BookController extends Controller
             ];
         }
 
+        $currentCustomer = Auth::guard('customer')->user();
+        $userPurchase = null;
+        if ($currentCustomer) {
+            $userPurchase = Purchase::where('customer_id', $currentCustomer->id)
+                ->where('status', 'paid')
+                ->where(function ($q) use ($book) {
+                    $q->where('book_identifier', $book['slug'] ?? '')
+                        ->orWhere('book_identifier', (string) ($book['id'] ?? ''));
+                })
+                ->latest()
+                ->first();
+        }
+
+        $hasPurchased = $userPurchase !== null;
+
         return view('frontend.books.show', [
             'book' => $book,
             'landing' => $landingData,
@@ -211,6 +228,8 @@ class BookController extends Controller
             'reviewCount' => $reviewCount,
             'avgRating' => $avgRating,
             'suggestedFor' => $suggestedFor,
+            'hasPurchased' => $hasPurchased,
+            'userPurchase' => $userPurchase,
         ]);
     }
 

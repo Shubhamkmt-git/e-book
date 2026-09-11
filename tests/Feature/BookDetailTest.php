@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Book;
 use App\Models\Category;
+use App\Models\Customer;
+use App\Models\Purchase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -69,5 +71,35 @@ class BookDetailTest extends TestCase
         $response->assertSee('Official Free Sample Preview');
         $response->assertSee('Algorithms &amp; Elegance', false);
         $response->assertSee('Table of Contents (Full Book Overview)');
+    }
+
+    /**
+     * Test book detail page displays full download button if customer already purchased it.
+     */
+    public function test_book_detail_page_shows_download_full_ebook_when_customer_has_purchased(): void
+    {
+        $customer = Customer::create([
+            'name' => 'Book Buyer',
+            'email' => 'buyer@example.com',
+            'password' => 'secret123',
+        ]);
+
+        $purchase = Purchase::create([
+            'customer_id' => $customer->id,
+            'book_identifier' => 'algorithms-and-elegance',
+            'book_title' => 'Algorithms & Elegance',
+            'amount' => 499,
+            'transaction_id' => 'TXN-BUYER-1',
+            'status' => 'paid',
+        ]);
+
+        $response = $this->actingAs($customer, 'customer')
+            ->get(route('books.show', 'algorithms-and-elegance'));
+
+        $response->assertStatus(200);
+        $response->assertSee('You Own This E-Book');
+        $response->assertSee('Download Full E-Book (PDF)');
+        $response->assertSee(route('purchases.download', $purchase->id));
+        $response->assertDontSee('Buy Now (₹499/-)');
     }
 }

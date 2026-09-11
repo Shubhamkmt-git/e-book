@@ -148,7 +148,32 @@ class EasebuzzPaymentTest extends TestCase
         });
     }
 
-    public function test_download_purchased_ebook_route_returns_downloadable_file(): void
+    public function test_download_purchased_ebook_route_returns_downloadable_file_for_owner(): void
+    {
+        $customer = Customer::create([
+            'name' => 'Jane Reader',
+            'email' => 'jane@example.com',
+            'password' => 'password123',
+        ]);
+        $purchase = Purchase::create([
+            'customer_id' => $customer->id,
+            'book_identifier' => 'algorithms-and-elegance',
+            'book_title' => 'Algorithms & Elegance',
+            'amount' => 499,
+            'transaction_id' => 'EBTEST999',
+            'status' => 'paid',
+        ]);
+
+        $response = $this->actingAs($customer, 'customer')
+            ->get(route('purchases.download', $purchase));
+
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Disposition', 'attachment; filename="algorithms-and-elegance-full-edition.html"');
+        $response->assertSee('Algorithms &amp; Elegance', false);
+        $response->assertSee('Official Full Edition');
+    }
+
+    public function test_download_purchased_ebook_blocked_for_unauthenticated_guest(): void
     {
         $customer = Customer::create([
             'name' => 'Jane Reader',
@@ -166,10 +191,8 @@ class EasebuzzPaymentTest extends TestCase
 
         $response = $this->get(route('purchases.download', $purchase));
 
-        $response->assertStatus(200);
-        $response->assertHeader('Content-Disposition', 'attachment; filename="algorithms-and-elegance-full-edition.html"');
-        $response->assertSee('Algorithms &amp; Elegance', false);
-        $response->assertSee('Official Full Edition');
+        $response->assertRedirect(route('home'));
+        $response->assertSessionHas('open_auth_drawer');
     }
 
     public function test_mock_payment_simulation_flow_works(): void

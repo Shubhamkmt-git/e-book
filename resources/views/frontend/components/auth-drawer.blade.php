@@ -374,7 +374,7 @@
         }
     });
 
-    @if ($errors->any())
+    @if ($errors->any() || session('open_auth_drawer'))
         openAuthDrawer(@json(session('auth_tab', 'signin')));
     @endif
 </script>
