@@ -1,6 +1,11 @@
 <!-- Frontend Plain Brand Color Footer (#7A58A9) -->
-<footer class="bg-brand-600 text-white border-t border-brand-700 pt-12 pb-8">
-    <div class="w-[96%] max-w-[96%] mx-auto px-4 sm:px-6">
+<footer class="relative overflow-hidden bg-brand-600 text-white border-t border-brand-700 pt-12 pb-8">
+
+    <!-- Decorative Muted Circular Shapes -->
+    <div class="absolute -top-24 -left-24 w-64 h-64 bg-brand-500/40 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 -right-12 w-80 h-80 bg-brand-700/50 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="w-[96%] max-w-[96%] mx-auto px-4 sm:px-6 relative z-10">
         
         <!-- Main Columned Grid (Brand, Quick Links, Top Genres) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12 pb-10 border-b border-white/15">

@@ -313,6 +313,38 @@
         </div>
         @endif
 
+        <!-- 5.5 Gallery Section -->
+        @if(!empty($book['gallery_image_urls']))
+        <div class="w-full pt-8 pb-3 border-t border-slate-200/80 space-y-6 mx-auto">
+            <!-- Centered Header -->
+            <div class="text-center space-y-1">
+                <h2 class="font-brand text-2xl sm:text-3xl text-slate-900 uppercase tracking-wide">
+                    Inside The Book
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
+                    A sneak peek into the pages and content
+                </p>
+            </div>
+
+            <!-- 4 Images Per Row Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-4 pt-1">
+                @foreach ($book['gallery_image_urls'] as $url)
+                    <div 
+                        class="group relative overflow-hidden bg-slate-100 rounded-2xl border border-slate-200/80 hover:border-brand-400 hover:shadow-[0_16px_36px_-8px_rgba(122,88,169,0.30)] transition-all duration-500 aspect-square sm:aspect-[4/3] cursor-pointer"
+                        onclick="openLightbox('{{ $url }}')"
+                    >
+                        <img src="{{ $url }}" alt="Gallery Image" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/20 transition-colors duration-300 flex items-center justify-center">
+                            <div class="w-10 h-10 rounded-full bg-white/90 text-brand-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
+                                <i class="fa-solid fa-magnifying-glass-plus text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
         <!-- 6. Table of Contents (Clean Minimal Table with Visible Grid Lines) -->
         @if(!empty($book['chapters']))
         <div class="w-full pt-8 pb-3 border-t border-slate-200/80 space-y-5 mx-auto">
@@ -712,6 +744,22 @@
 </div>
 
 <!-- ==========================================
+     IMAGE GALLERY LIGHTBOX MODAL
+     ========================================== -->
+<div 
+    id="gallery-lightbox-modal" 
+    class="fixed inset-0 z-[60] bg-slate-950/95 backdrop-blur-sm hidden flex items-center justify-center p-2 sm:p-4 opacity-0 transition-opacity duration-300"
+    onclick="closeLightbox()"
+>
+    <button type="button" onclick="closeLightbox()" class="absolute top-4 right-4 sm:top-6 sm:right-6 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition backdrop-blur-md z-10 cursor-pointer">
+        <i class="fa-solid fa-xmark text-xl"></i>
+    </button>
+    <div class="relative w-full max-w-5xl max-h-[90vh] flex items-center justify-center pointer-events-none" onclick="event.stopPropagation()">
+        <img id="lightbox-image" src="" alt="Gallery Preview" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl pointer-events-auto transform scale-95 transition-transform duration-300">
+    </div>
+</div>
+
+<!-- ==========================================
      STICKY BOTTOM DRAWER / FLOATING PURCHASE BAR (ALWAYS OPEN)
      ========================================== -->
 <div 
@@ -997,6 +1045,32 @@
             initiateBookPurchase(currentBookData);
         });
     @endif
+
+    function openLightbox(url) {
+        const modal = document.getElementById('gallery-lightbox-modal');
+        const img = document.getElementById('lightbox-image');
+        img.src = url;
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            img.classList.remove('scale-95');
+            img.classList.add('scale-100');
+        }, 10);
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        const modal = document.getElementById('gallery-lightbox-modal');
+        const img = document.getElementById('lightbox-image');
+        modal.classList.add('opacity-0');
+        img.classList.remove('scale-100');
+        img.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            img.src = '';
+            document.body.style.overflow = '';
+        }, 300);
+    }
 </script>
 
 @endsection

@@ -138,30 +138,30 @@
                         <div class="grid grid-cols-2 gap-2">
                             
                             <!-- Razorpay Official Logo Card -->
-                            <label class="relative flex flex-col justify-between p-2.5 rounded-xl border-2 cursor-pointer transition-all has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50/50 has-[:checked]:shadow-2xs border-slate-200 bg-white hover:border-slate-300">
-                                <input type="radio" name="payment_gateway_choice" value="razorpay" class="peer sr-only" checked onchange="updateGatewayChoice('razorpay')">
+                            <label class="group relative flex flex-col justify-between p-2.5 rounded-xl border-2 cursor-pointer transition-all has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50/50 has-[:checked]:shadow-2xs border-slate-200 bg-white hover:border-slate-300">
+                                <input type="radio" name="payment_gateway_choice" value="razorpay" class="sr-only" checked onchange="updateGatewayChoice('razorpay')">
                                 <div class="flex items-center justify-between">
                                     <div class="h-5 flex items-center">
                                         <!-- Razorpay Official Image Logo -->
                                         <img src="{{ asset('images/gateways/razorpay.png') }}" alt="Razorpay" class="h-5 w-auto object-contain">
                                     </div>
-                                    <div class="w-4 h-4 rounded-full border-2 border-slate-300 peer-checked:border-sky-600 flex items-center justify-center transition-colors">
-                                        <div class="w-2 h-2 rounded-full bg-sky-600 scale-0 peer-checked:scale-100 transition-transform"></div>
+                                    <div class="w-4 h-4 rounded-full border-2 border-slate-300 group-has-[:checked]:border-sky-600 flex items-center justify-center transition-colors">
+                                        <div class="w-2 h-2 rounded-full bg-sky-600 scale-0 group-has-[:checked]:scale-100 transition-transform"></div>
                                     </div>
                                 </div>
                                 <span class="text-[9px] text-slate-400 mt-1 block leading-none font-medium">UPI, Cards, NetBanking</span>
                             </label>
 
                             <!-- Easebuzz Official Logo Card -->
-                            <label class="relative flex flex-col justify-between p-2.5 rounded-xl border-2 cursor-pointer transition-all has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/50 has-[:checked]:shadow-2xs border-slate-200 bg-white hover:border-slate-300">
-                                <input type="radio" name="payment_gateway_choice" value="easebuzz" class="peer sr-only" onchange="updateGatewayChoice('easebuzz')">
+                            <label class="group relative flex flex-col justify-between p-2.5 rounded-xl border-2 cursor-pointer transition-all has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/50 has-[:checked]:shadow-2xs border-slate-200 bg-white hover:border-slate-300">
+                                <input type="radio" name="payment_gateway_choice" value="easebuzz" class="sr-only" onchange="updateGatewayChoice('easebuzz')">
                                 <div class="flex items-center justify-between">
                                     <div class="h-5 flex items-center">
                                         <!-- Easebuzz Official Image Logo -->
                                         <img src="{{ asset('images/gateways/easebuzz.png') }}" alt="Easebuzz" class="h-5 w-auto object-contain">
                                     </div>
-                                    <div class="w-4 h-4 rounded-full border-2 border-slate-300 peer-checked:border-orange-500 flex items-center justify-center transition-colors">
-                                        <div class="w-2 h-2 rounded-full bg-orange-500 scale-0 peer-checked:scale-100 transition-transform"></div>
+                                    <div class="w-4 h-4 rounded-full border-2 border-slate-300 group-has-[:checked]:border-orange-500 flex items-center justify-center transition-colors">
+                                        <div class="w-2 h-2 rounded-full bg-orange-500 scale-0 group-has-[:checked]:scale-100 transition-transform"></div>
                                     </div>
                                 </div>
                                 <span class="text-[9px] text-slate-400 mt-1 block leading-none font-medium">UPI, Cards, Wallets</span>
@@ -379,8 +379,15 @@
 
         modal.classList.remove('pointer-events-none', 'opacity-0', 'scale-95');
         modal.classList.add('pointer-events-auto', 'opacity-100', 'scale-100');
-
         document.body.style.overflow = 'hidden';
+
+        // Disable global toast notification while checking out
+        if (typeof window.dismissSalesToast === 'function') {
+            window.dismissSalesToast();
+        }
+        if (typeof window.pauseSalesToast === 'function') {
+            window.pauseSalesToast();
+        }
 
         // Auto-focus first empty input
         setTimeout(() => {
@@ -409,6 +416,11 @@
             backdrop.classList.add('pointer-events-none');
             modal.classList.add('pointer-events-none');
             document.body.style.overflow = '';
+
+            // Resume global toast notification when checkout closes
+            if (typeof window.resumeSalesToast === 'function') {
+                window.resumeSalesToast();
+            }
         }, 300);
     };
 

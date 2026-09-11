@@ -471,6 +471,34 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
                         @error('ebook_file')<p class="text-xs text-rose-600 font-medium">{{ $message }}</p>@enderror
                     </div>
 
+                    <!-- 4. Gallery Images Upload -->
+                    <div class="col-span-1 md:col-span-3 space-y-3 p-5 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-2 text-indigo-700 font-bold text-sm mb-1">
+                                <i class="fa-solid fa-images"></i>
+                                <span>4. Gallery Images</span>
+                            </div>
+                            <p class="text-[11px] text-slate-500">Upload multiple images to show in the book details page (JPG, PNG, WEBP)</p>
+                        </div>
+
+                        <div id="gallery-preview-container" class="hidden grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 mt-3">
+                            <!-- Preview images will be injected here -->
+                        </div>
+
+                        <div id="gallery-dropzone" class="border-2 border-dashed border-slate-300 hover:border-indigo-400 bg-white rounded-xl p-5 text-center transition cursor-pointer mt-3" onclick="document.getElementById('gallery_images').click()">
+                            <i class="fa-solid fa-cloud-arrow-up text-indigo-600 text-2xl mb-2"></i>
+                            <p class="text-xs font-bold text-slate-800">Upload Gallery Images</p>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Click to select multiple images</p>
+                            <input type="file" name="gallery_images[]" id="gallery_images" accept="image/*" multiple class="hidden" onchange="previewGalleryImages(this)">
+                        </div>
+                        <div class="flex justify-end items-center hidden" id="gallery-actions">
+                            <button type="button" onclick="removeGalleryImages()" class="text-xs text-rose-600 hover:text-rose-700 font-bold px-3 py-1.5 rounded hover:bg-rose-50 cursor-pointer transition">
+                                <i class="fa-solid fa-trash-can mr-1"></i> Clear All
+                            </button>
+                        </div>
+                        @error('gallery_images.*')<p class="text-xs text-rose-600 font-medium">{{ $message }}</p>@enderror
+                    </div>
+
                 </div>
             </div>
 
@@ -825,6 +853,100 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
         document.getElementById('cover-preview-img').src = '';
         document.getElementById('cover-preview-container').classList.add('hidden');
         document.getElementById('cover-dropzone').classList.remove('hidden');
+    }
+
+    let galleryDataTransfer = new DataTransfer();
+
+    function previewGalleryImages(input) {
+        const container = document.getElementById('gallery-preview-container');
+        const actions = document.getElementById('gallery-actions');
+        
+        if (input.files && input.files.length > 0) {
+            container.classList.remove('hidden');
+            actions.classList.remove('hidden');
+            
+            Array.from(input.files).forEach(file => {
+                if(file.type.startsWith('image/')) {
+                    // Check if file already exists in DataTransfer
+                    let exists = false;
+                    for (let i = 0; i < galleryDataTransfer.files.length; i++) {
+                        if (galleryDataTransfer.files[i].name === file.name && galleryDataTransfer.files[i].size === file.size) {
+                            exists = true;
+                            break;
+                        }
+                    }
+                    if (!exists) {
+                        galleryDataTransfer.items.add(file);
+                        
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const imgBox = document.createElement('div');
+                            imgBox.className = 'relative rounded-xl overflow-hidden border border-slate-200 bg-white aspect-[10/7] shadow-sm group';
+                            imgBox.dataset.filename = file.name;
+                            imgBox.innerHTML = `
+                                <img src="${e.target.result}" alt="Gallery Preview" class="w-full h-full object-cover">
+                                <button type="button" onclick="removeSingleGalleryImage('${file.name}', this)" class="absolute top-1 right-1 w-6 h-6 rounded-full bg-rose-500/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-sm hover:bg-rose-600">
+                                    <i class="fa-solid fa-xmark text-xs"></i>
+                                </button>
+                            `;
+                            // Append right before the dropzone if it exists, otherwise just append
+                            const dropzone = document.getElementById('gallery-dropzone-inline');
+                            if (dropzone) {
+                                container.insertBefore(imgBox, dropzone);
+                            } else {
+                                container.appendChild(imgBox);
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+            
+            // Sync with actual input
+            document.getElementById('gallery_images').files = galleryDataTransfer.files;
+            
+            // Hide main dropzone, show inline dropzone
+            document.getElementById('gallery-dropzone').classList.add('hidden');
+            
+            if (!document.getElementById('gallery-dropzone-inline')) {
+                const inlineDropzone = document.createElement('div');
+                inlineDropzone.id = 'gallery-dropzone-inline';
+                inlineDropzone.className = 'border-2 border-dashed border-slate-300 hover:border-indigo-400 bg-white rounded-xl aspect-[10/7] flex flex-col items-center justify-center transition cursor-pointer text-slate-400 hover:text-indigo-500';
+                inlineDropzone.onclick = () => document.getElementById('gallery_images').click();
+                inlineDropzone.innerHTML = `<i class="fa-solid fa-plus text-xl mb-1"></i><span class="text-[10px] font-bold uppercase tracking-wider">Add More</span>`;
+                container.appendChild(inlineDropzone);
+            }
+        }
+    }
+
+    function removeSingleGalleryImage(filename, buttonElement) {
+        const newDataTransfer = new DataTransfer();
+        
+        for (let i = 0; i < galleryDataTransfer.files.length; i++) {
+            if (galleryDataTransfer.files[i].name !== filename) {
+                newDataTransfer.items.add(galleryDataTransfer.files[i]);
+            }
+        }
+        
+        galleryDataTransfer = newDataTransfer;
+        document.getElementById('gallery_images').files = galleryDataTransfer.files;
+        
+        // Remove preview UI
+        buttonElement.closest('div').remove();
+        
+        // If empty, reset UI
+        if (galleryDataTransfer.files.length === 0) {
+            removeGalleryImages();
+        }
+    }
+
+    function removeGalleryImages() {
+        galleryDataTransfer = new DataTransfer();
+        document.getElementById('gallery_images').files = galleryDataTransfer.files;
+        document.getElementById('gallery-preview-container').innerHTML = '';
+        document.getElementById('gallery-preview-container').classList.add('hidden');
+        document.getElementById('gallery-actions').classList.add('hidden');
+        document.getElementById('gallery-dropzone').classList.remove('hidden');
     }
 
     function previewSampleFile(input) {

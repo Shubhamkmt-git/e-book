@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Frontend\BookController;
 use App\Http\Controllers\Frontend\CategoryController;
 use App\Http\Controllers\Frontend\CustomerAuthController;
+use App\Http\Controllers\Frontend\CustomerProfileController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\LegalPageController;
 use App\Http\Controllers\Frontend\PaymentController;
@@ -58,6 +59,12 @@ Route::middleware('guest:customer')->group(function () {
 Route::post('/customer/logout', [CustomerAuthController::class, 'logout'])
     ->middleware('auth:customer')
     ->name('customer.logout');
+
+Route::middleware('auth:customer')->group(function () {
+    Route::get('/profile', [CustomerProfileController::class, 'index'])->name('customer.profile');
+    Route::get('/profile/edit', [CustomerProfileController::class, 'edit'])->name('customer.profile.edit');
+    Route::put('/profile', [CustomerProfileController::class, 'update'])->name('customer.profile.update');
+});
 
 // Admin Routes
 Route::prefix('admin')->name('admin.')->group(function () {

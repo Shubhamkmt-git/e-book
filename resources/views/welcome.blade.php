@@ -14,7 +14,7 @@
 <!-- ==========================================
      FULL-WIDTH HERO BANNER SECTION (MULTI-SLIDE WITH AUTO-SHIFT & COUNT DOTS)
      ========================================== -->
-<section id="hero-carousel" class="relative w-full min-h-[70vh] lg:h-[70vh] flex items-center justify-center overflow-hidden bg-slate-950 group/carousel" aria-label="Hero Banners Carousel">
+<section id="hero-carousel" class="relative w-full min-h-[80vh] lg:min-h-[70vh] flex items-center justify-center overflow-hidden bg-slate-950 group/carousel" aria-label="Hero Banners Carousel">
     
     @if($bannersList->isEmpty())
         {{-- Default Single Hero Banner Fallback --}}
@@ -28,12 +28,12 @@
             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/60"></div>
             <div class="absolute inset-0 bg-radial from-brand-600/20 via-transparent to-slate-950/80"></div>
         </div>
-        <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4 relative z-10 py-16 sm:py-20">
-            <div class="max-w-5xl text-center sm:text-left">
-                <h1 class="font-brand text-5xl sm:text-7xl lg:text-8xl text-white tracking-wide uppercase leading-[0.95] mb-6">
+        <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4 relative z-10 py-12 sm:py-20">
+            <div class="max-w-5xl text-center sm:text-left mt-8 sm:mt-0">
+                <h1 class="font-brand text-4xl sm:text-6xl lg:text-7xl xl:text-8xl text-white tracking-wide uppercase leading-tight sm:leading-[0.95] mb-4 sm:mb-6">
                     Discover, Read &amp; Collect Your Favorite <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-brand-400 to-indigo-300">E-Books.</span>
                 </h1>
-                <p class="text-base sm:text-lg text-slate-300 leading-relaxed mb-8 max-w-3xl font-normal">
+                <p class="text-sm sm:text-base lg:text-lg text-slate-300 leading-relaxed mb-6 sm:mb-8 max-w-3xl font-normal">
                     Your premier digital library for bestselling novels, academic textbooks, technology guides, and independent literature. Read seamlessly across all your devices anytime, anywhere.
                 </p>
                 <div class="flex flex-col sm:flex-row items-center gap-4">
@@ -69,9 +69,9 @@
                 </div>
 
                 <!-- Slide Content -->
-                <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4 relative z-10 py-16 sm:py-20">
-                    <div class="max-w-5xl text-center sm:text-left">
-                        <h1 class="font-brand text-5xl sm:text-7xl lg:text-8xl text-white tracking-wide uppercase leading-[0.95] mb-6">
+                <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4 relative z-10 py-12 sm:py-20">
+                    <div class="max-w-5xl text-center sm:text-left mt-8 sm:mt-0">
+                        <h1 class="font-brand text-4xl sm:text-6xl lg:text-7xl xl:text-8xl text-white tracking-wide uppercase leading-tight sm:leading-[0.95] mb-4 sm:mb-6">
                             {{ $banner->title }}
                             @if($banner->title_l2)
                                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-brand-400 to-indigo-300">{{ $banner->title_l2 }}</span>
@@ -79,7 +79,7 @@
                         </h1>
 
                         @if($banner->description)
-                            <p class="text-base sm:text-lg text-slate-300 leading-relaxed mb-8 max-w-3xl font-normal">
+                            <p class="text-sm sm:text-base lg:text-lg text-slate-300 leading-relaxed mb-6 sm:mb-8 max-w-3xl font-normal">
                                 {{ $banner->description }}
                             </p>
                         @endif
@@ -193,8 +193,7 @@
                                 class="w-full h-full object-cover"
                             >
                             
-                            <!-- Subtle Book Spine Gradient Effect -->
-                            <div class="absolute inset-y-0 left-0 w-3 bg-gradient-to-r from-black/40 via-white/10 to-transparent pointer-events-none"></div>
+
 
                             <!-- Wishlist Heart Button -->
                             <button 
@@ -231,7 +230,7 @@
                     
                     <!-- Title -->
                     <a href="{{ route('books.show', $spotlightBook->slug) }}" class="block">
-                        <h2 class="font-brand text-4xl sm:text-5xl lg:text-6xl text-slate-900 hover:text-brand-600 transition-colors tracking-wide uppercase leading-[0.95] mb-2.5">
+                        <h2 class="font-brand text-3xl sm:text-5xl lg:text-6xl text-slate-900 hover:text-brand-600 transition-colors tracking-wide uppercase leading-tight sm:leading-[0.95] mb-2.5">
                             {{ $spotlight?->effective_title ?: $spotlightBook->title }}
                         </h2>
                     </a>
@@ -271,12 +270,12 @@
                             <span class="font-brand text-4xl sm:text-5xl text-brand-700 tracking-wider font-bold">₹{{ number_format((float) $spotlightBook->selling_price, 0) }}</span>
                             @if($spotlightBook->price > $spotlightBook->selling_price)
                                 <span class="font-brand text-2xl text-slate-400 line-through tracking-wider">₹{{ number_format((float) $spotlightBook->price, 0) }}</span>
-                                <span class="px-2.5 py-0.5 rounded-full bg-emerald-100/90 text-emerald-800 text-xs font-bold border border-emerald-200 uppercase tracking-wider ml-1">{{ $spotlightBook->discount_percentage }}% OFF</span>
+                                <span class="whitespace-nowrap px-2.5 py-0.5 rounded-full bg-emerald-100/90 text-emerald-800 text-xs font-bold border border-emerald-200 uppercase tracking-wider ml-1">{{ $spotlightBook->discount_percentage }}% OFF</span>
                             @endif
                         </div>
 
                         <!-- CTA Action Buttons -->
-                        <div class="flex items-center gap-3 w-full sm:w-auto justify-center">
+                        <div class="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto justify-center lg:justify-start">
                             <button 
                                 type="button" 
                                 onclick="initiateBookPurchase({{ json_encode([
@@ -290,14 +289,14 @@
                                     'image' => $spotlightBook->cover_image ? $spotlightBook->cover_image_url : asset('images/books/spotlight.jpg'),
                                     'url' => route('books.show', $spotlightBook->slug)
                                 ]) }}, event)"
-                                class="flex-1 sm:flex-none h-12 inline-flex items-center justify-center px-8 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 text-center shadow-lg shadow-brand-600/30 transform hover:-translate-y-0.5 cursor-pointer"
+                                class="w-full sm:w-auto h-12 inline-flex items-center justify-center px-8 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 text-center shadow-lg shadow-brand-600/30 transform hover:-translate-y-0.5 cursor-pointer shrink-0"
                             >
                                 <span>{{ $spotlight?->button_text ?: 'Buy Now' }}</span>
                             </button>
                             @if($spotlightBook->sample_file)
                                 <a 
                                     href="{{ route('books.preview', $spotlightBook->slug) }}" 
-                                    class="h-12 inline-flex items-center justify-center gap-2 px-7 rounded-full bg-white hover:bg-brand-50/80 text-brand-900 border border-brand-200 font-brand text-xl tracking-wider uppercase transition-all duration-200 text-center shadow-2xs hover:shadow-xs transform hover:-translate-y-0.5"
+                                    class="w-full sm:w-auto h-12 inline-flex items-center justify-center gap-2 px-7 rounded-full bg-white hover:bg-brand-50/80 text-brand-900 border border-brand-200 font-brand text-xl tracking-wider uppercase transition-all duration-200 text-center shadow-2xs hover:shadow-xs transform hover:-translate-y-0.5 shrink-0"
                                 >
                                     <span>Free Sample</span>
                                     <i class="fa-solid fa-arrow-down text-xs"></i>

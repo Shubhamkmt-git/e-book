@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-slate-50 scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="bg-slate-50 scroll-smooth">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,7 +27,7 @@
     </style>
     @stack('styles')
 </head>
-<body class="h-full antialiased text-slate-800 bg-slate-50 flex flex-col min-h-screen selection:bg-brand-600 selection:text-white">
+<body class="antialiased text-slate-800 bg-slate-50 flex flex-col min-h-screen selection:bg-brand-600 selection:text-white">
 
     <!-- Frontend Nav Component -->
     @include('frontend.layouts.navbar')
@@ -49,8 +49,10 @@
     <!-- Global Quick Checkout Modal Component -->
     @include('frontend.components.quick-checkout-modal')
 
-    <!-- Global Top-Right Recent Sales Toast Notification -->
-    @include('frontend.components.recent-sales-toast')
+    <!-- Top-Right Recent Sales Toast Notification (Home & Book Detail Only) -->
+    @if(request()->routeIs('home') || request()->routeIs('books.show'))
+        @include('frontend.components.recent-sales-toast')
+    @endif
 
     <!-- Global Razorpay Standard Checkout SDK -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>

@@ -28,6 +28,7 @@ class Book extends Model
         'table_of_contents',
         'suggested_for',
         'cover_image',
+        'gallery_images',
         'sample_file',
         'ebook_file',
         'pages',
@@ -45,6 +46,7 @@ class Book extends Model
         'price' => 'decimal:2',
         'selling_price' => 'decimal:2',
         'suggested_for' => 'array',
+        'gallery_images' => 'array',
         'pages' => 'integer',
     ];
 
@@ -120,6 +122,31 @@ class Book extends Model
         }
 
         return Storage::disk('public')->url($this->cover_image);
+    }
+
+    /**
+     * Get full URLs for all gallery images.
+     *
+     * @return list<string>
+     */
+    public function getGalleryImageUrlsAttribute(): array
+    {
+        if (empty($this->gallery_images) || ! is_array($this->gallery_images)) {
+            return [];
+        }
+
+        $urls = [];
+        foreach ($this->gallery_images as $image) {
+            if (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
+                $urls[] = $image;
+            } elseif (str_starts_with($image, 'images/')) {
+                $urls[] = asset($image);
+            } else {
+                $urls[] = Storage::disk('public')->url($image);
+            }
+        }
+
+        return $urls;
     }
 
     /**

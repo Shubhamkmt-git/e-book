@@ -310,7 +310,6 @@
                                 class="w-full h-full object-cover group-hover/item:scale-105 transition-transform duration-300"
                                 onerror="this.src='/images/books/spotlight.jpg'"
                             >
-                            <div class="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-r from-black/35 to-transparent pointer-events-none"></div>
                         </a>
 
                         <!-- Book Info -->

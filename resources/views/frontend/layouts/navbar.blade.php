@@ -67,13 +67,9 @@
                     </button>
 
                     @if (auth('customer')->check())
-                        <span class="text-sm font-semibold text-slate-600">Hi, {{ auth('customer')->user()->name }}</span>
-                        <form action="{{ route('customer.logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-slate-200 text-slate-700 hover:border-brand-500 hover:text-brand-600 text-xs sm:text-sm font-semibold transition-all duration-150 cursor-pointer">
-                                Sign Out
-                            </button>
-                        </form>
+                        <a href="{{ route('customer.profile') }}" class="relative w-10 h-10 rounded-full bg-brand-100 hover:bg-brand-200 text-brand-700 flex items-center justify-center transition-all duration-200 cursor-pointer group shadow-sm border border-brand-200/50" title="My Profile">
+                            <i class="fa-solid fa-user text-base group-hover:scale-110 transition-transform"></i>
+                        </a>
                     @else
                         <button
                             type="button"
@@ -89,6 +85,22 @@
 
             <!-- Mobile Action Buttons -->
             <div class="flex lg:hidden items-center gap-2">
+                <!-- Mobile Auth Button -->
+                @if (auth('customer')->check())
+                    <a href="{{ route('customer.profile') }}" class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 hover:bg-brand-200 border border-brand-200/50 flex items-center justify-center transition cursor-pointer" aria-label="Profile">
+                        <i class="fa-solid fa-user text-base"></i>
+                    </a>
+                @else
+                    <button 
+                        type="button" 
+                        onclick="openAuthDrawer('signin')"
+                        class="w-10 h-10 rounded-xl text-slate-700 hover:text-brand-600 hover:bg-brand-50 border border-slate-200 flex items-center justify-center transition cursor-pointer"
+                        aria-label="Sign In"
+                    >
+                        <i class="fa-regular fa-user text-lg"></i>
+                    </button>
+                @endif
+
                 <!-- Mobile Wishlist Button -->
                 <button 
                     type="button" 

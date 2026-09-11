@@ -139,6 +139,7 @@ class AdminBookController extends Controller
             'suggested_for' => ['nullable', 'array'],
             'suggested_for.*' => ['string', 'max:150'],
             'cover_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg,gif,avif'],
+            'gallery_images.*' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg,gif,avif'],
             'sample_file' => ['nullable', 'file', 'mimes:pdf,epub,doc,docx'],
             'ebook_file' => ['nullable', 'file', 'mimes:pdf,epub,mobi,zip,rar,doc,docx'],
             'pages' => ['nullable', 'integer', 'min:1', 'max:999999'],
@@ -156,6 +157,18 @@ class AdminBookController extends Controller
         if ($request->hasFile('cover_image')) {
             $path = $request->file('cover_image')->store('books/covers', 'public');
             $validated['cover_image'] = $path;
+        }
+
+        if ($request->hasFile('gallery_images')) {
+            $galleryPaths = [];
+            foreach ($request->file('gallery_images') as $file) {
+                if ($file->isValid()) {
+                    $galleryPaths[] = $file->store('books/gallery', 'public');
+                }
+            }
+            if (! empty($galleryPaths)) {
+                $validated['gallery_images'] = $galleryPaths;
+            }
         }
 
         if ($request->hasFile('sample_file')) {
@@ -221,6 +234,7 @@ class AdminBookController extends Controller
             'suggested_for' => ['nullable', 'array'],
             'suggested_for.*' => ['string', 'max:150'],
             'cover_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg,gif,avif'],
+            'gallery_images.*' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg,gif,avif'],
             'sample_file' => ['nullable', 'file', 'mimes:pdf,epub,doc,docx'],
             'ebook_file' => ['nullable', 'file', 'mimes:pdf,epub,mobi,zip,rar,doc,docx'],
             'pages' => ['nullable', 'integer', 'min:1', 'max:999999'],
@@ -241,6 +255,27 @@ class AdminBookController extends Controller
             }
             $path = $request->file('cover_image')->store('books/covers', 'public');
             $validated['cover_image'] = $path;
+        }
+
+        if ($request->hasFile('gallery_images')) {
+            // Delete old gallery images if replacing
+            if (! empty($book->gallery_images) && is_array($book->gallery_images)) {
+                foreach ($book->gallery_images as $oldImage) {
+                    if (! str_starts_with($oldImage, 'http') && ! str_starts_with($oldImage, 'images/')) {
+                        Storage::disk('public')->delete($oldImage);
+                    }
+                }
+            }
+
+            $galleryPaths = [];
+            foreach ($request->file('gallery_images') as $file) {
+                if ($file->isValid()) {
+                    $galleryPaths[] = $file->store('books/gallery', 'public');
+                }
+            }
+            if (! empty($galleryPaths)) {
+                $validated['gallery_images'] = $galleryPaths;
+            }
         }
 
         if ($request->hasFile('sample_file')) {
@@ -277,6 +312,14 @@ class AdminBookController extends Controller
     {
         if ($book->cover_image && ! str_starts_with($book->cover_image, 'http') && ! str_starts_with($book->cover_image, 'images/')) {
             Storage::disk('public')->delete($book->cover_image);
+        }
+
+        if (! empty($book->gallery_images) && is_array($book->gallery_images)) {
+            foreach ($book->gallery_images as $oldImage) {
+                if (! str_starts_with($oldImage, 'http') && ! str_starts_with($oldImage, 'images/')) {
+                    Storage::disk('public')->delete($oldImage);
+                }
+            }
         }
 
         if ($book->sample_file && ! str_starts_with($book->sample_file, 'http')) {

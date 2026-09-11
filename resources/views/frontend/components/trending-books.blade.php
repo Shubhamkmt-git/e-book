@@ -37,19 +37,18 @@
                     $bookRating = $isObj ? '5.0' : ($book['rating'] ?? '5.0');
                     $bookReviews = $isObj ? '120+' : ($book['reviews'] ?? '120+');
                 @endphp
-                <div class="group bg-white rounded-3xl border border-brand-200/80 hover:border-brand-400/90 p-5 hover:shadow-[0_20px_45px_-12px_rgba(122,88,169,0.22)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full">
+                <div class="group bg-white rounded-3xl border border-brand-200/80 hover:border-brand-400/90 hover:shadow-[0_20px_45px_-12px_rgba(122,88,169,0.22)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full overflow-hidden">
                     
                     <div>
                         <!-- Book Cover Image with Depth & Spine Effect (10:7) -->
-                        <a href="{{ route('books.show', $bookSlug) }}" class="block aspect-[10/7] rounded-2xl overflow-hidden relative shadow-sm group-hover:shadow-md transition-all duration-300 bg-slate-950 ring-1 ring-black/5">
+                        <a href="{{ route('books.show', $bookSlug) }}" class="block aspect-[10/7] overflow-hidden relative shadow-sm group-hover:shadow-md transition-all duration-300 bg-slate-950">
                             <img 
                                 src="{{ $bookImage }}" 
                                 alt="{{ $bookTitle }}" 
                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                             >
 
-                            <!-- Subtle Book Spine Gradient Effect -->
-                            <div class="absolute inset-y-0 left-0 w-3 bg-gradient-to-r from-black/35 via-white/10 to-transparent pointer-events-none"></div>
+
 
                             <!-- Wishlist Button (Top-Right Corner) -->
                             <button 
@@ -74,7 +73,7 @@
                         </a>
 
                         <!-- Card Metadata -->
-                        <div class="mt-4 flex items-end justify-between gap-3">
+                        <div class="mt-5 px-5 flex items-end justify-between gap-3">
                             <!-- Left: Title, Author & Rating Stars -->
                             <div class="flex-1 min-w-0">
                                 <span class="text-[10px] font-bold text-brand-600 uppercase tracking-wider block mb-0.5">{{ $bookCategory }}</span>
@@ -112,7 +111,7 @@
                     </div>
 
                     <!-- Card Footer: Action Button (Buy Now) -->
-                    <div class="mt-5 pt-3.5 border-t border-slate-100">
+                    <div class="mt-5 pt-3.5 pb-5 px-5 border-t border-slate-100">
                         <button 
                             type="button" 
                             onclick="initiateBookPurchase({{ json_encode([
