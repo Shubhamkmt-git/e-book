@@ -151,7 +151,7 @@
         <div class="content">
             <div class="greeting">Hello, {{ $customer?->name ?? 'Reader' }}!</div>
             <p class="intro-text">
-                Thank you for your purchase. Your payment {{ $purchase->payment_method ? 'via '.ucfirst($purchase->payment_method) : '' }} has been verified successfully. Your DRM-Free e-book edition is attached to this email and also available for instant download below.
+                Thank you for your purchase. Your payment {{ $purchase->payment_method ? 'via '.ucfirst($purchase->payment_method) : '' }} has been verified successfully. Your digital publication is ready for immediate reading.
             </p>
 
             <!-- Book Showcase Box -->
@@ -165,12 +165,13 @@
 
             <!-- Download Button -->
             <div class="btn-container">
-                <a href="{{ $downloadUrl }}" class="btn-download" target="_blank">
+                <a href="{{ $downloadUrl }}" class="btn-download" target="_blank" download>
+                    <i class="fa-solid fa-cloud-arrow-down" style="margin-right: 8px;"></i>
                     Download E-Book (PDF)
                 </a>
             </div>
-            <p style="text-align: center; font-size: 12px; color: #64748b; margin-top: 5px;">
-                (If an official PDF was attached, you can also open it directly from this email)
+            <p style="text-align: center; font-size: 13px; color: #64748b; margin-top: 8px;">
+                Click the button above to download your complete PDF edition directly to your device.
             </p>
 
             <!-- Transaction Details Table -->

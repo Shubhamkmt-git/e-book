@@ -103,7 +103,7 @@ class AppSetting extends Model
     public function getLogoDarkUrlAttribute(): ?string
     {
         if ($this->logo_dark && Storage::disk('public')->exists($this->logo_dark)) {
-            return Storage::disk('public')->url($this->logo_dark);
+            return asset('storage/'.$this->logo_dark);
         }
 
         return null;
@@ -115,7 +115,7 @@ class AppSetting extends Model
     public function getLogoLightUrlAttribute(): ?string
     {
         if ($this->logo_light && Storage::disk('public')->exists($this->logo_light)) {
-            return Storage::disk('public')->url($this->logo_light);
+            return asset('storage/'.$this->logo_light);
         }
 
         return null;
@@ -127,7 +127,7 @@ class AppSetting extends Model
     public function getFaviconUrlAttribute(): ?string
     {
         if ($this->favicon && Storage::disk('public')->exists($this->favicon)) {
-            return Storage::disk('public')->url($this->favicon);
+            return asset('storage/'.$this->favicon);
         }
 
         return null;

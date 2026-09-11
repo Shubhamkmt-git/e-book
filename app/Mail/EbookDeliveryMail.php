@@ -69,38 +69,6 @@ class EbookDeliveryMail extends Mailable
      */
     public function attachments(): array
     {
-        $attachments = [];
-
-        $pdfPath = null;
-        if ($this->book) {
-            if ($this->book->ebook_file && Storage::disk('public')->exists($this->book->ebook_file)) {
-                $pdfPath = Storage::disk('public')->path($this->book->ebook_file);
-            } elseif ($this->book->sample_file && Storage::disk('public')->exists($this->book->sample_file)) {
-                $pdfPath = Storage::disk('public')->path($this->book->sample_file);
-            }
-        }
-
-        // Fallback: check if any public ebook or sample PDF exists in storage
-        if (! $pdfPath || ! file_exists($pdfPath)) {
-            $ebookFiles = Storage::disk('public')->allFiles('books/ebooks');
-            if (! empty($ebookFiles)) {
-                $pdfPath = Storage::disk('public')->path($ebookFiles[0]);
-            } else {
-                $sampleFiles = Storage::disk('public')->allFiles('books/samples');
-                if (! empty($sampleFiles)) {
-                    $pdfPath = Storage::disk('public')->path($sampleFiles[0]);
-                }
-            }
-        }
-
-        if ($pdfPath && file_exists($pdfPath)) {
-            $title = $this->book?->title ?? $this->purchase->book_title ?? 'E-Book';
-            $fileName = Str::slug($title).'-edition.pdf';
-            $attachments[] = Attachment::fromPath($pdfPath)
-                ->as($fileName)
-                ->withMime('application/pdf');
-        }
-
-        return $attachments;
+        return [];
     }
 }

@@ -142,13 +142,8 @@
                                 <input type="radio" name="payment_gateway_choice" value="razorpay" class="peer sr-only" checked onchange="updateGatewayChoice('razorpay')">
                                 <div class="flex items-center justify-between">
                                     <div class="h-5 flex items-center">
-                                        <!-- Razorpay Official SVG Wordmark & Emblem -->
-                                        <svg class="h-4 w-auto" viewBox="0 0 120 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M14.5 0L5.2 13.8L9.8 18.4L20 0H14.5Z" fill="#0284C7"/>
-                                            <path d="M5.2 13.8L0 21.6L8.4 28H13.6L5.2 13.8Z" fill="#0284C7"/>
-                                            <path d="M9.8 18.4L2.8 28H8L15 18.4H9.8Z" fill="#0C2340"/>
-                                            <text x="24" y="20" font-family="'Poppins', sans-serif" font-weight="700" font-size="15" fill="#0c2340">Razorpay</text>
-                                        </svg>
+                                        <!-- Razorpay Official Image Logo -->
+                                        <img src="{{ asset('images/gateways/razorpay.png') }}" alt="Razorpay" class="h-5 w-auto object-contain">
                                     </div>
                                     <div class="w-4 h-4 rounded-full border-2 border-slate-300 peer-checked:border-sky-600 flex items-center justify-center transition-colors">
                                         <div class="w-2 h-2 rounded-full bg-sky-600 scale-0 peer-checked:scale-100 transition-transform"></div>
@@ -162,12 +157,8 @@
                                 <input type="radio" name="payment_gateway_choice" value="easebuzz" class="peer sr-only" onchange="updateGatewayChoice('easebuzz')">
                                 <div class="flex items-center justify-between">
                                     <div class="h-5 flex items-center">
-                                        <!-- Easebuzz Official SVG Logo & Wordmark -->
-                                        <svg class="h-4 w-auto" viewBox="0 0 120 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <rect x="2" y="3" width="22" height="22" rx="5" fill="#FF5722"/>
-                                            <path d="M7 8H17V10.5H10V12.5H16V15H10V17.5H17V20H7V8Z" fill="white"/>
-                                            <text x="28" y="19" font-family="'Poppins', sans-serif" font-weight="700" font-size="14" fill="#1E293B">ease<tspan fill="#FF5722">buzz</tspan></text>
-                                        </svg>
+                                        <!-- Easebuzz Official Image Logo -->
+                                        <img src="{{ asset('images/gateways/easebuzz.png') }}" alt="Easebuzz" class="h-5 w-auto object-contain">
                                     </div>
                                     <div class="w-4 h-4 rounded-full border-2 border-slate-300 peer-checked:border-orange-500 flex items-center justify-center transition-colors">
                                         <div class="w-2 h-2 rounded-full bg-orange-500 scale-0 peer-checked:scale-100 transition-transform"></div>
