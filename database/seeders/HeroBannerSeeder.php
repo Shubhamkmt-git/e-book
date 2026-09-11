@@ -25,6 +25,18 @@ class HeroBannerSeeder extends Seeder
                 'sort_order' => 1,
                 'banner_image' => null,
             ],
+            [
+                'title' => 'Unlock Limitless Knowledge',
+                'title_l2' => 'Read Anywhere, Anytime.',
+                'description' => 'Dive into thousands of curated digital titles across technology, business, science, fiction, and self-growth with instant downloads and lifetime access.',
+                'primary_button' => 'Browse New Releases',
+                'primary_button_link' => '/ebooks',
+                'secondary_button' => 'View Best Sellers',
+                'secondary_button_link' => '/#browse',
+                'is_active' => true,
+                'sort_order' => 2,
+                'banner_image' => null,
+            ],
         ];
 
         foreach ($banners as $banner) {
