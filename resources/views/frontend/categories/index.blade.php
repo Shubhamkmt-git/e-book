@@ -15,8 +15,8 @@
 <section class="py-10 sm:py-16 bg-slate-50">
     <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4">
         
-        <!-- Breadcrumb Navigation -->
-        <div class="flex items-center gap-2 text-xs text-slate-400 mb-6">
+        <!-- Breadcrumb Navigation (Desktop Only) -->
+        <div class="hidden sm:flex items-center gap-2 text-xs text-slate-400 mb-6">
             <a href="{{ route('home') }}" class="hover:text-slate-900 transition">Home</a>
             <span>/</span>
             <span class="text-brand-600 font-semibold">Categories</span>

@@ -124,8 +124,8 @@
 
         <!-- 1 & 2. Compact Centered Header: Breadcrumb + Title + Author/Rating -->
         <div class="text-center space-y-1.5 sm:space-y-2 w-full mx-auto">
-            <!-- Breadcrumb Navigation (Centered) -->
-            <nav aria-label="Breadcrumb" class="flex flex-wrap items-center justify-center gap-1.5 text-xs text-slate-500 font-medium pb-0.5">
+            <!-- Breadcrumb Navigation (Centered, Desktop Only) -->
+            <nav aria-label="Breadcrumb" class="hidden sm:flex flex-wrap items-center justify-center gap-1.5 text-xs text-slate-500 font-medium pb-0.5">
                 <a href="{{ route('home') }}" class="hover:text-brand-600 transition">Home</a>
                 <span class="text-slate-300">/</span>
                 <a href="{{ route('books.index') }}" class="hover:text-brand-600 transition">E-Books</a>
