@@ -73,9 +73,9 @@ class EbookDeliveryMail extends Mailable
         $cleanPdfName = Str::slug($bookTitle).'-complete-edition.pdf';
 
         // 1. If physical full PDF exists in public disk
-        if ($this->book && $this->book->ebook_file && Storage::disk('public')->exists($this->book->ebook_file)) {
+        if ($this->book && ! empty(trim((string) $this->book->ebook_file))) {
             $filePath = Storage::disk('public')->path($this->book->ebook_file);
-            if (file_exists($filePath)) {
+            if (is_file($filePath)) {
                 $attachments[] = Attachment::fromPath($filePath)
                     ->as($cleanPdfName)
                     ->withMime('application/pdf');
@@ -85,9 +85,9 @@ class EbookDeliveryMail extends Mailable
         }
 
         // 2. If sample PDF exists in public disk
-        if ($this->book && $this->book->sample_file && Storage::disk('public')->exists($this->book->sample_file)) {
+        if ($this->book && ! empty(trim((string) $this->book->sample_file))) {
             $filePath = Storage::disk('public')->path($this->book->sample_file);
-            if (file_exists($filePath)) {
+            if (is_file($filePath)) {
                 $attachments[] = Attachment::fromPath($filePath)
                     ->as(Str::slug($bookTitle).'-sample-edition.pdf')
                     ->withMime('application/pdf');
