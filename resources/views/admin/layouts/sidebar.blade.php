@@ -62,7 +62,7 @@
                             <i class="fa-solid fa-chevron-down text-xs text-brand-300 transition-transform duration-200 submenu-arrow {{ (request()->routeIs('admin.admin-users.*') || request()->routeIs('admin.admin-roles.*') || request()->routeIs('admin.admin-permissions.*')) ? 'rotate-180' : '' }}"></i>
                         </button>
 
-                        {{-- Submenu: admin-user, role, permission --}}
+                        {{-- Submenu: Admin User, Role, Permission --}}
                         <div id="user-manage-submenu" class="sidebar-submenu {{ (request()->routeIs('admin.admin-users.*') || request()->routeIs('admin.admin-roles.*') || request()->routeIs('admin.admin-permissions.*')) ? '' : 'hidden' }} pl-9 pr-2 py-1 space-y-1">
                             @if(Auth::user()?->hasPermission('admin-user'))
                             <a 
@@ -71,7 +71,7 @@
                                 class="sidebar-sublink flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('admin.admin-users.*') ? 'bg-white/15 text-white font-bold' : 'text-brand-200 hover:text-white hover:bg-white/10' }}"
                             >
                                 <i class="fa-solid fa-user-shield w-5 text-center text-xs shrink-0 {{ request()->routeIs('admin.admin-users.*') ? 'text-white' : 'text-brand-300' }}"></i>
-                                <span class="sidebar-sublabel">admin-user</span>
+                                <span class="sidebar-sublabel">Admin User</span>
                             </a>
                             @endif
                             @if(Auth::user()?->hasPermission('role'))
@@ -81,7 +81,7 @@
                                 class="sidebar-sublink flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('admin.admin-roles.*') ? 'bg-white/15 text-white font-bold' : 'text-brand-200 hover:text-white hover:bg-white/10' }}"
                             >
                                 <i class="fa-solid fa-shield-halved w-5 text-center text-xs shrink-0 {{ request()->routeIs('admin.admin-roles.*') ? 'text-white' : 'text-brand-300' }}"></i>
-                                <span class="sidebar-sublabel">role</span>
+                                <span class="sidebar-sublabel">Role</span>
                             </a>
                             @endif
                             @if(Auth::user()?->hasPermission('permission'))
@@ -91,7 +91,7 @@
                                 class="sidebar-sublink flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium transition {{ request()->routeIs('admin.admin-permissions.*') ? 'bg-white/15 text-white font-bold' : 'text-brand-200 hover:text-white hover:bg-white/10' }}"
                             >
                                 <i class="fa-solid fa-key w-5 text-center text-xs shrink-0 {{ request()->routeIs('admin.admin-permissions.*') ? 'text-white' : 'text-brand-300' }}"></i>
-                                <span class="sidebar-sublabel">permission</span>
+                                <span class="sidebar-sublabel">Permission</span>
                             </a>
                             @endif
                         </div>
