@@ -37,32 +37,51 @@ class AdminRoleSeeder extends Seeder
         );
         $admin->permissions()->sync($allPermissionIds);
 
-        // 3. Manager Role (Dashboard & Admin User)
-        $managerPermissions = AdminPermission::whereIn('slug', ['dashboard', 'admin-user'])
-            ->pluck('id')
-            ->all();
+        // 3. Manager Role (Operations, Users, Catalog, Orders, Marketing, Content)
+        $managerPermissions = AdminPermission::whereIn('slug', [
+            'dashboard',
+            'admin-user',
+            'category',
+            'ebook',
+            'order',
+            'customer',
+            'hero-banner',
+            'spotlight',
+            'faq',
+            'cta',
+            'testimonial',
+            'legal-page',
+        ])->pluck('id')->all();
 
         $manager = AdminRole::updateOrCreate(
             ['slug' => 'manager'],
             [
                 'title' => 'Manager',
                 'status' => 'active',
-                'description' => 'Access to dashboard overview and admin user management.',
+                'description' => 'Comprehensive access to store operations, e-books, categories, orders, customers, and marketing modules.',
             ]
         );
         $manager->permissions()->sync($managerPermissions);
 
-        // 4. Editor Role (Dashboard only)
-        $editorPermissions = AdminPermission::whereIn('slug', ['dashboard'])
-            ->pluck('id')
-            ->all();
+        // 4. Editor Role (Catalog, Content, CMS)
+        $editorPermissions = AdminPermission::whereIn('slug', [
+            'dashboard',
+            'category',
+            'ebook',
+            'hero-banner',
+            'spotlight',
+            'faq',
+            'cta',
+            'testimonial',
+            'legal-page',
+        ])->pluck('id')->all();
 
         $editor = AdminRole::updateOrCreate(
             ['slug' => 'editor'],
             [
                 'title' => 'Editor',
                 'status' => 'active',
-                'description' => 'Access to dashboard view.',
+                'description' => 'Content and catalog editor access to books, categories, legal pages, banners, and FAQs.',
             ]
         );
         $editor->permissions()->sync($editorPermissions);

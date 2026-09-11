@@ -58,4 +58,48 @@ class AdminUser extends Authenticatable
 
         return strtoupper($initials ?: 'AD');
     }
+
+    /**
+     * Get the associated role definition for this admin user.
+     */
+    public function adminRole(): ?AdminRole
+    {
+        return AdminRole::where('slug', $this->role)->first();
+    }
+
+    /**
+     * Check whether admin user has super-admin privileges.
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->status === 'active' && in_array($this->role, ['super-admin', 'admin'], true);
+    }
+
+    /**
+     * Check whether this admin user has the given permission slug(s).
+     *
+     * @param  string|array<int, string>  $permission
+     */
+    public function hasPermission(string|array $permission): bool
+    {
+        if ($this->status !== 'active') {
+            return false;
+        }
+
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        $role = $this->adminRole();
+        if (! $role || $role->status !== 'active') {
+            return false;
+        }
+
+        $permissions = is_array($permission) ? $permission : [$permission];
+
+        return $role->permissions()
+            ->where('admin_permissions.status', 'active')
+            ->whereIn('admin_permissions.slug', $permissions)
+            ->exists();
+    }
 }

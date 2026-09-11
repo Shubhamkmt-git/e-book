@@ -38,12 +38,15 @@
             <div>
                 <p class="sidebar-heading px-3 text-xs font-bold text-brand-300 uppercase tracking-wider mb-2.5">Main</p>
                 <nav class="space-y-1.5">
+                    @if(Auth::user()?->hasPermission('dashboard'))
                     <a href="{{ route('admin.dashboard') }}" title="Dashboard" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.dashboard') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
                         <i class="fa-solid fa-gauge-high w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.dashboard') ? 'text-brand-700' : 'text-brand-300' }}"></i>
                         <span class="sidebar-label">Dashboard</span>
                     </a>
+                    @endif
 
-                    <!-- User Manage Dropdown Item -->
+                    {{-- User Manage Dropdown Item --}}
+                    @if(Auth::user()?->hasPermission(['admin-user', 'role', 'permission']))
                     <div class="space-y-1">
                         <button 
                             type="button" 
@@ -59,8 +62,9 @@
                             <i class="fa-solid fa-chevron-down text-xs text-brand-300 transition-transform duration-200 submenu-arrow {{ (request()->routeIs('admin.admin-users.*') || request()->routeIs('admin.admin-roles.*') || request()->routeIs('admin.admin-permissions.*')) ? 'rotate-180' : '' }}"></i>
                         </button>
 
-                        <!-- Submenu: admin-user, role, permission -->
+                        {{-- Submenu: admin-user, role, permission --}}
                         <div id="user-manage-submenu" class="sidebar-submenu {{ (request()->routeIs('admin.admin-users.*') || request()->routeIs('admin.admin-roles.*') || request()->routeIs('admin.admin-permissions.*')) ? '' : 'hidden' }} pl-9 pr-2 py-1 space-y-1">
+                            @if(Auth::user()?->hasPermission('admin-user'))
                             <a 
                                 href="{{ route('admin.admin-users.index') }}" 
                                 title="Admin Users"
@@ -69,6 +73,8 @@
                                 <i class="fa-solid fa-user-shield w-5 text-center text-xs shrink-0 {{ request()->routeIs('admin.admin-users.*') ? 'text-white' : 'text-brand-300' }}"></i>
                                 <span class="sidebar-sublabel">admin-user</span>
                             </a>
+                            @endif
+                            @if(Auth::user()?->hasPermission('role'))
                             <a 
                                 href="{{ route('admin.admin-roles.index') }}" 
                                 title="Admin Roles"
@@ -77,6 +83,8 @@
                                 <i class="fa-solid fa-shield-halved w-5 text-center text-xs shrink-0 {{ request()->routeIs('admin.admin-roles.*') ? 'text-white' : 'text-brand-300' }}"></i>
                                 <span class="sidebar-sublabel">role</span>
                             </a>
+                            @endif
+                            @if(Auth::user()?->hasPermission('permission'))
                             <a 
                                 href="{{ route('admin.admin-permissions.index') }}" 
                                 title="Admin Permissions"
@@ -85,74 +93,98 @@
                                 <i class="fa-solid fa-key w-5 text-center text-xs shrink-0 {{ request()->routeIs('admin.admin-permissions.*') ? 'text-white' : 'text-brand-300' }}"></i>
                                 <span class="sidebar-sublabel">permission</span>
                             </a>
+                            @endif
                         </div>
                     </div>
+                    @endif
 
-                    <!-- App Setting -->
+                    {{-- App Setting --}}
+                    @if(Auth::user()?->hasPermission('app-setting'))
                     <a href="{{ route('admin.app-setting.index') }}" title="App Setting" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.app-setting.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
                         <i class="fa-solid fa-sliders w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.app-setting.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
                         <span class="sidebar-label">App Setting</span>
                     </a>
+                    @endif
 
-                    <!-- Categories -->
+                    {{-- Categories --}}
+                    @if(Auth::user()?->hasPermission('category'))
                     <a href="{{ route('admin.categories.index') }}" title="Categories" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.categories.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
                         <i class="fa-solid fa-layer-group w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.categories.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
                         <span class="sidebar-label">Categories</span>
                     </a>
+                    @endif
 
-                    <!-- E-Books -->
+                    {{-- E-Books --}}
+                    @if(Auth::user()?->hasPermission('ebook'))
                     <a href="{{ route('admin.books.index') }}" title="E-Books" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.books.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
                         <i class="fa-solid fa-book-bookmark w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.books.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
                         <span class="sidebar-label">E-Books</span>
                     </a>
+                    @endif
 
-                    <!-- Orders / Purchases -->
+                    {{-- Orders / Purchases --}}
+                    @if(Auth::user()?->hasPermission('order'))
                     <a href="{{ route('admin.orders.index') }}" title="Orders" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.orders.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
                         <i class="fa-solid fa-cart-shopping w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.orders.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
                         <span class="sidebar-label">Orders</span>
                     </a>
+                    @endif
 
-                    <!-- Customers -->
+                    {{-- Customers --}}
+                    @if(Auth::user()?->hasPermission('customer'))
                     <a href="{{ route('admin.customers.index') }}" title="Customers" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.customers.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
                         <i class="fa-solid fa-users w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.customers.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
                         <span class="sidebar-label">Customers</span>
                     </a>
+                    @endif
 
-                    <!-- Hero Banners -->
+                    {{-- Hero Banners --}}
+                    @if(Auth::user()?->hasPermission('hero-banner'))
                     <a href="{{ route('admin.hero-banners.index') }}" title="Hero Banners" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.hero-banners.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
                         <i class="fa-solid fa-panorama w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.hero-banners.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
                         <span class="sidebar-label">Hero Banners</span>
                     </a>
+                    @endif
 
-                    <!-- Book of the Week / Spotlight -->
+                    {{-- Book of the Week / Spotlight --}}
+                    @if(Auth::user()?->hasPermission('spotlight'))
                     <a href="{{ route('admin.spotlight.manage') }}" title="Book of the Week" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.spotlight.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
                         <i class="fa-solid fa-crown w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.spotlight.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
                         <span class="sidebar-label">Book of the Week</span>
                     </a>
+                    @endif
 
-                    <!-- FAQs -->
+                    {{-- FAQs --}}
+                    @if(Auth::user()?->hasPermission('faq'))
                     <a href="{{ route('admin.faqs.index') }}" title="FAQs" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.faqs.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
                         <i class="fa-solid fa-circle-question w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.faqs.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
                         <span class="sidebar-label">FAQs</span>
                     </a>
+                    @endif
 
-                    <!-- CTAs -->
+                    {{-- CTAs --}}
+                    @if(Auth::user()?->hasPermission('cta'))
                     <a href="{{ route('admin.ctas.manage') }}" title="CTAs" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.ctas.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
                         <i class="fa-solid fa-bullhorn w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.ctas.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
                         <span class="sidebar-label">CTAs</span>
                     </a>
+                    @endif
 
-                    <!-- Testimonials -->
+                    {{-- Testimonials --}}
+                    @if(Auth::user()?->hasPermission('testimonial'))
                     <a href="{{ route('admin.testimonials.index') }}" title="Testimonials" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.testimonials.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
                         <i class="fa-solid fa-quote-left w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.testimonials.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
                         <span class="sidebar-label">Testimonials</span>
                     </a>
+                    @endif
 
-                    <!-- Legal & Policies -->
+                    {{-- Legal & Policies --}}
+                    @if(Auth::user()?->hasPermission('legal-page'))
                     <a href="{{ route('admin.legal-pages.index') }}" title="Legal Pages" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.legal-pages.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
                         <i class="fa-solid fa-file-contract w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.legal-pages.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
                         <span class="sidebar-label">Legal Pages</span>
                     </a>
+                    @endif
                 </nav>
             </div>
 

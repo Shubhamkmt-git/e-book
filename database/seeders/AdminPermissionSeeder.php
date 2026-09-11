@@ -15,7 +15,7 @@ class AdminPermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            // Main: Dashboard
+            // 1. Main: Dashboard
             [
                 'title' => 'Dashboard',
                 'slug' => 'dashboard',
@@ -23,31 +23,31 @@ class AdminPermissionSeeder extends Seeder
                 'status' => 'active',
             ],
 
-            // User Manage: Admin User (All actions: list, view, add, edit, delete)
+            // 2. User Manage: Admin User
             [
                 'title' => 'Admin User',
                 'slug' => 'admin-user',
-                'description' => 'Full combined access to all admin user operations: list, view, create, edit, and delete.',
+                'description' => 'Full combined access to all admin user operations: list, view, create, edit, toggle status, and delete.',
                 'status' => 'active',
             ],
 
-            // User Manage: Role (All actions: list, view, add, edit, delete)
+            // 3. User Manage: Role
             [
                 'title' => 'Role',
                 'slug' => 'role',
-                'description' => 'Full combined access to all role operations: list, view, create, edit, and delete.',
+                'description' => 'Full combined access to all role operations: list, view, create, edit, toggle status, and delete.',
                 'status' => 'active',
             ],
 
-            // User Manage: Permission (All actions: list, view, add, edit, delete)
+            // 4. User Manage: Permission
             [
                 'title' => 'Permission',
                 'slug' => 'permission',
-                'description' => 'Full combined access to all permission operations: list, view, create, edit, and delete.',
+                'description' => 'Full combined access to all permission operations: list, view, create, edit, toggle status, and delete.',
                 'status' => 'active',
             ],
 
-            // App Setting: Manage (All actions: view, edit, update)
+            // 5. App Setting: Manage
             [
                 'title' => 'App Setting',
                 'slug' => 'app-setting',
@@ -55,7 +55,7 @@ class AdminPermissionSeeder extends Seeder
                 'status' => 'active',
             ],
 
-            // Categories: Manage (All actions: list, view, add, edit, delete)
+            // 6. Categories: Manage
             [
                 'title' => 'Category',
                 'slug' => 'category',
@@ -63,11 +63,75 @@ class AdminPermissionSeeder extends Seeder
                 'status' => 'active',
             ],
 
-            // E-Books: Manage (All actions: list, view, add, edit, delete)
+            // 7. E-Books: Manage
             [
                 'title' => 'E-Book',
                 'slug' => 'ebook',
                 'description' => 'Full combined access to all e-book operations: list, view, create, edit, toggle status, and delete.',
+                'status' => 'active',
+            ],
+
+            // 8. Orders & Purchases
+            [
+                'title' => 'Order',
+                'slug' => 'order',
+                'description' => 'Full combined access to view orders, update order payment/fulfillment statuses, and delete records.',
+                'status' => 'active',
+            ],
+
+            // 9. Customers Management
+            [
+                'title' => 'Customer',
+                'slug' => 'customer',
+                'description' => 'Full combined access to view customer accounts, manage customer statuses, and customer records.',
+                'status' => 'active',
+            ],
+
+            // 10. Hero Banners
+            [
+                'title' => 'Hero Banner',
+                'slug' => 'hero-banner',
+                'description' => 'Full combined access to list, create, edit, reorder, toggle status, and delete homepage hero banners.',
+                'status' => 'active',
+            ],
+
+            // 11. Book of the Week / Spotlight
+            [
+                'title' => 'Spotlight',
+                'slug' => 'spotlight',
+                'description' => 'Full combined access to configure the Book of the Week spotlight promotion and callouts.',
+                'status' => 'active',
+            ],
+
+            // 12. FAQs Management
+            [
+                'title' => 'FAQ',
+                'slug' => 'faq',
+                'description' => 'Full combined access to list, create, edit, toggle status, and delete frequently asked questions.',
+                'status' => 'active',
+            ],
+
+            // 13. Call-To-Action (CTA) Management
+            [
+                'title' => 'CTA',
+                'slug' => 'cta',
+                'description' => 'Full combined access to manage community and newsletter call-to-action sections.',
+                'status' => 'active',
+            ],
+
+            // 14. Testimonials Management
+            [
+                'title' => 'Testimonial',
+                'slug' => 'testimonial',
+                'description' => 'Full combined access to list, create, edit, toggle status, and delete customer reviews and testimonials.',
+                'status' => 'active',
+            ],
+
+            // 15. Legal Pages (Privacy Policy, Terms of Service)
+            [
+                'title' => 'Legal Page',
+                'slug' => 'legal-page',
+                'description' => 'Full combined access to edit Privacy Policy, Terms of Service, and compliance documents.',
                 'status' => 'active',
             ],
         ];

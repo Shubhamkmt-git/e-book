@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\AppSetting;
 use App\Models\Category;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,6 +23,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Authorization Gate for admin permission slug checks
+        Gate::before(function ($user, string $ability) {
+            if (method_exists($user, 'hasPermission') && $user->hasPermission($ability)) {
+                return true;
+            }
+
+            return null;
+        });
         // Share branding settings with admin and frontend layouts.
         View::composer(['admin.*', 'frontend.layouts.*'], function ($view) {
             $view->with('appSetting', AppSetting::getSettings());

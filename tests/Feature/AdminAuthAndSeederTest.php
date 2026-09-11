@@ -23,10 +23,10 @@ class AdminAuthAndSeederTest extends TestCase
         $this->seed(AdminUserSeeder::class);
 
         $totalPermissions = AdminPermission::count();
-        $this->assertEquals(7, $totalPermissions);
+        $this->assertEquals(15, $totalPermissions);
 
         $superAdmin = AdminRole::where('slug', 'super-admin')->firstOrFail();
-        $this->assertEquals(7, $superAdmin->permissions()->count());
+        $this->assertEquals(15, $superAdmin->permissions()->count());
         $this->assertTrue($superAdmin->permissions()->where('slug', 'dashboard')->exists());
         $this->assertTrue($superAdmin->permissions()->where('slug', 'admin-user')->exists());
         $this->assertTrue($superAdmin->permissions()->where('slug', 'role')->exists());
@@ -34,6 +34,14 @@ class AdminAuthAndSeederTest extends TestCase
         $this->assertTrue($superAdmin->permissions()->where('slug', 'app-setting')->exists());
         $this->assertTrue($superAdmin->permissions()->where('slug', 'category')->exists());
         $this->assertTrue($superAdmin->permissions()->where('slug', 'ebook')->exists());
+        $this->assertTrue($superAdmin->permissions()->where('slug', 'order')->exists());
+        $this->assertTrue($superAdmin->permissions()->where('slug', 'customer')->exists());
+        $this->assertTrue($superAdmin->permissions()->where('slug', 'hero-banner')->exists());
+        $this->assertTrue($superAdmin->permissions()->where('slug', 'spotlight')->exists());
+        $this->assertTrue($superAdmin->permissions()->where('slug', 'faq')->exists());
+        $this->assertTrue($superAdmin->permissions()->where('slug', 'cta')->exists());
+        $this->assertTrue($superAdmin->permissions()->where('slug', 'testimonial')->exists());
+        $this->assertTrue($superAdmin->permissions()->where('slug', 'legal-page')->exists());
 
         $adminUser = AdminUser::where('email', 'admin@ebook.com')->firstOrFail();
         $this->assertEquals('super-admin', $adminUser->role);

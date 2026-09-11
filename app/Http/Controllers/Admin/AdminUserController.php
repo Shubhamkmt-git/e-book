@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminRole;
 use App\Models\AdminUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -210,9 +211,17 @@ class AdminUserController extends Controller
 
     /**
      * Return list of available roles.
+     *
+     * @return array<string, string>
      */
     protected function getAvailableRoles(): array
     {
+        $dbRoles = AdminRole::where('status', 'active')->pluck('title', 'slug')->toArray();
+
+        if (! empty($dbRoles)) {
+            return $dbRoles;
+        }
+
         return [
             'super-admin' => 'Super Admin',
             'admin' => 'Admin',

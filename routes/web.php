@@ -56,40 +56,95 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
 
     Route::middleware('auth')->group(function () {
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-        Route::patch('admin-users/{admin_user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('admin-users.toggle-status');
-        Route::patch('admin-roles/{admin_role}/toggle-status', [AdminRoleController::class, 'toggleStatus'])->name('admin-roles.toggle-status');
-        Route::patch('admin-permissions/{admin_permission}/toggle-status', [AdminPermissionController::class, 'toggleStatus'])->name('admin-permissions.toggle-status');
-        Route::patch('categories/{category}/toggle-status', [AdminCategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
-        Route::patch('books/{book}/toggle-status', [AdminBookController::class, 'toggleStatus'])->name('books.toggle-status');
-        Route::resource('admin-users', AdminUserController::class);
-        Route::resource('admin-roles', AdminRoleController::class);
-        Route::resource('admin-permissions', AdminPermissionController::class);
-        Route::resource('categories', AdminCategoryController::class);
-        Route::resource('books', AdminBookController::class);
-        Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
-        Route::resource('orders', AdminOrderController::class)->only(['index', 'show', 'destroy']);
-        Route::resource('customers', AdminCustomerController::class);
-        Route::patch('hero-banners/{hero_banner}/toggle-status', [HeroBannerController::class, 'toggleStatus'])->name('hero-banners.toggle-status');
-        Route::resource('hero-banners', HeroBannerController::class);
-        Route::patch('faqs/{faq}/toggle-status', [FaqController::class, 'toggleStatus'])->name('faqs.toggle-status');
-        Route::resource('faqs', FaqController::class)->except(['show']);
-        Route::patch('testimonials/{testimonial}/toggle-status', [TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status');
-        Route::resource('testimonials', TestimonialController::class);
-        Route::get('spotlight', [SpotlightController::class, 'manage'])->name('spotlight.manage');
-        Route::put('spotlight', [SpotlightController::class, 'update'])->name('spotlight.update');
-        Route::patch('spotlight/toggle-status', [SpotlightController::class, 'toggleStatus'])->name('spotlight.toggle-status');
-        Route::get('ctas', [CtaController::class, 'manage'])->name('ctas.manage');
-        Route::put('ctas', [CtaController::class, 'update'])->name('ctas.update');
+        // Dashboard
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])
+            ->middleware('admin.permission:dashboard')
+            ->name('dashboard');
 
-        // Legal Pages Management (Privacy Policy & Terms of Service)
-        Route::get('legal-pages', [App\Http\Controllers\Admin\LegalPageController::class, 'index'])->name('legal-pages.index');
-        Route::get('legal-pages/{slug}/edit', [App\Http\Controllers\Admin\LegalPageController::class, 'edit'])->name('legal-pages.edit');
-        Route::put('legal-pages/{slug}', [App\Http\Controllers\Admin\LegalPageController::class, 'update'])->name('legal-pages.update');
-        Route::patch('legal-pages/{slug}/toggle-status', [App\Http\Controllers\Admin\LegalPageController::class, 'toggleStatus'])->name('legal-pages.toggle-status');
+        // User Manage: Admin Users
+        Route::middleware('admin.permission:admin-user')->group(function () {
+            Route::patch('admin-users/{admin_user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('admin-users.toggle-status');
+            Route::resource('admin-users', AdminUserController::class);
+        });
+
+        // User Manage: Roles
+        Route::middleware('admin.permission:role')->group(function () {
+            Route::patch('admin-roles/{admin_role}/toggle-status', [AdminRoleController::class, 'toggleStatus'])->name('admin-roles.toggle-status');
+            Route::resource('admin-roles', AdminRoleController::class);
+        });
+
+        // User Manage: Permissions
+        Route::middleware('admin.permission:permission')->group(function () {
+            Route::patch('admin-permissions/{admin_permission}/toggle-status', [AdminPermissionController::class, 'toggleStatus'])->name('admin-permissions.toggle-status');
+            Route::resource('admin-permissions', AdminPermissionController::class);
+        });
 
         // App Setting Management Routes
-        Route::get('app-setting', [AppSettingController::class, 'index'])->name('app-setting.index');
-        Route::put('app-setting', [AppSettingController::class, 'update'])->name('app-setting.update');
+        Route::middleware('admin.permission:app-setting')->group(function () {
+            Route::get('app-setting', [AppSettingController::class, 'index'])->name('app-setting.index');
+            Route::put('app-setting', [AppSettingController::class, 'update'])->name('app-setting.update');
+        });
+
+        // Categories
+        Route::middleware('admin.permission:category')->group(function () {
+            Route::patch('categories/{category}/toggle-status', [AdminCategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
+            Route::resource('categories', AdminCategoryController::class);
+        });
+
+        // Books / E-Books
+        Route::middleware('admin.permission:ebook')->group(function () {
+            Route::patch('books/{book}/toggle-status', [AdminBookController::class, 'toggleStatus'])->name('books.toggle-status');
+            Route::resource('books', AdminBookController::class);
+        });
+
+        // Orders / Purchases
+        Route::middleware('admin.permission:order')->group(function () {
+            Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
+            Route::resource('orders', AdminOrderController::class)->only(['index', 'show', 'destroy']);
+        });
+
+        // Customers
+        Route::middleware('admin.permission:customer')->group(function () {
+            Route::resource('customers', AdminCustomerController::class);
+        });
+
+        // Hero Banners
+        Route::middleware('admin.permission:hero-banner')->group(function () {
+            Route::patch('hero-banners/{hero_banner}/toggle-status', [HeroBannerController::class, 'toggleStatus'])->name('hero-banners.toggle-status');
+            Route::resource('hero-banners', HeroBannerController::class);
+        });
+
+        // FAQs
+        Route::middleware('admin.permission:faq')->group(function () {
+            Route::patch('faqs/{faq}/toggle-status', [FaqController::class, 'toggleStatus'])->name('faqs.toggle-status');
+            Route::resource('faqs', FaqController::class)->except(['show']);
+        });
+
+        // Testimonials
+        Route::middleware('admin.permission:testimonial')->group(function () {
+            Route::patch('testimonials/{testimonial}/toggle-status', [TestimonialController::class, 'toggleStatus'])->name('testimonials.toggle-status');
+            Route::resource('testimonials', TestimonialController::class);
+        });
+
+        // Book of the Week / Spotlight
+        Route::middleware('admin.permission:spotlight')->group(function () {
+            Route::get('spotlight', [SpotlightController::class, 'manage'])->name('spotlight.manage');
+            Route::put('spotlight', [SpotlightController::class, 'update'])->name('spotlight.update');
+            Route::patch('spotlight/toggle-status', [SpotlightController::class, 'toggleStatus'])->name('spotlight.toggle-status');
+        });
+
+        // CTAs
+        Route::middleware('admin.permission:cta')->group(function () {
+            Route::get('ctas', [CtaController::class, 'manage'])->name('ctas.manage');
+            Route::put('ctas', [CtaController::class, 'update'])->name('ctas.update');
+        });
+
+        // Legal Pages Management (Privacy Policy & Terms of Service)
+        Route::middleware('admin.permission:legal-page')->group(function () {
+            Route::get('legal-pages', [App\Http\Controllers\Admin\LegalPageController::class, 'index'])->name('legal-pages.index');
+            Route::get('legal-pages/{slug}/edit', [App\Http\Controllers\Admin\LegalPageController::class, 'edit'])->name('legal-pages.edit');
+            Route::put('legal-pages/{slug}', [App\Http\Controllers\Admin\LegalPageController::class, 'update'])->name('legal-pages.update');
+            Route::patch('legal-pages/{slug}/toggle-status', [App\Http\Controllers\Admin\LegalPageController::class, 'toggleStatus'])->name('legal-pages.toggle-status');
+        });
     });
 });
