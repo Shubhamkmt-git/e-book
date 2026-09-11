@@ -19,10 +19,12 @@ class HomeController extends Controller
      */
     public function index(): View
     {
-        // Active hero banner (first by sort_order)
-        $heroBanner = HeroBanner::where('is_active', true)
+        // Active hero banners sorted by sort_order
+        $heroBanners = HeroBanner::where('is_active', true)
             ->orderBy('sort_order')
-            ->first();
+            ->get();
+
+        $heroBanner = $heroBanners->first();
 
         // Featured Categories for homepage (active, is_featured = true, sorted)
         $categories = Category::where('status', 'active')
@@ -92,6 +94,7 @@ class HomeController extends Controller
 
         return view('welcome', compact(
             'heroBanner',
+            'heroBanners',
             'categories',
             'totalCategoriesCount',
             'trendingBooks',

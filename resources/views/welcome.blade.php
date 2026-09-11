@@ -4,92 +4,161 @@
 
 @section('content')
 
+@php
+    $bannersList = (!empty($heroBanners) && $heroBanners->count() > 0) 
+        ? $heroBanners 
+        : ( (!empty($heroBanner)) ? collect([$heroBanner]) : collect([]) );
+    $hasMultipleBanners = $bannersList->count() > 1;
+@endphp
+
 <!-- ==========================================
-     FULL-WIDTH HERO BANNER SECTION (70% HEIGHT)
+     FULL-WIDTH HERO BANNER SECTION (MULTI-SLIDE WITH AUTO-SHIFT & COUNT DOTS)
      ========================================== -->
-<section class="relative w-full min-h-[70vh] lg:h-[70vh] flex items-center justify-center overflow-hidden bg-slate-950">
+<section id="hero-carousel" class="relative w-full min-h-[70vh] lg:h-[70vh] flex items-center justify-center overflow-hidden bg-slate-950 group/carousel" aria-label="Hero Banners Carousel">
     
-    <!-- Full-Width Background Banner Image with Dark Gradient & Vignette Overlay -->
-    <div class="absolute inset-0 z-0">
-        @if(!empty($heroBanner) && $heroBanner->banner_image)
-            <img
-                src="{{ $heroBanner->banner_image_url }}"
-                alt="{{ $heroBanner->title }}"
-                class="w-full h-full object-cover object-center scale-105 transform motion-safe:animate-[pulse_10s_ease-in-out_infinite]"
-            >
-        @else
+    @if($bannersList->isEmpty())
+        {{-- Default Single Hero Banner Fallback --}}
+        <div class="absolute inset-0 z-0">
             <img
                 src="{{ asset('images/hero-banner.jpg') }}"
                 alt="E-Book Digital Library Banner"
                 class="w-full h-full object-cover object-center scale-105 transform motion-safe:animate-[pulse_10s_ease-in-out_infinite]"
             >
-        @endif
-        <!-- Multi-layer Gradient Overlays for Readability & Brand Aesthetic -->
-        <div class="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/80 to-slate-950/60"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/60"></div>
-        <div class="absolute inset-0 bg-radial from-brand-600/20 via-transparent to-slate-950/80"></div>
-    </div>
-
-    <!-- Content Container (96% Width) -->
-    <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4 relative z-10 py-16 sm:py-20">
-        <div class="max-w-5xl text-center sm:text-left">
-
-            <!-- Main Banner Title -->
-            <h1 class="font-brand text-5xl sm:text-7xl lg:text-8xl text-white tracking-wide uppercase leading-[0.95] mb-6">
-                @if(!empty($heroBanner) && $heroBanner->title)
-                    {{ $heroBanner->title }}
-                    @if($heroBanner->title_l2)
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-brand-400 to-indigo-300">{{ $heroBanner->title_l2 }}</span>
-                    @endif
-                @else
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/80 to-slate-950/60"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/60"></div>
+            <div class="absolute inset-0 bg-radial from-brand-600/20 via-transparent to-slate-950/80"></div>
+        </div>
+        <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4 relative z-10 py-16 sm:py-20">
+            <div class="max-w-5xl text-center sm:text-left">
+                <h1 class="font-brand text-5xl sm:text-7xl lg:text-8xl text-white tracking-wide uppercase leading-[0.95] mb-6">
                     Discover, Read &amp; Collect Your Favorite <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-brand-400 to-indigo-300">E-Books.</span>
-                @endif
-            </h1>
-
-            <!-- Subtitle -->
-            <p class="text-base sm:text-lg text-slate-300 leading-relaxed mb-8 max-w-3xl font-normal">
-                @if(!empty($heroBanner) && $heroBanner->description)
-                    {{ $heroBanner->description }}
-                @else
+                </h1>
+                <p class="text-base sm:text-lg text-slate-300 leading-relaxed mb-8 max-w-3xl font-normal">
                     Your premier digital library for bestselling novels, academic textbooks, technology guides, and independent literature. Read seamlessly across all your devices anytime, anywhere.
-                @endif
-            </p>
-
-            <!-- Primary & Secondary Buttons -->
-            <div class="flex flex-col sm:flex-row items-center gap-4">
-                @if(!empty($heroBanner) && $heroBanner->primary_button)
-                    <a href="{{ $heroBanner->primary_button_link ?: '#browse' }}"
-                       class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase shadow-xl shadow-brand-600/35 transition-all duration-150 transform hover:-translate-y-0.5">
-                        <i class="fa-solid fa-book-open text-base"></i>
-                        <span>{{ $heroBanner->primary_button }}</span>
-                        <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i>
-                    </a>
-                @else
-                    <a href="#browse"
-                       class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase shadow-xl shadow-brand-600/35 transition-all duration-150 transform hover:-translate-y-0.5">
+                </p>
+                <div class="flex flex-col sm:flex-row items-center gap-4">
+                    <a href="#browse" class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase shadow-xl shadow-brand-600/35 transition-all duration-150 transform hover:-translate-y-0.5">
                         <i class="fa-solid fa-book-open text-base"></i>
                         <span>Explore Library</span>
                         <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i>
                     </a>
-                @endif
-
-                @if(!empty($heroBanner) && $heroBanner->secondary_button)
-                    <a href="{{ $heroBanner->secondary_button_link ?: route('categories.index') }}"
-                       class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/25 text-white border border-white/25 backdrop-blur-md font-brand text-xl tracking-wider uppercase shadow-lg transition-all duration-150 transform hover:-translate-y-0.5">
-                        <i class="fa-solid fa-layer-group text-slate-300"></i>
-                        <span>{{ $heroBanner->secondary_button }}</span>
-                    </a>
-                @else
-                    <a href="{{ route('categories.index') }}"
-                       class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/25 text-white border border-white/25 backdrop-blur-md font-brand text-xl tracking-wider uppercase shadow-lg transition-all duration-150 transform hover:-translate-y-0.5">
+                    <a href="{{ route('categories.index') }}" class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/25 text-white border border-white/25 backdrop-blur-md font-brand text-xl tracking-wider uppercase shadow-lg transition-all duration-150 transform hover:-translate-y-0.5">
                         <i class="fa-solid fa-layer-group text-slate-300"></i>
                         <span>Browse Genres</span>
                     </a>
-                @endif
+                </div>
             </div>
-
         </div>
-    </div>
+    @else
+        {{-- Dynamic Slides --}}
+        @foreach($bannersList as $index => $banner)
+            <div 
+                class="hero-slide absolute inset-0 flex items-center justify-center transition-opacity duration-700 ease-in-out {{ $index === 0 ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none z-0' }}" 
+                data-slide-index="{{ $index }}"
+            >
+                <!-- Background Image & Gradients -->
+                <div class="absolute inset-0 z-0">
+                    <img
+                        src="{{ $banner->banner_image ? $banner->banner_image_url : asset('images/hero-banner.jpg') }}"
+                        alt="{{ $banner->title }}"
+                        class="w-full h-full object-cover object-center scale-105 transform motion-safe:animate-[pulse_10s_ease-in-out_infinite]"
+                    >
+                    <div class="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/80 to-slate-950/60"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/60"></div>
+                    <div class="absolute inset-0 bg-radial from-brand-600/20 via-transparent to-slate-950/80"></div>
+                </div>
+
+                <!-- Slide Content -->
+                <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4 relative z-10 py-16 sm:py-20">
+                    <div class="max-w-5xl text-center sm:text-left">
+                        <h1 class="font-brand text-5xl sm:text-7xl lg:text-8xl text-white tracking-wide uppercase leading-[0.95] mb-6">
+                            {{ $banner->title }}
+                            @if($banner->title_l2)
+                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-brand-400 to-indigo-300">{{ $banner->title_l2 }}</span>
+                            @endif
+                        </h1>
+
+                        @if($banner->description)
+                            <p class="text-base sm:text-lg text-slate-300 leading-relaxed mb-8 max-w-3xl font-normal">
+                                {{ $banner->description }}
+                            </p>
+                        @endif
+
+                        <div class="flex flex-col sm:flex-row items-center gap-4">
+                            @if($banner->primary_button)
+                                <a href="{{ $banner->primary_button_link ?: '#browse' }}"
+                                   class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase shadow-xl shadow-brand-600/35 transition-all duration-150 transform hover:-translate-y-0.5">
+                                    <i class="fa-solid fa-book-open text-base"></i>
+                                    <span>{{ $banner->primary_button }}</span>
+                                    <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i>
+                                </a>
+                            @else
+                                <a href="#browse"
+                                   class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase shadow-xl shadow-brand-600/35 transition-all duration-150 transform hover:-translate-y-0.5">
+                                    <i class="fa-solid fa-book-open text-base"></i>
+                                    <span>Explore Library</span>
+                                    <i class="fa-solid fa-arrow-right text-xs ml-0.5"></i>
+                                </a>
+                            @endif
+
+                            @if($banner->secondary_button)
+                                <a href="{{ $banner->secondary_button_link ?: route('categories.index') }}"
+                                   class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/25 text-white border border-white/25 backdrop-blur-md font-brand text-xl tracking-wider uppercase shadow-lg transition-all duration-150 transform hover:-translate-y-0.5">
+                                    <i class="fa-solid fa-layer-group text-slate-300"></i>
+                                    <span>{{ $banner->secondary_button }}</span>
+                                </a>
+                            @else
+                                <a href="{{ route('categories.index') }}"
+                                   class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 active:bg-white/25 text-white border border-white/25 backdrop-blur-md font-brand text-xl tracking-wider uppercase shadow-lg transition-all duration-150 transform hover:-translate-y-0.5">
+                                    <i class="fa-solid fa-layer-group text-slate-300"></i>
+                                    <span>Browse Genres</span>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+
+        @if($hasMultipleBanners)
+            <!-- Previous Slide Arrow -->
+            <button 
+                type="button" 
+                onclick="shiftHeroSlide(-1)" 
+                class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/40 hover:bg-white/20 text-white/80 hover:text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 cursor-pointer opacity-0 group-hover/carousel:opacity-100 shadow-lg"
+                aria-label="Previous Slide"
+            >
+                <i class="fa-solid fa-chevron-left text-sm sm:text-base"></i>
+            </button>
+
+            <!-- Next Slide Arrow -->
+            <button 
+                type="button" 
+                onclick="shiftHeroSlide(1)" 
+                class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/40 hover:bg-white/20 text-white/80 hover:text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 cursor-pointer opacity-0 group-hover/carousel:opacity-100 shadow-lg"
+                aria-label="Next Slide"
+            >
+                <i class="fa-solid fa-chevron-right text-sm sm:text-base"></i>
+            </button>
+
+            <!-- Count Dots & Slide Indicators -->
+            <div class="absolute bottom-6 inset-x-0 z-20 flex items-center justify-center gap-2.5">
+                <div class="px-3.5 py-1.5 rounded-full bg-slate-950/60 backdrop-blur-md border border-white/15 flex items-center gap-2 shadow-lg">
+                    @foreach($bannersList as $dotIndex => $dotBanner)
+                        <button 
+                            type="button" 
+                            onclick="goToHeroSlide({{ $dotIndex }})" 
+                            class="hero-dot group/dot flex items-center gap-1.5 transition-all duration-300 cursor-pointer focus:outline-none"
+                            aria-label="Go to banner {{ $dotIndex + 1 }}"
+                        >
+                            <span class="dot-indicator h-2 rounded-full transition-all duration-300 {{ $dotIndex === 0 ? 'w-6 bg-brand-400' : 'w-2 bg-white/40 group-hover/dot:bg-white/70' }}"></span>
+                            <span class="dot-number text-[10px] font-bold text-white transition-opacity duration-300 {{ $dotIndex === 0 ? 'inline' : 'hidden' }}">0{{ $dotIndex + 1 }}</span>
+                        </button>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+    @endif
 </section>
 
 <!-- ==========================================
@@ -284,3 +353,114 @@
 @include('frontend.components.cta')
 
 @endsection
+
+@if($hasMultipleBanners)
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const carousel = document.getElementById('hero-carousel');
+        const slides = document.querySelectorAll('.hero-slide');
+        const dots = document.querySelectorAll('.hero-dot');
+        const totalSlides = slides.length;
+        if (totalSlides <= 1) return;
+
+        let currentSlide = 0;
+        let slideInterval = null;
+        const autoShiftDelay = 5500; // 5.5s interval
+
+        window.goToHeroSlide = function(index) {
+            if (index < 0) {
+                currentSlide = totalSlides - 1;
+            } else if (index >= totalSlides) {
+                currentSlide = 0;
+            } else {
+                currentSlide = index;
+            }
+
+            slides.forEach((slide, idx) => {
+                if (idx === currentSlide) {
+                    slide.classList.remove('opacity-0', 'pointer-events-none', 'z-0');
+                    slide.classList.add('opacity-100', 'z-10');
+                } else {
+                    slide.classList.remove('opacity-100', 'z-10');
+                    slide.classList.add('opacity-0', 'pointer-events-none', 'z-0');
+                }
+            });
+
+            dots.forEach((dot, idx) => {
+                const indicator = dot.querySelector('.dot-indicator');
+                const number = dot.querySelector('.dot-number');
+                if (idx === currentSlide) {
+                    indicator?.classList.remove('w-2', 'bg-white/40');
+                    indicator?.classList.add('w-6', 'bg-brand-400');
+                    number?.classList.remove('hidden');
+                    number?.classList.add('inline');
+                } else {
+                    indicator?.classList.remove('w-6', 'bg-brand-400');
+                    indicator?.classList.add('w-2', 'bg-white/40');
+                    number?.classList.remove('inline');
+                    number?.classList.add('hidden');
+                }
+            });
+
+            resetAutoShift();
+        };
+
+        window.shiftHeroSlide = function(step) {
+            window.goToHeroSlide(currentSlide + step);
+        };
+
+        function startAutoShift() {
+            if (slideInterval) clearInterval(slideInterval);
+            slideInterval = setInterval(() => {
+                window.shiftHeroSlide(1);
+            }, autoShiftDelay);
+        }
+
+        function resetAutoShift() {
+            startAutoShift();
+        }
+
+        function pauseAutoShift() {
+            if (slideInterval) {
+                clearInterval(slideInterval);
+                slideInterval = null;
+            }
+        }
+
+        if (carousel) {
+            carousel.addEventListener('mouseenter', pauseAutoShift);
+            carousel.addEventListener('mouseleave', startAutoShift);
+
+            // Touch Swipe Support
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            carousel.addEventListener('touchstart', (e) => {
+                pauseAutoShift();
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            carousel.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+                startAutoShift();
+            }, { passive: true });
+
+            function handleSwipe() {
+                const swipeThreshold = 40;
+                if (touchEndX < touchStartX - swipeThreshold) {
+                    window.shiftHeroSlide(1); // Swipe left -> Next slide
+                }
+                if (touchEndX > touchStartX + swipeThreshold) {
+                    window.shiftHeroSlide(-1); // Swipe right -> Previous slide
+                }
+            }
+        }
+
+        startAutoShift();
+    });
+</script>
+@endpush
+@endif
+
