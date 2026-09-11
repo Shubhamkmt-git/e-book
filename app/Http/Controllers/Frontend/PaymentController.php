@@ -604,6 +604,10 @@ class PaymentController extends Controller
             if ($customer && ! empty($customer->email)) {
                 try {
                     Mail::to($customer->email)->send(new EbookDeliveryMail($purchase, $dbBook, $customer));
+                    Log::info('Razorpay Callback: E-Book Delivery Email dispatched successfully.', [
+                        'purchase_id' => $purchase->id,
+                        'customer_email' => $customer->email,
+                    ]);
                 } catch (\Throwable $mailException) {
                     Log::error('Razorpay E-Book Delivery Email Failed: '.$mailException->getMessage(), [
                         'purchase_id' => $purchase->id,
