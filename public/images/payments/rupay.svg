@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 85 24" fill="none">
+  <text x="0" y="19" font-family="'Arial Black', 'Segoe UI', sans-serif" font-weight="900" font-size="20" fill="#097939">Ru</text>
+  <text x="32" y="19" font-family="'Arial Black', 'Segoe UI', sans-serif" font-weight="900" font-size="20" fill="#005A9C">Pay</text>
+  <path d="M72 4L77 12L72 20H76L81 12L76 4H72Z" fill="#ED7524"/>
+  <path d="M77 4L82 12L77 20H81L86 12L81 4H77Z" fill="#097939"/>
+</svg>

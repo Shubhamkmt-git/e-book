@@ -175,55 +175,52 @@
                     <span>Secure Payments:</span>
                 </span>
                 
-                <!-- Payment Badges / Icons -->
-                <div class="flex flex-wrap items-center justify-center gap-2">
+                <!-- Payment Badges / Official SVG Icons -->
+                <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
                     
-                    <!-- UPI Badge -->
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white text-slate-800 text-[11px] font-extrabold shadow-2xs tracking-tight" title="UPI - Unified Payments Interface">
-                        <span class="text-[#097939] font-black">U</span><span class="text-[#f37e20] font-black">P</span><span class="text-[#005a9c] font-black">I</span>
+                    <!-- UPI Official Logo -->
+                    <span class="inline-flex items-center justify-center h-7 px-2.5 rounded-lg bg-white shadow-2xs" title="UPI - Unified Payments Interface">
+                        <img src="{{ asset('images/payments/upi.svg') }}" alt="UPI" class="h-4 w-auto object-contain">
                     </span>
 
-                    <!-- Visa Card -->
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white text-[#1a1f71] text-xs font-bold shadow-2xs" title="Visa">
-                        <i class="fa-brands fa-cc-visa text-base"></i>
-                        <span class="text-[11px] font-black italic tracking-tighter">VISA</span>
+                    <!-- Visa Official Logo -->
+                    <span class="inline-flex items-center justify-center h-7 px-2.5 rounded-lg bg-white shadow-2xs" title="Visa">
+                        <img src="{{ asset('images/payments/visa.svg') }}" alt="Visa" class="h-3.5 w-auto object-contain">
                     </span>
 
-                    <!-- Mastercard -->
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white text-[#eb001b] text-xs font-bold shadow-2xs" title="Mastercard">
-                        <i class="fa-brands fa-cc-mastercard text-base text-[#eb001b]"></i>
-                        <span class="text-[11px] font-bold text-slate-800 tracking-tight">Mastercard</span>
+                    <!-- Mastercard Official Logo -->
+                    <span class="inline-flex items-center justify-center h-7 px-2.5 rounded-lg bg-white shadow-2xs" title="Mastercard">
+                        <img src="{{ asset('images/payments/mastercard.svg') }}" alt="Mastercard" class="h-4 w-auto object-contain">
                     </span>
 
-                    <!-- RuPay -->
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white text-slate-900 text-[11px] font-black shadow-2xs tracking-tighter" title="RuPay">
-                        <span class="text-[#097939]">Ru</span><span class="text-[#005a9c]">Pay</span>
+                    <!-- RuPay Official Logo -->
+                    <span class="inline-flex items-center justify-center h-7 px-2.5 rounded-lg bg-white shadow-2xs" title="RuPay">
+                        <img src="{{ asset('images/payments/rupay.svg') }}" alt="RuPay" class="h-3.5 w-auto object-contain">
                     </span>
 
-                    <!-- Google Pay / GPay -->
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white text-slate-700 text-[11px] font-semibold shadow-2xs" title="Google Pay">
-                        <i class="fa-brands fa-google-pay text-base text-slate-800"></i>
+                    <!-- Google Pay Official Logo -->
+                    <span class="inline-flex items-center justify-center h-7 px-2.5 rounded-lg bg-white shadow-2xs" title="Google Pay">
+                        <img src="{{ asset('images/payments/gpay.svg') }}" alt="Google Pay" class="h-3.5 w-auto object-contain">
                     </span>
 
-                    <!-- Paytm -->
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-white text-[#002e6e] text-[11px] font-black shadow-2xs" title="Paytm">
-                        <span>Pay</span><span class="text-[#00b9f5]">tm</span>
+                    <!-- Paytm Official Logo -->
+                    <span class="inline-flex items-center justify-center h-7 px-2.5 rounded-lg bg-white shadow-2xs" title="Paytm">
+                        <img src="{{ asset('images/payments/paytm.svg') }}" alt="Paytm" class="h-3.5 w-auto object-contain">
                     </span>
 
-                    <!-- PhonePe -->
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white text-[#5f259f] text-[11px] font-extrabold shadow-2xs" title="PhonePe">
-                        <span class="w-3.5 h-3.5 rounded-full bg-[#5f259f] text-white flex items-center justify-center text-[9px] font-bold">पे</span>
-                        <span>PhonePe</span>
+                    <!-- PhonePe Official Logo -->
+                    <span class="inline-flex items-center justify-center h-7 px-2.5 rounded-lg bg-white shadow-2xs" title="PhonePe">
+                        <img src="{{ asset('images/payments/phonepe.svg') }}" alt="PhonePe" class="h-4 w-auto object-contain">
                     </span>
 
                     <!-- Net Banking -->
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/15 text-white border border-white/20 text-[11px] font-medium" title="Net Banking">
+                    <span class="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-lg bg-white/15 text-white border border-white/20 text-xs font-semibold" title="Net Banking">
                         <i class="fa-solid fa-building-columns text-[10px]"></i>
                         <span>NetBanking</span>
                     </span>
 
                     <!-- Credit / Debit Cards -->
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/15 text-white border border-white/20 text-[11px] font-medium" title="Debit & Credit Cards">
+                    <span class="inline-flex items-center gap-1.5 h-7 px-2.5 rounded-lg bg-white/15 text-white border border-white/20 text-xs font-semibold" title="Debit & Credit Cards">
                         <i class="fa-solid fa-credit-card text-[10px]"></i>
                         <span>All Cards</span>
                     </span>

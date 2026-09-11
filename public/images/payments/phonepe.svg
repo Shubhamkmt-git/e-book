@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 28" fill="none">
+  <circle cx="14" cy="14" r="13" fill="#5F259F"/>
+  <path d="M14 6.5C9.86 6.5 6.5 9.86 6.5 14C6.5 18.14 9.86 21.5 14 21.5C18.14 21.5 21.5 18.14 21.5 14C21.5 9.86 18.14 6.5 14 6.5ZM14.8 17.5H12.9V13.8H11.2V12.2H12.9V10.2C12.9 8.8 13.8 8.1 15.1 8.1C15.7 8.1 16.3 8.2 16.5 8.3V9.8C16.3 9.8 16 9.7 15.6 9.7C15 9.7 14.8 10 14.8 10.6V12.2H16.5L16.2 13.8H14.8V17.5Z" fill="white"/>
+  <text x="32" y="20" font-family="'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="16" fill="#5F259F">PhonePe</text>
+</svg>
