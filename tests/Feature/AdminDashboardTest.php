@@ -30,8 +30,9 @@ class AdminDashboardTest extends TestCase
         $response->assertSee('Welcome back, Jane Admin!');
         $response->assertSee('Total Orders');
         $response->assertSee('Total Revenue');
-        $response->assertSee('E-Books');
-        $response->assertSee('Customers');
+        $response->assertSee('Available E-Books');
+        $response->assertSee('Total Categories');
+        $response->assertSee('Registered Readers');
         $response->assertSee('salesTrendChart');
         $response->assertSee('orderStatusChart');
         $response->assertDontSee('Dashboard Workspace');

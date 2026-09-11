@@ -45,14 +45,50 @@
         </div>
     </div>
 
-    <!-- Dynamic Metrics Cards Grid (5 Business Metric Cards) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5">
+    <!-- Dynamic Metrics Cards Grid (6 Business Metric Cards) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-5">
 
-        <!-- Metric 1: Total Revenue -->
-        <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs hover:shadow-md transition-shadow">
+        <!-- Metric 1: Available E-Books -->
+        <a href="{{ route('admin.books.index') }}" class="group block bg-white border border-slate-200/90 hover:border-brand-300 rounded-2xl p-5 shadow-2xs hover:shadow-md transition-all">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Revenue</span>
-                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-base shadow-2xs">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-brand-700 transition-colors">Available E-Books</span>
+                <div class="w-10 h-10 rounded-xl bg-violet-50 group-hover:bg-brand-50 text-brand-600 flex items-center justify-center text-base shadow-2xs transition-colors">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+            </div>
+            <div class="mt-3.5 flex items-baseline gap-2">
+                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-roboto">{{ number_format($activeBooksCount) }}</span>
+                <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md">Active</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-slate-500 mt-2">
+                <span>{{ $booksCount }} in catalog</span>
+                <span class="text-slate-400">&bull; {{ $featuredBooksCount }} featured</span>
+            </div>
+        </a>
+
+        <!-- Metric 2: Total Categories -->
+        <a href="{{ route('admin.categories.index') }}" class="group block bg-white border border-slate-200/90 hover:border-purple-300 rounded-2xl p-5 shadow-2xs hover:shadow-md transition-all">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-purple-700 transition-colors">Total Categories</span>
+                <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-base shadow-2xs transition-colors">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+            </div>
+            <div class="mt-3.5 flex items-baseline gap-2">
+                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-roboto">{{ number_format($categoriesCount) }}</span>
+                <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded-md">Genres</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-slate-500 mt-2">
+                <span>{{ $activeCategoriesCount }} active</span>
+                <span class="text-slate-400">&bull; {{ $categoriesCount - $activeCategoriesCount }} hidden</span>
+            </div>
+        </a>
+
+        <!-- Metric 3: Total Revenue -->
+        <a href="{{ route('admin.orders.index') }}" class="group block bg-white border border-slate-200/90 hover:border-emerald-300 rounded-2xl p-5 shadow-2xs hover:shadow-md transition-all">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-emerald-700 transition-colors">Total Revenue</span>
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-base shadow-2xs transition-colors">
                     <i class="fa-solid fa-indian-rupee-sign"></i>
                 </div>
             </div>
@@ -63,19 +99,47 @@
                 <i class="fa-solid fa-arrow-trend-up text-[11px]"></i>
                 <span>₹{{ number_format($todayRevenue, 0) }} today</span>
             </div>
-        </div>
+        </a>
 
-        <!-- Metric 2: Total Orders -->
-        <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs hover:shadow-md transition-shadow">
+        <!-- Metric 4: Total Orders -->
+        <a href="{{ route('admin.orders.index') }}" class="group block bg-white border border-slate-200/90 hover:border-blue-300 rounded-2xl p-5 shadow-2xs hover:shadow-md transition-all">
             <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Orders</span>
-                <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-base shadow-2xs">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-blue-700 transition-colors">Total Orders</span>
+                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-base shadow-2xs transition-colors">
                     <i class="fa-solid fa-cart-shopping"></i>
                 </div>
             </div>
             <div class="mt-3.5 flex items-baseline gap-2">
                 <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-roboto">{{ number_format($ordersCount) }}</span>
+                <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-md">{{ $todayOrders }} today</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-slate-500 mt-2">
+                <span>{{ $paidOrdersCount }} paid</span>
+                <span class="text-slate-400">&bull; {{ $pendingOrdersCount }} pending</span>
+            </div>
+        </a>
 
+        <!-- Metric 5: Registered Customers -->
+        <a href="{{ route('admin.customers.index') }}" class="group block bg-white border border-slate-200/90 hover:border-cyan-300 rounded-2xl p-5 shadow-2xs hover:shadow-md transition-all">
+            <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-cyan-700 transition-colors">Registered Readers</span>
+                <div class="w-10 h-10 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-base shadow-2xs transition-colors">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+            </div>
+            <div class="mt-3.5 flex items-baseline gap-2">
+                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-roboto">{{ number_format($customersCount) }}</span>
+                <span class="text-xs font-semibold text-cyan-600 bg-cyan-50 px-1.5 py-0.5 rounded-md">Users</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-slate-500 mt-2">
+                <span>{{ $purchasedCustomersCount }} active buyers</span>
+                <span class="text-slate-400">&bull; {{ $usersCount }} staff</span>
+            </div>
+        </a>
+
+        <!-- Metric 6: Avg. Order Value -->
+        <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs hover:shadow-md transition-shadow">
+            <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Avg. Order Value</span>
                 <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-base shadow-2xs">
                     <i class="fa-solid fa-chart-pie"></i>
@@ -84,7 +148,10 @@
             <div class="mt-3.5">
                 <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-roboto">₹{{ number_format($avgOrderValue, 0) }}</span>
             </div>
-            <p class="text-xs text-slate-400 mt-2">{{ $categoriesCount }} genres &bull; {{ $conversionRate }}% conv.</p>
+            <div class="flex items-center justify-between text-xs text-slate-500 mt-2">
+                <span>{{ $conversionRate }}% conversion</span>
+                <span class="text-slate-400">&bull; {{ $heroBannersCount }} banners</span>
+            </div>
         </div>
 
     </div>
