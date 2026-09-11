@@ -37,7 +37,7 @@ class EbookDeliveryMail extends Mailable
     /**
      * Get the message envelope.
      */
-    public function Envelope(): Envelope
+    public function envelope(): Envelope
     {
         $bookTitle = $this->book?->title ?? $this->purchase->book_title;
 

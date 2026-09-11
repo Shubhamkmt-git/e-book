@@ -70,17 +70,18 @@
     <div class="w-[94%] sm:w-[88%] lg:w-[70%] mx-auto px-2 sm:px-4 space-y-5 sm:space-y-6">
 
         @if(session('payment_success'))
-            <div class="p-5 sm:p-6 rounded-2xl border border-emerald-300 bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 text-emerald-900 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in">
-                <div class="flex items-start gap-3.5">
-                    <div class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-                        <i class="fa-solid fa-check text-lg"></i>
+            <div class="p-3.5 sm:p-4 rounded-2xl bg-white border border-emerald-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fade-in">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm shrink-0">
+                        <i class="fa-solid fa-check text-xs"></i>
                     </div>
-                    <div>
-                        <h4 class="font-bold text-emerald-900 text-base sm:text-lg leading-snug">
-                            {{ session('payment_success') }}
+                    <div class="min-w-0">
+                        <h4 class="font-bold text-slate-900 text-xs sm:text-sm leading-tight flex items-center gap-2">
+                            <span>Payment Completed Successfully</span>
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">Ready</span>
                         </h4>
-                        <p class="text-xs sm:text-sm text-emerald-700 mt-1">
-                            Your full DRM-Free PDF edition has been dispatched to <strong>{{ session('customer_email') ?: 'your email' }}</strong>. Your browser download will begin automatically.
+                        <p class="text-[11px] text-slate-500 mt-0.5">
+                            PDF dispatched to <strong class="text-slate-700 font-medium">{{ session('customer_email') ?: 'your email' }}</strong>. Auto-download starting...
                         </p>
                     </div>
                 </div>
@@ -88,10 +89,10 @@
                     <a 
                         href="{{ session('auto_download_url') }}" 
                         download
-                        class="shrink-0 px-6 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-brand text-lg uppercase tracking-wider text-center transition-all shadow-md transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                        class="shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-semibold shadow-xs transition"
                     >
-                        <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
-                        <span>Download PDF Now</span>
+                        <i class="fa-solid fa-cloud-arrow-down text-xs"></i>
+                        <span>Download PDF</span>
                     </a>
 
                     <!-- Automatic Download Trigger Script -->
