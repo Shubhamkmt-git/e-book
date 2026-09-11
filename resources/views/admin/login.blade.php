@@ -80,7 +80,7 @@
                         type="email" 
                         autocomplete="email" 
                         required 
-                        value="{{ old('email', 'admin@ebook.com') }}"
+                        value="{{ old('email') }}"
                         placeholder="admin@example.com"
                         class="w-full bg-white border border-slate-300 focus:border-brand-600 rounded-lg px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-600/20 transition duration-150 shadow-2xs"
                     >
@@ -99,7 +99,6 @@
                             autocomplete="current-password" 
                             required 
                             placeholder="••••••••"
-                            value="password"
                             class="w-full bg-white border border-slate-300 focus:border-brand-600 rounded-lg pl-3.5 pr-10 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-600/20 transition duration-150 shadow-2xs"
                         >
                         <button 

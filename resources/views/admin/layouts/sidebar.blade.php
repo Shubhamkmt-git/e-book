@@ -214,7 +214,7 @@
                 @endif
                 <div class="sidebar-user-info truncate">
                     <p class="text-sm font-semibold text-white truncate leading-tight">{{ $sidebarUser->name ?? 'Administrator' }}</p>
-                    <p class="text-xs text-brand-300 truncate mt-0.5">{{ $sidebarUser->email ?? 'admin@ebook.com' }}</p>
+                    <p class="text-xs text-brand-300 truncate mt-0.5">{{ $sidebarUser->email ?? '' }}</p>
                 </div>
             </div>
 

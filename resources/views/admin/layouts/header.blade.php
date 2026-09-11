@@ -58,7 +58,7 @@
                     @endif
                     <div class="min-w-0 flex-1">
                         <p class="text-sm font-bold text-slate-900 truncate">{{ $authUser->name ?? 'Administrator' }}</p>
-                        <p class="text-xs text-slate-500 truncate">{{ $authUser->email ?? 'admin@ebook.com' }}</p>
+                        <p class="text-xs text-slate-500 truncate">{{ $authUser->email ?? '' }}</p>
                     </div>
                 </div>
 
