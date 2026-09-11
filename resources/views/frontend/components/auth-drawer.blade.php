@@ -67,7 +67,7 @@
         <!-- Continue with Google Button -->
         <div class="mt-6">
             <a 
-                href="#" 
+                href="{{ route('auth.google') }}" 
                 class="w-full h-11 inline-flex items-center justify-center gap-3 px-4 rounded-full bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold border border-slate-200/90 shadow-xs hover:shadow-sm transition-all duration-150 cursor-pointer"
             >
                 <!-- Google Multi-Color SVG Icon -->

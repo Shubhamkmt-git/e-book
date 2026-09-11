@@ -5,6 +5,9 @@ namespace Tests\Feature;
 use App\Models\Customer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\GoogleProvider;
+use Laravel\Socialite\Two\User;
 use Tests\TestCase;
 
 class CustomerAuthenticationTest extends TestCase
@@ -60,5 +63,42 @@ class CustomerAuthenticationTest extends TestCase
 
         $response->assertRedirect(route('home'));
         $this->assertGuest('customer');
+    }
+
+    public function test_google_redirect_returns_error_when_credentials_not_configured(): void
+    {
+        config(['services.google.client_id' => null]);
+        config(['services.google.client_secret' => null]);
+
+        $response = $this->get(route('auth.google'));
+
+        $response->assertRedirect(route('home'));
+        $response->assertSessionHas('error');
+    }
+
+    public function test_google_callback_creates_and_authenticates_customer(): void
+    {
+        $abstractUser = \Mockery::mock(User::class);
+        $abstractUser->shouldReceive('getId')->andReturn('google-123456');
+        $abstractUser->shouldReceive('getName')->andReturn('Google User');
+        $abstractUser->shouldReceive('getEmail')->andReturn('googleuser@example.com');
+        $abstractUser->shouldReceive('getAvatar')->andReturn('https://lh3.googleusercontent.com/avatar.jpg');
+
+        $provider = \Mockery::mock(GoogleProvider::class);
+        $provider->shouldReceive('user')->andReturn($abstractUser);
+
+        Socialite::shouldReceive('driver')
+            ->with('google')
+            ->andReturn($provider);
+
+        $response = $this->get(route('auth.google.callback'));
+
+        $response->assertRedirect(route('customer.profile'));
+        $this->assertAuthenticated('customer');
+        $this->assertDatabaseHas('customers', [
+            'email' => 'googleuser@example.com',
+            'google_id' => 'google-123456',
+            'avatar' => 'https://lh3.googleusercontent.com/avatar.jpg',
+        ]);
     }
 }

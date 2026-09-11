@@ -54,6 +54,8 @@ Route::get('/terms-of-service', [LegalPageController::class, 'termsOfService'])-
 Route::middleware('guest:customer')->group(function () {
     Route::post('/customer/register', [CustomerAuthController::class, 'register'])->name('customer.register');
     Route::post('/customer/login', [CustomerAuthController::class, 'login'])->name('customer.login');
+    Route::get('/auth/google', [CustomerAuthController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('/auth/google/callback', [CustomerAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 });
 
 Route::post('/customer/logout', [CustomerAuthController::class, 'logout'])
