@@ -175,22 +175,22 @@
                     <span>Secure Payments:</span>
                 </span>
                 
-                <!-- Payment Badges / Official SVG Icons -->
+                <!-- Payment Badges / Official Icons -->
                 <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
                     
                     <!-- UPI Official Logo -->
                     <span class="inline-flex items-center justify-center h-7 px-2.5 rounded-lg bg-white shadow-2xs" title="UPI - Unified Payments Interface">
-                        <img src="{{ asset('images/payments/upi.svg') }}" alt="UPI" class="h-4 w-auto object-contain">
+                        <img src="{{ asset('images/payments/upi.svg') }}" alt="UPI" class="h-3.5 w-auto object-contain">
                     </span>
 
-                    <!-- Visa Official Logo -->
+                    <!-- Visa Official Logo (Uploaded) -->
                     <span class="inline-flex items-center justify-center h-7 px-2.5 rounded-lg bg-white shadow-2xs" title="Visa">
-                        <img src="{{ asset('images/payments/visa.svg') }}" alt="Visa" class="h-3.5 w-auto object-contain">
+                        <img src="{{ asset('images/payments/visa.png') }}" alt="Visa" class="h-3 w-auto object-contain">
                     </span>
 
-                    <!-- Mastercard Official Logo -->
+                    <!-- Mastercard Official Logo (Uploaded) -->
                     <span class="inline-flex items-center justify-center h-7 px-2.5 rounded-lg bg-white shadow-2xs" title="Mastercard">
-                        <img src="{{ asset('images/payments/mastercard.svg') }}" alt="Mastercard" class="h-4 w-auto object-contain">
+                        <img src="{{ asset('images/payments/mastercard.png') }}" alt="Mastercard" class="h-4.5 w-auto object-contain">
                     </span>
 
                     <!-- RuPay Official Logo -->
@@ -198,9 +198,9 @@
                         <img src="{{ asset('images/payments/rupay.svg') }}" alt="RuPay" class="h-3.5 w-auto object-contain">
                     </span>
 
-                    <!-- Google Pay Official Logo -->
+                    <!-- Google Pay Official Logo (Uploaded) -->
                     <span class="inline-flex items-center justify-center h-7 px-2.5 rounded-lg bg-white shadow-2xs" title="Google Pay">
-                        <img src="{{ asset('images/payments/gpay.svg') }}" alt="Google Pay" class="h-3.5 w-auto object-contain">
+                        <img src="{{ asset('images/payments/gpay.png') }}" alt="Google Pay" class="h-3.5 w-auto object-contain">
                     </span>
 
                     <!-- Paytm Official Logo -->
@@ -208,9 +208,9 @@
                         <img src="{{ asset('images/payments/paytm.svg') }}" alt="Paytm" class="h-3.5 w-auto object-contain">
                     </span>
 
-                    <!-- PhonePe Official Logo -->
+                    <!-- PhonePe Official Logo (Uploaded) -->
                     <span class="inline-flex items-center justify-center h-7 px-2.5 rounded-lg bg-white shadow-2xs" title="PhonePe">
-                        <img src="{{ asset('images/payments/phonepe.svg') }}" alt="PhonePe" class="h-4 w-auto object-contain">
+                        <img src="{{ asset('images/payments/phonepe.png') }}" alt="PhonePe" class="h-4 w-auto object-contain">
                     </span>
 
                     <!-- Net Banking -->
