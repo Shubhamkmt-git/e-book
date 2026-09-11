@@ -20,7 +20,7 @@ class DashboardController extends Controller
     {
         $usersCount = User::count();
         $customersCount = Customer::count();
-        $activeCustomersCount = Customer::where('status', 'active')->count();
+        $purchasedCustomersCount = Customer::has('purchases')->count();
 
         $booksCount = Book::count();
         $activeBooksCount = Book::where('status', 'active')->count();
@@ -82,7 +82,7 @@ class DashboardController extends Controller
         return view('admin.dashboard', [
             'usersCount' => $usersCount,
             'customersCount' => $customersCount,
-            'activeCustomersCount' => $activeCustomersCount,
+            'purchasedCustomersCount' => $purchasedCustomersCount,
             'booksCount' => $booksCount,
             'activeBooksCount' => $activeBooksCount,
             'featuredBooksCount' => $featuredBooksCount,

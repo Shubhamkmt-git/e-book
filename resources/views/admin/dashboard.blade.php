@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="space-y-8">
-    
+
     <!-- Page Header & Welcome Banner -->
     <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-brand-950 rounded-3xl p-6 sm:p-8 text-white shadow-lg shadow-brand-950/20 relative overflow-hidden">
         <!-- Background Ambient Glow -->
@@ -26,19 +26,17 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-3 shrink-0">
-                <a 
-                    href="{{ route('home') }}" 
+                <a
+                    href="{{ route('home') }}"
                     target="_blank"
-                    class="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold border border-white/20 backdrop-blur-md transition shadow-xs"
-                >
+                    class="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-semibold border border-white/20 backdrop-blur-md transition shadow-xs">
                     <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
                     <span>View Storefront</span>
                 </a>
                 @if(Auth::user()?->hasPermission('ebook'))
-                <a 
-                    href="{{ route('admin.books.create') }}" 
-                    class="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-white text-brand-900 hover:bg-brand-50 text-xs sm:text-sm font-bold shadow-md transition"
-                >
+                <a
+                    href="{{ route('admin.books.create') }}"
+                    class="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-white text-brand-900 hover:bg-brand-50 text-xs sm:text-sm font-bold shadow-md transition">
                     <i class="fa-solid fa-plus text-xs text-brand-700"></i>
                     <span>Add E-Book</span>
                 </a>
@@ -49,7 +47,7 @@
 
     <!-- Dynamic Metrics Cards Grid (5 Business Metric Cards) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5">
-        
+
         <!-- Metric 1: Total Revenue -->
         <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between">
@@ -77,46 +75,7 @@
             </div>
             <div class="mt-3.5 flex items-baseline gap-2">
                 <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-roboto">{{ number_format($ordersCount) }}</span>
-                <span class="text-xs font-bold text-emerald-600">
-                    {{ $paidOrdersCount }} Paid
-                </span>
-            </div>
-            <p class="text-xs text-slate-400 mt-2">{{ $pendingOrdersCount }} pending &bull; {{ $todayOrders }} today</p>
-        </div>
 
-        <!-- Metric 3: E-Books Catalogue -->
-        <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">E-Books</span>
-                <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-base shadow-2xs">
-                    <i class="fa-solid fa-book-bookmark"></i>
-                </div>
-            </div>
-            <div class="mt-3.5 flex items-baseline gap-2">
-                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-roboto">{{ number_format($booksCount) }}</span>
-                <span class="text-xs font-medium text-slate-500">titles</span>
-            </div>
-            <p class="text-xs text-slate-400 mt-2">{{ $activeBooksCount }} published &bull; {{ $featuredBooksCount }} featured</p>
-        </div>
-
-        <!-- Metric 4: Customers -->
-        <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Customers</span>
-                <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-base shadow-2xs">
-                    <i class="fa-solid fa-users"></i>
-                </div>
-            </div>
-            <div class="mt-3.5 flex items-baseline gap-2">
-                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-roboto">{{ number_format($customersCount) }}</span>
-                <span class="text-xs font-medium text-slate-500">readers</span>
-            </div>
-            <p class="text-xs text-slate-400 mt-2">{{ $activeCustomersCount }} active accounts</p>
-        </div>
-
-        <!-- Metric 5: Categories & Avg Order -->
-        <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Avg. Order Value</span>
                 <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-base shadow-2xs">
                     <i class="fa-solid fa-chart-pie"></i>
@@ -132,7 +91,7 @@
 
     <!-- Graphical Representations & Charts Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         <!-- Left: 7-Day Revenue & Sales Trend Chart (Span 2 Cols) -->
         <div class="lg:col-span-2 bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-slate-100 gap-3">
@@ -162,7 +121,7 @@
 
         <!-- Right: Order Status Distribution & Top Genres -->
         <div class="space-y-6">
-            
+
             <!-- Order Status Donut Chart Card -->
             <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs">
                 <div class="flex items-center justify-between pb-4 border-b border-slate-100">
@@ -203,7 +162,7 @@
                 <div class="space-y-3.5">
                     @forelse($topCategories as $topCat)
                     @php
-                        $percentage = $booksCount > 0 ? round(($topCat->books_count / $booksCount) * 100) : 0;
+                    $percentage = $booksCount > 0 ? round(($topCat->books_count / $booksCount) * 100) : 0;
                     @endphp
                     <div>
                         <div class="flex items-center justify-between text-xs font-semibold mb-1">
@@ -311,147 +270,169 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // 1. Sales & Revenue Trend Chart
-    const salesCanvas = document.getElementById('salesTrendChart');
-    if (salesCanvas) {
-        const labels = @json($chartLabels);
-        const revenueData = @json($chartRevenue);
-        const ordersData = @json($chartOrders);
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Sales & Revenue Trend Chart
+        const salesCanvas = document.getElementById('salesTrendChart');
+        if (salesCanvas) {
+            const labels = @json($chartLabels);
+            const revenueData = @json($chartRevenue);
+            const ordersData = @json($chartOrders);
 
-        const ctx = salesCanvas.getContext('2d');
-        const brandGradient = ctx.createLinearGradient(0, 0, 0, 240);
-        brandGradient.addColorStop(0, 'rgba(122, 88, 169, 0.35)');
-        brandGradient.addColorStop(1, 'rgba(122, 88, 169, 0.0)');
+            const ctx = salesCanvas.getContext('2d');
+            const brandGradient = ctx.createLinearGradient(0, 0, 0, 240);
+            brandGradient.addColorStop(0, 'rgba(122, 88, 169, 0.35)');
+            brandGradient.addColorStop(1, 'rgba(122, 88, 169, 0.0)');
 
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Revenue (₹)',
-                        data: revenueData,
-                        borderColor: '#7A58A9',
-                        backgroundColor: brandGradient,
-                        borderWidth: 2.5,
-                        fill: true,
-                        tension: 0.35,
-                        pointBackgroundColor: '#7A58A9',
-                        pointBorderColor: '#ffffff',
-                        pointBorderWidth: 2,
-                        pointRadius: 4,
-                        pointHoverRadius: 6,
-                        yAxisID: 'y'
-                    },
-                    {
-                        label: 'Orders',
-                        data: ordersData,
-                        borderColor: '#10B981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.15)',
-                        borderWidth: 2,
-                        type: 'bar',
-                        borderRadius: 6,
-                        yAxisID: 'y1'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                            label: 'Revenue (₹)',
+                            data: revenueData,
+                            borderColor: '#7A58A9',
+                            backgroundColor: brandGradient,
+                            borderWidth: 2.5,
+                            fill: true,
+                            tension: 0.35,
+                            pointBackgroundColor: '#7A58A9',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Orders',
+                            data: ordersData,
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                            borderWidth: 2,
+                            type: 'bar',
+                            borderRadius: 6,
+                            yAxisID: 'y1'
+                        }
+                    ]
                 },
-                plugins: {
-                    legend: {
-                        display: false
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
                     },
-                    tooltip: {
-                        backgroundColor: '#0f172a',
-                        titleFont: { size: 12, weight: 'bold' },
-                        bodyFont: { size: 11 },
-                        padding: 10,
-                        cornerRadius: 8,
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label.includes('Revenue')) {
-                                    return label + ': ₹' + Number(context.raw).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            titleFont: {
+                                size: 12,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 11
+                            },
+                            padding: 10,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label.includes('Revenue')) {
+                                        return label + ': ₹' + Number(context.raw).toLocaleString('en-IN', {
+                                            minimumFractionDigits: 2
+                                        });
+                                    }
+                                    return label + ': ' + context.raw;
                                 }
-                                return label + ': ' + context.raw;
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 11
+                                },
+                                color: '#64748b'
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.6)'
+                            },
+                            ticks: {
+                                font: {
+                                    size: 11
+                                },
+                                color: '#64748b',
+                                callback: function(value) {
+                                    return '₹' + value;
+                                }
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 11
+                                },
+                                color: '#10B981',
+                                stepSize: 1
                             }
                         }
                     }
+                }
+            });
+        }
+
+        // 2. Order Status Distribution Donut Chart
+        const statusCanvas = document.getElementById('orderStatusChart');
+        if (statusCanvas) {
+            const statusData = @json($orderStatusDistribution);
+            const total = (statusData.paid || 0) + (statusData.pending || 0) + (statusData.failed || 0);
+
+            new Chart(statusCanvas.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Paid', 'Pending', 'Failed / Cancelled'],
+                    datasets: [{
+                        data: total === 0 ? [1, 0, 0] : [statusData.paid || 0, statusData.pending || 0, statusData.failed || 0],
+                        backgroundColor: total === 0 ? ['#e2e8f0', '#f1f5f9', '#f8fafc'] : ['#10B981', '#F59E0B', '#F43F5E'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
                 },
-                scales: {
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { size: 11 }, color: '#64748b' }
-                    },
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        grid: { color: 'rgba(226, 232, 240, 0.6)' },
-                        ticks: {
-                            font: { size: 11 },
-                            color: '#64748b',
-                            callback: function(value) {
-                                return '₹' + value;
-                            }
-                        }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        grid: { drawOnChartArea: false },
-                        ticks: {
-                            font: { size: 11 },
-                            color: '#10B981',
-                            stepSize: 1
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '72%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: total > 0,
+                            backgroundColor: '#0f172a',
+                            padding: 8,
+                            cornerRadius: 6
                         }
                     }
                 }
-            }
-        });
-    }
-
-    // 2. Order Status Distribution Donut Chart
-    const statusCanvas = document.getElementById('orderStatusChart');
-    if (statusCanvas) {
-        const statusData = @json($orderStatusDistribution);
-        const total = (statusData.paid || 0) + (statusData.pending || 0) + (statusData.failed || 0);
-
-        new Chart(statusCanvas.getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Paid', 'Pending', 'Failed / Cancelled'],
-                datasets: [{
-                    data: total === 0 ? [1, 0, 0] : [statusData.paid || 0, statusData.pending || 0, statusData.failed || 0],
-                    backgroundColor: total === 0 ? ['#e2e8f0', '#f1f5f9', '#f8fafc'] : ['#10B981', '#F59E0B', '#F43F5E'],
-                    borderWidth: 2,
-                    borderColor: '#ffffff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '72%',
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        enabled: total > 0,
-                        backgroundColor: '#0f172a',
-                        padding: 8,
-                        cornerRadius: 6
-                    }
-                }
-            }
-        });
-    }
-});
+            });
+        }
+    });
 </script>
 @endpush
-
