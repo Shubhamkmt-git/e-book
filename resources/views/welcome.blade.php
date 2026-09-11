@@ -121,38 +121,17 @@
         @endforeach
 
         @if($hasMultipleBanners)
-            <!-- Previous Slide Arrow -->
-            <button 
-                type="button" 
-                onclick="shiftHeroSlide(-1)" 
-                class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/40 hover:bg-white/20 text-white/80 hover:text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 cursor-pointer opacity-0 group-hover/carousel:opacity-100 shadow-lg"
-                aria-label="Previous Slide"
-            >
-                <i class="fa-solid fa-chevron-left text-sm sm:text-base"></i>
-            </button>
-
-            <!-- Next Slide Arrow -->
-            <button 
-                type="button" 
-                onclick="shiftHeroSlide(1)" 
-                class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/40 hover:bg-white/20 text-white/80 hover:text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all duration-200 cursor-pointer opacity-0 group-hover/carousel:opacity-100 shadow-lg"
-                aria-label="Next Slide"
-            >
-                <i class="fa-solid fa-chevron-right text-sm sm:text-base"></i>
-            </button>
-
-            <!-- Count Dots & Slide Indicators -->
-            <div class="absolute bottom-6 inset-x-0 z-20 flex items-center justify-center gap-2.5">
-                <div class="px-3.5 py-1.5 rounded-full bg-slate-950/60 backdrop-blur-md border border-white/15 flex items-center gap-2 shadow-lg">
+            {{-- Minimalist Dots Indicator without count numbers --}}
+            <div class="absolute bottom-6 inset-x-0 z-20 flex items-center justify-center pointer-events-none">
+                <div class="px-3 py-1.5 rounded-full bg-slate-950/60 backdrop-blur-md border border-white/15 flex items-center gap-2 shadow-lg pointer-events-auto">
                     @foreach($bannersList as $dotIndex => $dotBanner)
                         <button 
                             type="button" 
                             onclick="goToHeroSlide({{ $dotIndex }})" 
-                            class="hero-dot group/dot flex items-center gap-1.5 transition-all duration-300 cursor-pointer focus:outline-none"
+                            class="hero-dot group/dot flex items-center transition-all duration-300 cursor-pointer focus:outline-none p-1"
                             aria-label="Go to banner {{ $dotIndex + 1 }}"
                         >
-                            <span class="dot-indicator h-2 rounded-full transition-all duration-300 {{ $dotIndex === 0 ? 'w-6 bg-brand-400' : 'w-2 bg-white/40 group-hover/dot:bg-white/70' }}"></span>
-                            <span class="dot-number text-[10px] font-bold text-white transition-opacity duration-300 {{ $dotIndex === 0 ? 'inline' : 'hidden' }}">0{{ $dotIndex + 1 }}</span>
+                            <span class="dot-indicator h-2.5 rounded-full transition-all duration-300 {{ $dotIndex === 0 ? 'w-8 bg-brand-400' : 'w-2.5 bg-white/40 group-hover/dot:bg-white/70' }}"></span>
                         </button>
                     @endforeach
                 </div>
@@ -366,7 +345,7 @@
 
         let currentSlide = 0;
         let slideInterval = null;
-        const autoShiftDelay = 5500; // 5.5s interval
+        const autoShiftDelay = 5000; // 5.0 seconds per slide
 
         window.goToHeroSlide = function(index) {
             if (index < 0) {
@@ -389,17 +368,12 @@
 
             dots.forEach((dot, idx) => {
                 const indicator = dot.querySelector('.dot-indicator');
-                const number = dot.querySelector('.dot-number');
                 if (idx === currentSlide) {
-                    indicator?.classList.remove('w-2', 'bg-white/40');
-                    indicator?.classList.add('w-6', 'bg-brand-400');
-                    number?.classList.remove('hidden');
-                    number?.classList.add('inline');
+                    indicator?.classList.remove('w-2.5', 'bg-white/40');
+                    indicator?.classList.add('w-8', 'bg-brand-400');
                 } else {
-                    indicator?.classList.remove('w-6', 'bg-brand-400');
-                    indicator?.classList.add('w-2', 'bg-white/40');
-                    number?.classList.remove('inline');
-                    number?.classList.add('hidden');
+                    indicator?.classList.remove('w-8', 'bg-brand-400');
+                    indicator?.classList.add('w-2.5', 'bg-white/40');
                 }
             });
 
