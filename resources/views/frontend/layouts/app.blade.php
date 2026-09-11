@@ -52,6 +52,9 @@
     <!-- Global Top-Right Recent Sales Toast Notification -->
     @include('frontend.components.recent-sales-toast')
 
+    <!-- Global Razorpay Standard Checkout SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
     @stack('scripts')
 </body>
 </html>

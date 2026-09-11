@@ -425,10 +425,14 @@ class PaymentController extends Controller
     /**
      * Initiate Razorpay payment gateway checkout for a book.
      */
-    public function initiateRazorpay(Request $request, string $identifier): RedirectResponse|View
+    public function initiateRazorpay(Request $request, string $identifier): JsonResponse|RedirectResponse|View
     {
         $appSetting = AppSetting::getSettings();
         if (! $appSetting->isRazorpayEnabled()) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => 'Razorpay payment method is currently disabled by administrator.'], 400);
+            }
+
             return redirect()->route('books.show', $identifier)
                 ->with('payment_error', 'Razorpay payment method is currently disabled by administrator.');
         }
@@ -437,10 +441,17 @@ class PaymentController extends Controller
         $bookData = $this->books->findBook($identifier);
 
         if (! $bookData) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => 'E-Book not found.'], 404);
+            }
             abort(404, 'E-Book not found.');
         }
 
         if (! $customer) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => 'Please enter your email to proceed directly to payment.'], 422);
+            }
+
             return redirect()->route('books.show', ['identifier' => $identifier, 'checkout' => 1])
                 ->with('payment_error', 'Please enter your email to proceed directly to payment.');
         }
@@ -464,10 +475,21 @@ class PaymentController extends Controller
                 'status' => 'pending',
             ]);
 
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'status' => 'mock_redirect',
+                    'redirect_url' => route('payments.razorpay.mock-checkout', $purchase),
+                ]);
+            }
+
             return redirect()->route('payments.razorpay.mock-checkout', $purchase);
         }
 
         if ($key === '' || $secret === '') {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => 'Razorpay payment gateway is not configured yet. Set RAZORPAY_ENV=mock in .env for test simulation, or provide Razorpay Key and Secret in .env.'], 500);
+            }
+
             return redirect()->route('books.show', $identifier)
                 ->with('payment_error', 'Razorpay payment gateway is not configured yet. Set RAZORPAY_ENV=mock in .env for test simulation, or provide Razorpay Key and Secret in .env.');
         }
@@ -502,12 +524,20 @@ class PaymentController extends Controller
                 'gateway_response' => $order->toArray(),
             ]);
 
-            return view('frontend.payments.razorpay-checkout', [
-                'purchase' => $purchase,
-                'razorpayOrder' => $order,
-                'razorpayKey' => $key,
-                'appName' => $appSetting->app_name ?? config('app.name', 'E-Book CMS'),
-                'appLogo' => $appSetting->logo_dark_url ?? $appSetting->logo_light_url ?? '',
+            return response()->json([
+                'status' => 'success',
+                'purchase_id' => $purchase->id,
+                'razorpay_key' => $key,
+                'razorpay_order_id' => $order['id'],
+                'amount' => (int) round($amount * 100),
+                'currency' => 'INR',
+                'app_name' => $appSetting->app_name ?? config('app.name', 'E-Book CMS'),
+                'app_logo' => $appSetting->logo_dark_url ?? $appSetting->logo_light_url ?? '',
+                'book_title' => $purchase->book_title,
+                'customer_name' => $customer->name ?? 'Customer',
+                'customer_email' => $customer->email ?? '',
+                'customer_mobile' => $customer->mobile ?? '',
+                'callback_url' => route('payments.razorpay.callback', $purchase),
             ]);
         } catch (\Throwable $e) {
             Log::error('Razorpay Order Creation Error: '.$e->getMessage(), [
@@ -518,6 +548,10 @@ class PaymentController extends Controller
                 'status' => 'failed',
                 'gateway_response' => ['error' => $e->getMessage()],
             ]);
+
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => 'Unable to initialize Razorpay checkout: '.$e->getMessage()], 500);
+            }
 
             return redirect()->route('books.show', $identifier)
                 ->with('payment_error', 'Unable to initialize Razorpay checkout: '.$e->getMessage());

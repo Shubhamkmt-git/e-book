@@ -205,6 +205,7 @@
     const razorpayEnabled = @json($razorpayActive);
     let selectedGateway = @json($defaultGateway);
     let currentBookKey = '';
+    let currentBookPriceText = '';
 
     window.updateGatewayChoice = function(gateway) {
         selectedGateway = gateway;
@@ -219,6 +220,90 @@
         form.action = `/ebooks/${encodeURIComponent(currentBookKey)}/payments/${gateway}`;
     }
 
+    function resetSubmitButton() {
+        const btn = document.getElementById('checkout-submit-btn');
+        if (btn) {
+            btn.disabled = false;
+            btn.classList.remove('opacity-75', 'cursor-wait');
+            btn.innerHTML = `<span id="checkout-submit-btn-text">Proceed to Payment ${currentBookPriceText ? `(${currentBookPriceText})` : ''}</span> <i class="fa-solid fa-arrow-right text-xs"></i>`;
+        }
+    }
+
+    function setSubmitLoading(message) {
+        const btn = document.getElementById('checkout-submit-btn');
+        if (btn) {
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-wait');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-sm"></i> <span>${message || 'Processing...'}</span>`;
+        }
+    }
+
+    // Launch direct seamless Razorpay Checkout in modal
+    function launchRazorpayCheckout(orderData) {
+        if (typeof Razorpay === 'undefined') {
+            alert('Razorpay SDK failed to load. Please check your internet connection.');
+            resetSubmitButton();
+            return;
+        }
+
+        const options = {
+            key: orderData.razorpay_key,
+            amount: orderData.amount,
+            currency: orderData.currency || 'INR',
+            name: orderData.app_name || 'E-Book CMS',
+            description: orderData.book_title || 'E-Book Publication',
+            image: orderData.app_logo || '',
+            order_id: orderData.razorpay_order_id,
+            handler: function (response) {
+                setSubmitLoading('Verifying payment & preparing your e-book...');
+
+                // Hidden form post to callback URL
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = orderData.callback_url;
+
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+                const fields = {
+                    '_token': csrfToken,
+                    'razorpay_payment_id': response.razorpay_payment_id,
+                    'razorpay_order_id': response.razorpay_order_id,
+                    'razorpay_signature': response.razorpay_signature
+                };
+
+                for (const [k, v] of Object.entries(fields)) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = k;
+                    input.value = v;
+                    form.appendChild(input);
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+            },
+            prefill: {
+                name: orderData.customer_name || 'Customer',
+                email: orderData.customer_email || '',
+                contact: orderData.customer_mobile || ''
+            },
+            theme: {
+                color: '#0284c7'
+            },
+            modal: {
+                ondismiss: function() {
+                    resetSubmitButton();
+                }
+            }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.on('payment.failed', function (resp) {
+            alert('Payment Failed: ' + (resp.error.description || 'Transaction unsuccessful.'));
+            resetSubmitButton();
+        });
+        rzp.open();
+    }
+
     // Universal Buy Now redirect / checkout handler
     window.initiateBookPurchase = function(bookData, event) {
         if (event) {
@@ -229,14 +314,14 @@
         if (!bookData) return;
 
         currentBookKey = bookData.slug || bookData.id;
+        currentBookPriceText = bookData.price || '';
         const gateway = selectedGateway || (razorpayEnabled ? 'razorpay' : 'easebuzz');
-        const initiateUrl = `/ebooks/${encodeURIComponent(currentBookKey)}/payments/${gateway}`;
 
-        // If customer is already authenticated and only one gateway exists, submit direct POST
-        if (isCustomerAuthenticated && !(easebuzzEnabled && razorpayEnabled)) {
+        // If customer is already authenticated and only Easebuzz exists, direct POST
+        if (isCustomerAuthenticated && easebuzzEnabled && !razorpayEnabled) {
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = initiateUrl;
+            form.action = `/ebooks/${encodeURIComponent(currentBookKey)}/payments/easebuzz`;
 
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
             const csrfInput = document.createElement('input');
@@ -250,7 +335,7 @@
             return;
         }
 
-        // Otherwise, open the Quick Checkout Modal for instant guest/customer checkout
+        // Open the Quick Checkout Modal
         openQuickCheckoutModal(bookData);
     };
 
@@ -261,6 +346,7 @@
         if (!backdrop || !modal || !form) return;
 
         currentBookKey = bookData.slug || bookData.id;
+        currentBookPriceText = bookData.price || '';
         updateFormAction();
 
         // Update book details in modal
@@ -339,16 +425,56 @@
         }
     });
 
-    // Handle submit loading state
+    // Handle form submit
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('quick-checkout-form');
         if (form) {
-            form.addEventListener('submit', function() {
-                const btn = document.getElementById('checkout-submit-btn');
-                if (btn) {
-                    btn.disabled = true;
-                    btn.classList.add('opacity-75', 'cursor-wait');
-                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-sm"></i> <span>Connecting to Payment...</span>';
+            form.addEventListener('submit', function(e) {
+                const gateway = selectedGateway || (razorpayEnabled ? 'razorpay' : 'easebuzz');
+
+                if (gateway === 'razorpay') {
+                    e.preventDefault();
+                    setSubmitLoading('Initializing Razorpay...');
+
+                    const formData = new FormData(form);
+                    const url = `/ebooks/${encodeURIComponent(currentBookKey)}/payments/razorpay`;
+
+                    fetch(url, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => {
+                        return response.json().then(json => {
+                            if (!response.ok) {
+                                throw new Error(json.message || 'Payment initiation failed.');
+                            }
+                            return json;
+                        });
+                    })
+                    .then(data => {
+                        if (data.status === 'mock_redirect' && data.redirect_url) {
+                            window.location.href = data.redirect_url;
+                            return;
+                        }
+
+                        if (data.status === 'success' && data.razorpay_order_id) {
+                            closeQuickCheckoutModal();
+                            launchRazorpayCheckout(data);
+                        } else {
+                            throw new Error(data.message || 'Invalid response from payment gateway.');
+                        }
+                    })
+                    .catch(err => {
+                        alert(err.message || 'Unable to start Razorpay payment. Please try again.');
+                        resetSubmitButton();
+                    });
+                } else {
+                    // Easebuzz standard post redirect
+                    setSubmitLoading('Connecting to Easebuzz...');
                 }
             });
         }
