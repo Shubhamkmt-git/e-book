@@ -241,18 +241,12 @@
                     </div>
                 </div>
 
-                {{-- Card: Danger Zone --}}
-                <div class="bg-white border border-rose-100 rounded-2xl p-5 shadow-2xs">
-                    <p class="text-xs font-bold text-rose-700 mb-1">Danger Zone</p>
-                    <p class="text-xs text-slate-400 mb-3">Permanently delete this banner and its image.</p>
-                    <form method="POST" action="{{ route('admin.hero-banners.destroy', $heroBanner) }}"
-                          onsubmit="return confirm('Delete this banner permanently?')">
-                        @csrf @method('DELETE')
-                        <button type="submit"
-                                class="w-full px-4 py-2 rounded-xl border border-rose-200 text-rose-600 text-xs font-semibold hover:bg-rose-50 transition cursor-pointer flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-trash text-xs"></i> Delete Banner
-                        </button>
-                    </form>
+                {{-- Save Button --}}
+                <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs">
+                    <button type="submit" form="banner-form"
+                            class="w-full px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-sm font-semibold shadow-sm transition cursor-pointer flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-floppy-disk text-xs"></i> Save Changes
+                    </button>
                 </div>
 
             </div>

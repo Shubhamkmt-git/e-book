@@ -5,128 +5,8 @@
 @section('content')
 
 @php
-    $allCategories = [
-        [
-            'name' => 'Sci-Fi & Fantasy',
-            'slug' => 'sci-fi-fantasy',
-            'count' => '4,280 Titles',
-            'icon' => 'fa-solid fa-rocket',
-        ],
-        [
-            'name' => 'Tech & Coding',
-            'slug' => 'tech-coding',
-            'count' => '3,120 Titles',
-            'icon' => 'fa-solid fa-laptop-code',
-        ],
-        [
-            'name' => 'Business & Finance',
-            'slug' => 'business-finance',
-            'count' => '2,850 Titles',
-            'icon' => 'fa-solid fa-chart-line',
-        ],
-        [
-            'name' => 'Psychology',
-            'slug' => 'psychology',
-            'count' => '5,410 Titles',
-            'icon' => 'fa-solid fa-brain',
-        ],
-        [
-            'name' => 'Design & Arts',
-            'slug' => 'design-arts',
-            'count' => '1,940 Titles',
-            'icon' => 'fa-solid fa-palette',
-        ],
-        [
-            'name' => 'AI & Data Science',
-            'slug' => 'tech-coding',
-            'count' => '2,310 Titles',
-            'icon' => 'fa-solid fa-microchip',
-        ],
-        [
-            'name' => 'Science & Physics',
-            'slug' => 'sci-fi-fantasy',
-            'count' => '1,890 Titles',
-            'icon' => 'fa-solid fa-atom',
-        ],
-        [
-            'name' => 'History & Politics',
-            'slug' => 'business-finance',
-            'count' => '3,650 Titles',
-            'icon' => 'fa-solid fa-landmark',
-        ],
-        [
-            'name' => 'Self-Growth',
-            'slug' => 'psychology',
-            'count' => '4,780 Titles',
-            'icon' => 'fa-solid fa-arrow-trend-up',
-        ],
-        [
-            'name' => 'Biographies',
-            'slug' => 'business-finance',
-            'count' => '2,150 Titles',
-            'icon' => 'fa-solid fa-feather-pointed',
-        ],
-        [
-            'name' => 'Health & Longevity',
-            'slug' => 'psychology',
-            'count' => '1,670 Titles',
-            'icon' => 'fa-solid fa-heart-pulse',
-        ],
-        [
-            'name' => 'Academic Textbooks',
-            'slug' => 'tech-coding',
-            'count' => '6,200 Titles',
-            'icon' => 'fa-solid fa-graduation-cap',
-        ],
-        [
-            'name' => 'Mystery & Thriller',
-            'slug' => 'sci-fi-fantasy',
-            'count' => '3,490 Titles',
-            'icon' => 'fa-solid fa-mask',
-        ],
-        [
-            'name' => 'Marketing & Sales',
-            'slug' => 'business-finance',
-            'count' => '1,840 Titles',
-            'icon' => 'fa-solid fa-bullhorn',
-        ],
-        [
-            'name' => 'Philosophy',
-            'slug' => 'psychology',
-            'count' => '2,080 Titles',
-            'icon' => 'fa-solid fa-book-bookmark',
-        ],
-        [
-            'name' => 'Young Adult',
-            'slug' => 'sci-fi-fantasy',
-            'count' => '2,920 Titles',
-            'icon' => 'fa-solid fa-wand-magic-sparkles',
-        ],
-        [
-            'name' => 'Poetry & Essays',
-            'slug' => 'design-arts',
-            'count' => '1,120 Titles',
-            'icon' => 'fa-solid fa-pen-nib',
-        ],
-        [
-            'name' => 'Economics',
-            'slug' => 'business-finance',
-            'count' => '2,460 Titles',
-            'icon' => 'fa-solid fa-coins',
-        ],
-        [
-            'name' => 'Law & Ethics',
-            'slug' => 'business-finance',
-            'count' => '1,530 Titles',
-            'icon' => 'fa-solid fa-scale-balanced',
-        ],
-        [
-            'name' => 'Photography & Cinema',
-            'slug' => 'design-arts',
-            'count' => '1,380 Titles',
-            'icon' => 'fa-solid fa-camera',
-        ],
-    ];
+    $allCategories = $allCategories ?? [];
+    $categoryCount = $totalCount ?? count($allCategories);
 @endphp
 
 <!-- ==========================================
@@ -150,11 +30,11 @@
                     Explore All <span class="text-brand-600">Categories</span>
                 </h1>
                 <p class="text-sm sm:text-base text-slate-500 mt-2.5 max-w-2xl font-normal leading-relaxed">
-                    Browse our complete catalog of 32+ genres and subjects. Find your next transformative read across technology, fiction, science, and beyond.
+                    Browse our complete catalog of {{ $categoryCount }}+ genres and subjects. Find your next transformative read across technology, fiction, science, and beyond.
                 </p>
             </div>
             <span class="text-xs text-slate-500 font-medium self-start sm:self-auto">
-                Showing all 20 featured categories
+                Showing all {{ $categoryCount }} categories
             </span>
         </div>
 
@@ -176,8 +56,8 @@
                         <i class="{{ $category['icon'] }} transition-colors duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]"></i>
                     </div>
                     
-                    <!-- Category Title in Bebas Neue Brand Font (Smooth Color Crossfade) -->
-                    <h3 class="relative z-10 font-brand text-[22px] text-slate-900 group-hover:text-white transition-colors duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] tracking-wider uppercase leading-snug">
+                    <!-- Category Title in Bebas Neue Brand Font in 1 Single Row -->
+                    <h3 class="relative z-10 font-brand text-[19px] sm:text-[21px] text-slate-900 group-hover:text-white transition-colors duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] tracking-wider uppercase leading-snug whitespace-nowrap truncate w-full px-1" title="{{ $category['name'] }}">
                         {{ $category['name'] }}
                     </h3>
                     

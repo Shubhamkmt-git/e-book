@@ -329,12 +329,23 @@
 
                         <!-- Actions -->
                         <div class="flex flex-col items-end gap-2 shrink-0">
-                            <a 
-                                href="${escapeHtml(bookUrl)}" 
-                                class="px-3 py-1 rounded-full bg-brand-600 hover:bg-brand-500 text-white font-brand text-sm uppercase tracking-wider transition shadow-2xs"
+                            <button 
+                                type="button" 
+                                onclick="initiateBookPurchase({
+                                    id: '${escapeHtml(String(item.id || ''))}',
+                                    slug: '${escapeHtml(String(item.slug || ''))}',
+                                    title: '${escapeHtml(String(item.title || ''))}',
+                                    author: '${escapeHtml(String(item.author || ''))}',
+                                    category: '${escapeHtml(String(item.category || 'E-Book'))}',
+                                    price: '${escapeHtml(String(item.price || ''))}',
+                                    original_price: '${escapeHtml(String(item.original_price || ''))}',
+                                    image: '${escapeHtml(String(item.image || ''))}',
+                                    url: '${escapeHtml(String(bookUrl))}'
+                                }, event)"
+                                class="px-3 py-1 rounded-full bg-brand-600 hover:bg-brand-500 text-white font-brand text-sm uppercase tracking-wider transition shadow-2xs cursor-pointer"
                             >
                                 Buy Now
-                            </a>
+                            </button>
                             <button 
                                 type="button" 
                                 onclick="removeFromWishlist('${escapeHtml(String(bookKey))}')" 

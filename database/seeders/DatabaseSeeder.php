@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             HeroBannerSeeder::class,
             FaqSeeder::class,
             CtaSeeder::class,
+            TestimonialSeeder::class,
         ]);
     }
 }

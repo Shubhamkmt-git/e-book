@@ -14,9 +14,19 @@ class HeroBannerController extends Controller
     /**
      * Display a listing of hero banners.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        $banners = HeroBanner::orderBy('sort_order')->orderByDesc('created_at')->paginate(12);
+        $query = HeroBanner::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('title_l2', 'like', "%{$search}%");
+            });
+        }
+
+        $banners = $query->orderBy('sort_order')->orderByDesc('created_at')->paginate(15)->withQueryString();
         $totalCount = HeroBanner::count();
 
         return view('admin.hero-banners.index', compact('banners', 'totalCount'));

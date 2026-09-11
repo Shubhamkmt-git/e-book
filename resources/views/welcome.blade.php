@@ -104,7 +104,7 @@
                 <h2 class="font-brand text-4xl sm:text-5xl text-slate-900 tracking-wide uppercase mt-1">Explore Popular Genres</h2>
             </div>
             <a href="{{ route('categories.index') }}" class="text-sm font-semibold text-brand-600 hover:text-brand-700 hover:underline flex items-center gap-1.5">
-                <span>View all 32 categories</span>
+                <span>View all {{ $totalCategoriesCount ?? 18 }} categories</span>
                 <i class="fa-solid fa-arrow-right text-xs"></i>
             </a>
         </div>
@@ -122,6 +122,7 @@
 <!-- ==========================================
      SPOTLIGHT BOOK OF THE WEEK (MINIMAL & CLEAN)
      ========================================== -->
+@if(!empty($spotlightBook))
 <section class="py-16 sm:py-20 bg-white">
     <div class="w-[96%] max-w-[96%] mx-auto px-2 sm:px-4">
         
@@ -137,10 +138,10 @@
                 <!-- Left: Book Artwork with Realistic Depth & Sheen (10:7) -->
                 <div class="lg:col-span-5 flex justify-center">
                     <div class="relative group w-full max-w-sm">
-                        <a href="{{ route('books.show', 'quantum-frontiers-next-century') }}" class="block w-full aspect-[10/7] rounded-2xl overflow-hidden shadow-2xl shadow-brand-900/20 ring-1 ring-black/5 bg-slate-950 transform group-hover:scale-[1.02] group-hover:-translate-y-1 transition-all duration-500 ease-out">
+                        <a href="{{ route('books.show', $spotlightBook->slug) }}" class="block w-full aspect-[10/7] rounded-2xl overflow-hidden shadow-2xl shadow-brand-900/20 ring-1 ring-black/5 bg-slate-950 transform group-hover:scale-[1.02] group-hover:-translate-y-1 transition-all duration-500 ease-out">
                             <img 
-                                src="{{ asset('images/books/spotlight.jpg') }}" 
-                                alt="Quantum Frontiers Book Cover" 
+                                src="{{ $spotlightBook->cover_image ? $spotlightBook->cover_image_url : asset('images/books/spotlight.jpg') }}" 
+                                alt="{{ $spotlightBook->title }}" 
                                 class="w-full h-full object-cover"
                             >
                             
@@ -151,17 +152,17 @@
                             <button 
                                 type="button" 
                                 aria-label="Add to wishlist"
-                                data-wishlist-key="quantum-frontiers-next-century"
+                                data-wishlist-key="{{ $spotlightBook->slug }}"
                                 onclick="toggleWishlist({{ json_encode([
-                                    'id' => 5,
-                                    'slug' => 'quantum-frontiers-next-century',
-                                    'title' => 'Quantum Frontiers: The Next Century of Human Discovery',
-                                    'author' => 'Dr. Evelyn Vance',
-                                    'category' => 'Theoretical Physics',
-                                    'price' => '₹699',
-                                    'original_price' => '₹1,499',
-                                    'image' => asset('images/books/spotlight.jpg'),
-                                    'url' => route('books.show', 'quantum-frontiers-next-century')
+                                    'id' => $spotlightBook->id,
+                                    'slug' => $spotlightBook->slug,
+                                    'title' => $spotlightBook->title,
+                                    'author' => $spotlightBook->author_name,
+                                    'category' => $spotlightBook->category?->title ?? 'E-Book',
+                                    'price' => '₹' . number_format((float) $spotlightBook->selling_price, 0),
+                                    'original_price' => $spotlightBook->price > $spotlightBook->selling_price ? ('₹' . number_format((float) $spotlightBook->price, 0)) : '',
+                                    'image' => $spotlightBook->cover_image ? $spotlightBook->cover_image_url : asset('images/books/spotlight.jpg'),
+                                    'url' => route('books.show', $spotlightBook->slug)
                                 ]) }}, event)"
                                 class="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-slate-950/60 hover:bg-white text-white hover:text-rose-500 backdrop-blur-md border border-white/20 hover:border-white flex items-center justify-center transition-all duration-200 shadow-md cursor-pointer z-10"
                             >
@@ -177,19 +178,19 @@
                     <!-- Top Pill Badge -->
                     <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-brand-100/80 border border-brand-200 text-brand-700 text-xs font-bold uppercase tracking-wider mb-3.5 shadow-2xs">
                         <i class="fa-solid fa-crown text-amber-500 text-xs"></i>
-                        <span>Book of the Week</span>
+                        <span>{{ $spotlight?->badge_text ?: 'Book of the Week' }}</span>
                     </div>
                     
                     <!-- Title -->
-                    <a href="{{ route('books.show', 'quantum-frontiers-next-century') }}" class="block">
+                    <a href="{{ route('books.show', $spotlightBook->slug) }}" class="block">
                         <h2 class="font-brand text-4xl sm:text-5xl lg:text-6xl text-slate-900 hover:text-brand-600 transition-colors tracking-wide uppercase leading-[0.95] mb-2.5">
-                            Quantum Frontiers: The Next Century of Human Discovery
+                            {{ $spotlight?->effective_title ?: $spotlightBook->title }}
                         </h2>
                     </a>
 
                     <!-- Author & Rating -->
                     <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 text-xs text-slate-500 mb-4">
-                        <span class="font-bold text-slate-800 text-sm">Dr. Evelyn Vance</span>
+                        <span class="font-bold text-slate-800 text-sm">{{ $spotlightBook->author_name }}</span>
                         <span class="text-slate-300">•</span>
                         <div class="flex items-center gap-1 text-amber-400">
                             <i class="fa-solid fa-star text-[11px]"></i>
@@ -198,56 +199,62 @@
                             <i class="fa-solid fa-star text-[11px]"></i>
                             <i class="fa-solid fa-star text-[11px]"></i>
                             <span class="font-bold text-slate-800 ml-1">5.0</span>
-                            <span class="text-slate-400 font-normal">(4.8k reviews)</span>
+                            <span class="text-slate-400 font-normal">(Verified Rating)</span>
                         </div>
-                        <span class="text-slate-300 hidden sm:inline">•</span>
-                        <span class="text-slate-500 font-medium hidden sm:inline">384 Pages</span>
-                        <span class="text-slate-300 hidden sm:inline">•</span>
-                        <span class="text-slate-500 font-medium hidden sm:inline">EPUB &amp; PDF</span>
+                        @if($spotlightBook->pages)
+                            <span class="text-slate-300 hidden sm:inline">•</span>
+                            <span class="text-slate-500 font-medium hidden sm:inline">{{ $spotlightBook->pages }} Pages</span>
+                        @endif
+                        @if($spotlightBook->format)
+                            <span class="text-slate-300 hidden sm:inline">•</span>
+                            <span class="text-slate-500 font-medium hidden sm:inline">{{ $spotlightBook->format }}</span>
+                        @endif
                     </div>
 
                     <!-- Description -->
                     <p class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mb-6 font-normal">
-                        An illuminating journey through modern theoretical physics, unraveling quantum entanglement, wormholes, and multi-dimensional spacetime for specialists and curious minds alike.
+                        {{ $spotlight?->effective_description ?: $spotlightBook->description }}
                     </p>
-
-                    <!-- Feature Tags -->
-                    <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2 mb-6">
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/80 border border-brand-100 text-slate-700 text-xs font-medium">
-                            <i class="fa-solid fa-bolt text-brand-600 text-[11px]"></i> Instant Download
-                        </span>
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/80 border border-brand-100 text-slate-700 text-xs font-medium">
-                            <i class="fa-solid fa-infinity text-brand-600 text-[11px]"></i> Lifetime Access
-                        </span>
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/80 border border-brand-100 text-slate-700 text-xs font-medium">
-                            <i class="fa-solid fa-headphones text-brand-600 text-[11px]"></i> Audio Companion Included
-                        </span>
-                    </div>
 
                     <!-- Price & Actions Row -->
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-5 pt-5 border-t border-brand-200/70">
                         <!-- Pricing Block -->
                         <div class="flex items-baseline justify-center lg:justify-start gap-2.5">
-                            <span class="font-brand text-4xl sm:text-5xl text-brand-700 tracking-wider font-bold">₹699</span>
-                            <span class="font-brand text-2xl text-slate-400 line-through tracking-wider">₹1,499</span>
-                            <span class="px-2.5 py-0.5 rounded-full bg-emerald-100/90 text-emerald-800 text-xs font-bold border border-emerald-200 uppercase tracking-wider ml-1">53% OFF</span>
+                            <span class="font-brand text-4xl sm:text-5xl text-brand-700 tracking-wider font-bold">₹{{ number_format((float) $spotlightBook->selling_price, 0) }}</span>
+                            @if($spotlightBook->price > $spotlightBook->selling_price)
+                                <span class="font-brand text-2xl text-slate-400 line-through tracking-wider">₹{{ number_format((float) $spotlightBook->price, 0) }}</span>
+                                <span class="px-2.5 py-0.5 rounded-full bg-emerald-100/90 text-emerald-800 text-xs font-bold border border-emerald-200 uppercase tracking-wider ml-1">{{ $spotlightBook->discount_percentage }}% OFF</span>
+                            @endif
                         </div>
 
                         <!-- CTA Action Buttons -->
                         <div class="flex items-center gap-3 w-full sm:w-auto justify-center">
-                            <a 
-                                href="{{ route('books.show', 'quantum-frontiers-next-century') }}" 
-                                class="flex-1 sm:flex-none h-12 inline-flex items-center justify-center px-8 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 text-center shadow-lg shadow-brand-600/30 transform hover:-translate-y-0.5"
+                            <button 
+                                type="button" 
+                                onclick="initiateBookPurchase({{ json_encode([
+                                    'id' => $spotlightBook->id,
+                                    'slug' => $spotlightBook->slug,
+                                    'title' => $spotlightBook->title,
+                                    'author' => $spotlightBook->author_name,
+                                    'category' => $spotlightBook->category?->title ?? 'E-Book',
+                                    'price' => '₹' . number_format((float) $spotlightBook->selling_price, 0),
+                                    'original_price' => $spotlightBook->price > $spotlightBook->selling_price ? ('₹' . number_format((float) $spotlightBook->price, 0)) : '',
+                                    'image' => $spotlightBook->cover_image ? $spotlightBook->cover_image_url : asset('images/books/spotlight.jpg'),
+                                    'url' => route('books.show', $spotlightBook->slug)
+                                ]) }}, event)"
+                                class="flex-1 sm:flex-none h-12 inline-flex items-center justify-center px-8 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 text-center shadow-lg shadow-brand-600/30 transform hover:-translate-y-0.5 cursor-pointer"
                             >
-                                <span>Buy Now</span>
-                            </a>
-                            <a 
-                                href="#" 
-                                class="h-12 inline-flex items-center justify-center gap-2 px-7 rounded-full bg-white hover:bg-brand-50/80 text-brand-900 border border-brand-200 font-brand text-xl tracking-wider uppercase transition-all duration-200 text-center shadow-2xs hover:shadow-xs transform hover:-translate-y-0.5"
-                            >
-                                <span>Free Sample</span>
-                                <i class="fa-solid fa-arrow-down text-xs"></i>
-                            </a>
+                                <span>{{ $spotlight?->button_text ?: 'Buy Now' }}</span>
+                            </button>
+                            @if($spotlightBook->sample_file)
+                                <a 
+                                    href="{{ route('books.preview', $spotlightBook->slug) }}" 
+                                    class="h-12 inline-flex items-center justify-center gap-2 px-7 rounded-full bg-white hover:bg-brand-50/80 text-brand-900 border border-brand-200 font-brand text-xl tracking-wider uppercase transition-all duration-200 text-center shadow-2xs hover:shadow-xs transform hover:-translate-y-0.5"
+                                >
+                                    <span>Free Sample</span>
+                                    <i class="fa-solid fa-arrow-down text-xs"></i>
+                                </a>
+                            @endif
                         </div>
                     </div>
 
@@ -259,6 +266,7 @@
 
     </div>
 </section>
+@endif
 
 <!-- ==========================================
      TESTIMONIALS & READER REVIEWS COMPONENT

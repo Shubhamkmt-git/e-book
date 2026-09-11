@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 class Book extends Model
@@ -55,6 +56,16 @@ class Book extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Get the testimonials associated with the book.
+     *
+     * @return HasMany<Testimonial, $this>
+     */
+    public function testimonials(): HasMany
+    {
+        return $this->hasMany(Testimonial::class);
     }
 
     /**

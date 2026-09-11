@@ -65,17 +65,7 @@
                     </button>
                 </form>
 
-                <!-- Reassurance Micro-copy -->
-                <div class="flex items-center justify-center gap-4 text-xs mt-4
-                            {{ !empty($cta) && $cta->bg_image ? 'text-white/60' : 'text-slate-400' }}">
-                    <span class="flex items-center gap-1.5">
-                        <i class="fa-solid fa-bolt text-brand-400 text-[11px]"></i> Instant Delivery
-                    </span>
-                    <span>•</span>
-                    <span class="flex items-center gap-1.5">
-                        <i class="fa-solid fa-shield-halved text-brand-400 text-[11px]"></i> No Spam Ever
-                    </span>
-                </div>
+
             </div>
 
         </div>

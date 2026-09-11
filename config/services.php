@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+    'easebuzz' => [
+        'key' => env('EASEBUZZ_KEY'),
+        'salt' => env('EASEBUZZ_SALT'),
+        'environment' => env('EASEBUZZ_ENV', 'test'),
+        'test_url' => env('EASEBUZZ_TEST_URL', 'https://testpay.easebuzz.in/payment/initiateLink'),
+        'production_url' => env('EASEBUZZ_PRODUCTION_URL', 'https://pay.easebuzz.in/payment/initiateLink'),
+    ],
+
+    'tinymce' => [
+        'key' => env('TINYMCE_API_KEY', 'no-api-key'),
+    ],
+
 ];

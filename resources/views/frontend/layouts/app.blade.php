@@ -38,6 +38,12 @@
     <!-- Global Wishlist Side Drawer Component -->
     @include('frontend.components.wishlist-drawer')
 
+    <!-- Global Quick Checkout Modal Component -->
+    @include('frontend.components.quick-checkout-modal')
+
+    <!-- Global Top-Right Recent Sales Toast Notification -->
+    @include('frontend.components.recent-sales-toast')
+
     @stack('scripts')
 </body>
 </html>

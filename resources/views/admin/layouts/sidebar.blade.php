@@ -106,6 +106,12 @@
                         <span class="sidebar-label">E-Books</span>
                     </a>
 
+                    <!-- Orders / Purchases -->
+                    <a href="{{ route('admin.orders.index') }}" title="Orders" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.orders.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
+                        <i class="fa-solid fa-cart-shopping w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.orders.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
+                        <span class="sidebar-label">Orders</span>
+                    </a>
+
                     <!-- Customers -->
                     <a href="{{ route('admin.customers.index') }}" title="Customers" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.customers.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
                         <i class="fa-solid fa-users w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.customers.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
@@ -118,6 +124,12 @@
                         <span class="sidebar-label">Hero Banners</span>
                     </a>
 
+                    <!-- Book of the Week / Spotlight -->
+                    <a href="{{ route('admin.spotlight.manage') }}" title="Book of the Week" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.spotlight.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
+                        <i class="fa-solid fa-crown w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.spotlight.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
+                        <span class="sidebar-label">Book of the Week</span>
+                    </a>
+
                     <!-- FAQs -->
                     <a href="{{ route('admin.faqs.index') }}" title="FAQs" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.faqs.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
                         <i class="fa-solid fa-circle-question w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.faqs.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
@@ -125,9 +137,21 @@
                     </a>
 
                     <!-- CTAs -->
-                    <a href="{{ route('admin.ctas.index') }}" title="CTAs" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.ctas.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
+                    <a href="{{ route('admin.ctas.manage') }}" title="CTAs" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.ctas.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
                         <i class="fa-solid fa-bullhorn w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.ctas.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
                         <span class="sidebar-label">CTAs</span>
+                    </a>
+
+                    <!-- Testimonials -->
+                    <a href="{{ route('admin.testimonials.index') }}" title="Testimonials" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.testimonials.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
+                        <i class="fa-solid fa-quote-left w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.testimonials.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
+                        <span class="sidebar-label">Testimonials</span>
+                    </a>
+
+                    <!-- Legal & Policies -->
+                    <a href="{{ route('admin.legal-pages.index') }}" title="Legal Pages" class="sidebar-link flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition {{ request()->routeIs('admin.legal-pages.*') ? 'bg-white text-brand-900 font-bold shadow-md shadow-black/10' : 'text-brand-100 hover:bg-white/10 hover:text-white' }}">
+                        <i class="fa-solid fa-file-contract w-6 text-center text-base shrink-0 {{ request()->routeIs('admin.legal-pages.*') ? 'text-brand-700' : 'text-brand-300' }}"></i>
+                        <span class="sidebar-label">Legal Pages</span>
                     </a>
                 </nav>
             </div>

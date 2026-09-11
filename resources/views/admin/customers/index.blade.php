@@ -67,7 +67,7 @@
                             <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Name</th>
                             <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Email</th>
                             <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Mobile</th>
-                            <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Verified</th>
+
                             <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Joined</th>
                             <th class="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
                         </tr>
@@ -92,17 +92,7 @@
                                     <span class="text-slate-400">—</span>
                                 @endif
                             </td>
-                            <td class="px-5 py-4">
-                                @if($customer->email_verified_at)
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-bold border border-emerald-200">
-                                        <i class="fa-solid fa-circle-check text-[10px]"></i> Verified
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-[11px] font-bold border border-amber-200">
-                                        <i class="fa-solid fa-clock text-[10px]"></i> Pending
-                                    </span>
-                                @endif
-                            </td>
+
                             <td class="px-5 py-4 text-slate-500 text-xs">{{ $customer->created_at->format('d M Y') }}</td>
                             <td class="px-5 py-4">
                                 <div class="flex items-center justify-end gap-2">

@@ -66,8 +66,61 @@
 
 @section('content')
 
+<form id="easebuzz-payment-form" action="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" method="POST" class="hidden">
+    @csrf
+</form>
+
 <section class="pt-3 pb-24 sm:pt-4 sm:pb-24 bg-gradient-to-b from-brand-100/60 via-brand-50/70 to-slate-50 min-h-screen">
     <div class="w-[94%] sm:w-[88%] lg:w-[70%] mx-auto px-2 sm:px-4 space-y-5 sm:space-y-6">
+
+        @if(session('payment_success'))
+            <div class="p-5 sm:p-6 rounded-2xl border border-emerald-300 bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 text-emerald-900 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in">
+                <div class="flex items-start gap-3.5">
+                    <div class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                        <i class="fa-solid fa-check text-lg"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-900 text-base sm:text-lg leading-snug">
+                            {{ session('payment_success') }}
+                        </h4>
+                        <p class="text-xs sm:text-sm text-emerald-700 mt-1">
+                            Your full DRM-Free PDF edition has been dispatched to <strong>{{ session('customer_email') ?: 'your email' }}</strong>. Your browser download will begin automatically.
+                        </p>
+                    </div>
+                </div>
+                @if(session('auto_download_url'))
+                    <a 
+                        href="{{ session('auto_download_url') }}" 
+                        download
+                        class="shrink-0 px-6 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-brand text-lg uppercase tracking-wider text-center transition-all shadow-md transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                    >
+                        <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
+                        <span>Download PDF Now</span>
+                    </a>
+
+                    <!-- Automatic Download Trigger Script -->
+                    <script>
+                        document.addEventListener('DOMContentLoaded', () => {
+                            setTimeout(() => {
+                                const dl = document.createElement('a');
+                                dl.href = "{{ session('auto_download_url') }}";
+                                dl.setAttribute('download', '');
+                                document.body.appendChild(dl);
+                                dl.click();
+                                document.body.removeChild(dl);
+                            }, 500);
+                        });
+                    </script>
+                @endif
+            </div>
+        @elseif(session('payment_error'))
+            <div class="px-5 py-4 rounded-2xl border border-rose-200 bg-rose-50 text-rose-800 text-sm font-medium flex items-center gap-3 shadow-xs" role="alert">
+                <div class="w-8 h-8 rounded-full bg-rose-200 text-rose-700 flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-circle-exclamation text-sm"></i>
+                </div>
+                <span>{{ session('payment_error') }}</span>
+            </div>
+        @endif
 
         <!-- 1 & 2. Compact Centered Header: Breadcrumb + Title + Author/Rating -->
         <div class="text-center space-y-1.5 sm:space-y-2 w-full mx-auto">
@@ -143,7 +196,7 @@
                 <!-- Bottom Image Overlay Gradient + Buy Now Button -->
                 <div class="absolute inset-x-0 bottom-0 pb-6 sm:pb-8 pt-20 bg-gradient-to-t from-slate-950/85 via-slate-950/40 to-transparent flex flex-col items-center justify-end px-4 z-10 pointer-events-auto">
                     <a 
-                        href="#buy" 
+                        href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
                         class="btn-buy-motion w-full sm:w-auto min-w-[260px] sm:min-w-[280px] h-13 sm:h-14 inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.04] active:scale-[0.98] shadow-2xl text-center cursor-pointer group/btn"
                     >
                         <span>Buy Now ({{ $book['price'] }}/-)</span>
@@ -206,7 +259,7 @@
 
                 <!-- Buy Now Button with Price & Motion -->
                 <a 
-                    href="#buy" 
+                    href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
                     class="btn-buy-motion w-full h-13 sm:h-14 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-2xl sm:text-3xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] text-center cursor-pointer group"
                 >
                     <span>Buy Now ({{ $book['price'] }}/-)</span>
@@ -253,7 +306,7 @@
             <!-- Buy Now CTA after Highlights -->
             <div class="pt-3 flex justify-center">
                 <a 
-                    href="#buy" 
+                    href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
                     class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
                 >
                     <span>Buy Now ({{ $book['price'] }}/-)</span>
@@ -312,7 +365,7 @@
             <!-- Buy Now CTA after Table of Contents -->
             <div class="pt-3 flex justify-center">
                 <a 
-                    href="#buy" 
+                    href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
                     class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
                 >
                     <span>Buy Now ({{ $book['price'] }}/-)</span>
@@ -375,7 +428,7 @@
             <!-- Buy Now CTA after Suggested Section -->
             <div class="pt-4 flex justify-center">
                 <a 
-                    href="#buy" 
+                    href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
                     class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
                 >
                     <span>Buy Now ({{ $book['price'] }}/-)</span>
@@ -392,7 +445,7 @@
                     Reader Reviews &amp; Feedback
                 </h2>
                 <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
-                    Verified ratings and thoughts from our readers
+                    Ratings and thoughts from our readers
                 </p>
             </div>
 
@@ -400,7 +453,7 @@
             <div class="flex items-center justify-center flex-wrap gap-4 py-1">
                 <div class="flex items-center gap-3">
                     <div class="flex items-baseline gap-1">
-                        <span class="font-brand text-3xl sm:text-4xl text-slate-900 leading-none">{{ $book['rating'] }}</span>
+                        <span id="reviews-avg-rating" class="font-brand text-3xl sm:text-4xl text-slate-900 leading-none">{{ $avgRating ?? ($book['rating'] ?? '5.0') }}</span>
                         <span class="text-xs text-slate-400">/ 5.0</span>
                     </div>
                     <div class="h-6 w-px bg-slate-200"></div>
@@ -411,7 +464,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star"></i>
                     </div>
-                    <span class="text-xs text-slate-500 font-medium">({{ $book['reviews'] }} reviews)</span>
+                    <span class="text-xs text-slate-500 font-medium">(<span id="reviews-count-display">{{ $reviewCount ?? count($reviews) }}</span> reviews)</span>
                 </div>
 
                 <div class="hidden sm:block h-5 w-px bg-slate-200"></div>
@@ -427,30 +480,46 @@
 
             <!-- Collapsible Clean Form -->
             <div id="add-review-form-container" class="hidden bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shadow-sm max-w-2xl mx-auto">
-                <form id="new-review-form" onsubmit="submitNewReview(event)" class="space-y-3">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <form id="new-review-form" action="{{ route('books.reviews.store', $book['slug'] ?? $book['id']) }}" method="POST" onsubmit="submitNewReview(event)" class="space-y-3">
+                    @csrf
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                         <input
                             type="text"
+                            name="name"
                             id="review-author"
                             required
-                            placeholder="Your Name"
+                            placeholder="Your Name *"
                             class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:outline-none focus:border-brand-500 font-medium">
                         <input
                             type="text"
+                            name="profession"
                             id="review-title"
-                            required
-                            placeholder="Review Title"
+                            placeholder="Profession / Title (optional)"
                             class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:outline-none focus:border-brand-500 font-medium">
+                        <select
+                            name="rating"
+                            id="review-rating"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 text-slate-800 text-xs border border-slate-200 focus:outline-none focus:border-brand-500 font-medium">
+                            <option value="5" selected>★★★★★ 5 Stars</option>
+                            <option value="4">★★★★☆ 4 Stars</option>
+                            <option value="3">★★★☆☆ 3 Stars</option>
+                            <option value="2">★★☆☆☆ 2 Stars</option>
+                            <option value="1">★☆☆☆☆ 1 Star</option>
+                        </select>
                     </div>
                     <textarea
+                        name="message"
                         id="review-comment"
                         rows="2"
                         required
-                        placeholder="What did you learn from this book?"
+                        placeholder="What did you learn from this book? *"
                         class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:outline-none focus:border-brand-500 font-medium resize-none"></textarea>
+                    
+                    <div id="review-form-status" class="hidden text-xs font-semibold py-1"></div>
+
                     <div class="flex items-center justify-end gap-2">
-                        <button type="button" onclick="toggleReviewForm()" class="px-3.5 py-1 text-xs text-slate-500 cursor-pointer">Cancel</button>
-                        <button type="submit" class="px-4 py-2 rounded-full bg-brand-600 text-white font-brand text-base uppercase tracking-wider cursor-pointer shadow-2xs hover:bg-brand-500 transition">Submit Review</button>
+                        <button type="button" onclick="toggleReviewForm()" class="px-3.5 py-1 text-xs text-slate-500 cursor-pointer hover:text-slate-700">Cancel</button>
+                        <button type="submit" id="review-submit-btn" class="px-4 py-2 rounded-full bg-brand-600 text-white font-brand text-base uppercase tracking-wider cursor-pointer shadow-2xs hover:bg-brand-500 transition">Submit Review</button>
                     </div>
                 </form>
             </div>
@@ -474,9 +543,6 @@
                                             <div class="min-w-0">
                                                 <h4 class="font-bold text-xs sm:text-sm text-slate-900 truncate leading-tight">{{ $rev['name'] }}</h4>
                                                 <div class="flex items-center gap-1.5 mt-0.5">
-                                                    <span class="inline-flex items-center gap-0.5 text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
-                                                        <i class="fa-solid fa-circle-check text-[8px] text-emerald-600"></i> Verified
-                                                    </span>
                                                     <span class="text-[10px] text-slate-400">{{ $rev['date'] ?? 'Recent' }}</span>
                                                 </div>
                                             </div>
@@ -502,7 +568,7 @@
                                     <span class="inline-flex items-center gap-1 text-[11px] text-slate-500">
                                         <i class="fa-regular fa-thumbs-up text-[10px] text-slate-400"></i> Helpful ({{ $rev['helpful'] ?? 14 }})
                                     </span>
-                                    <span class="text-[10px] text-brand-600 font-semibold uppercase tracking-wider">Verified Purchase</span>
+
                                 </div>
                             </div>
                             @endforeach
@@ -516,7 +582,7 @@
             <!-- Buy Now CTA after Reviews -->
             <div class="pt-6 flex justify-center">
                 <a 
-                    href="#buy" 
+                    href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
                     class="btn-buy-motion w-full sm:w-auto min-w-[260px] h-12 sm:h-13 inline-flex items-center justify-center gap-2 px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] text-center cursor-pointer group"
                 >
                     <span>Buy Now ({{ $book['price'] }}/-)</span>
@@ -637,7 +703,7 @@
                 </p>
                 <div class="pt-2 flex items-center justify-center gap-3">
                     <a
-                        href="#buy"
+                        href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
                         onclick="closeSampleReaderModal()"
                         class="btn-buy-motion px-6 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-slate-950 font-brand text-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] shadow-md inline-flex items-center gap-2 group">
                         <span>Buy Now ({{ $book['price'] }}/-)</span>
@@ -694,7 +760,7 @@
 
             <!-- Buy Now Button (Full-width on mobile) -->
             <a 
-                href="#buy" 
+                href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
                 class="btn-buy-motion w-full sm:w-auto text-center px-5 sm:px-7 py-3 sm:py-2.5 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.03] active:scale-[0.98] whitespace-nowrap cursor-pointer inline-flex items-center justify-center gap-1.5 group"
             >
                 <span>Buy Now ({{ $book['price'] }}/-)</span>
@@ -705,135 +771,9 @@
 </div>
 
 <!-- ==========================================
-     LIVE SOCIAL PROOF PURCHASE TOAST (TOP-LEFT)
-     ========================================== -->
-<div 
-    id="purchase-toast-popup" 
-    class="fixed top-22 left-3 sm:left-6 z-50 transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] transform -translate-x-16 opacity-0 pointer-events-none scale-95 max-w-[320px] sm:max-w-[360px]"
-    role="status"
-    aria-live="polite"
->
-    <div class="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-[0_14px_36px_-6px_rgba(0,0,0,0.16)] p-3 sm:p-3.5 flex items-center gap-3 relative ring-1 ring-black/5 group">
-        <!-- Book Miniature Cover -->
-        <div class="w-11 h-8 rounded-lg overflow-hidden bg-slate-950 shrink-0 border border-slate-200 shadow-2xs aspect-[10/7]">
-            <img id="toast-book-image" src="{{ asset($book['image']) }}" alt="{{ $book['title'] }}" class="w-full h-full object-cover">
-        </div>
-
-        <!-- Notification Content -->
-        <div class="min-w-0 flex-1 pr-4">
-            <p class="text-xs text-slate-800 leading-snug truncate">
-                <strong id="toast-buyer-name" class="font-bold text-slate-900">Alex Rivera</strong> 
-                <span id="toast-buyer-city" class="text-slate-500 text-[11px] font-normal">from San Francisco</span>
-            </p>
-            <p class="text-[11px] text-slate-600 truncate mt-0.5">
-                bought <strong id="toast-book-title" class="text-brand-600 font-semibold truncate">{{ $book['title'] }}</strong>
-            </p>
-            <div class="flex items-center gap-2 mt-1">
-                <span id="toast-time-ago" class="text-[10px] text-slate-400 font-medium">Just now</span>
-                <span class="inline-flex items-center gap-1 text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                    <i class="fa-solid fa-circle-check text-[8px] text-emerald-600"></i> Verified
-                </span>
-            </div>
-        </div>
-
-        <!-- Dismiss Close Button -->
-        <button 
-            type="button" 
-            onclick="hidePurchaseToast()" 
-            class="absolute top-2 right-2 text-slate-300 hover:text-slate-600 transition p-1 cursor-pointer"
-            aria-label="Close notification"
-        >
-            <i class="fa-solid fa-xmark text-xs"></i>
-        </button>
-    </div>
-</div>
-
-<!-- ==========================================
      INTERACTION JAVASCRIPT
      ========================================== -->
 <script>
-
-    // Live Social Proof Purchase Notification with Irregular 3-8s Intervals
-    (function initPurchaseNotification() {
-        const toast = document.getElementById('purchase-toast-popup');
-        const buyerNameEl = document.getElementById('toast-buyer-name');
-        const buyerCityEl = document.getElementById('toast-buyer-city');
-        const timeAgoEl = document.getElementById('toast-time-ago');
-
-        if (!toast || !buyerNameEl || !buyerCityEl || !timeAgoEl) return;
-
-        const buyers = [
-            { name: 'Alex Rivera', city: 'from San Francisco' },
-            { name: 'Priya Sharma', city: 'from Bengaluru' },
-            { name: 'Marcus Vance', city: 'from Austin' },
-            { name: 'Sofia Chen', city: 'from Singapore' },
-            { name: 'David Miller', city: 'from London' },
-            { name: 'Aarav Patel', city: 'from Mumbai' },
-            { name: 'Emily Watson', city: 'from Toronto' },
-            { name: 'Rohan Gupta', city: 'from New Delhi' },
-            { name: 'Liam O’Connor', city: 'from Dublin' },
-            { name: 'Ananya Iyer', city: 'from Hyderabad' },
-            { name: 'Daniel Kim', city: 'from Seoul' },
-            { name: 'Carlos Mendez', city: 'from Madrid' },
-            { name: 'Kavita Deshmukh', city: 'from Pune' },
-            { name: 'Oliver Smith', city: 'from Sydney' },
-            { name: 'Aditya Verma', city: 'from Bengaluru' }
-        ];
-
-        const relativeTimes = [
-            'Just now',
-            'Just now',
-            '2 min ago',
-            '3 min ago',
-            '5 min ago',
-            '8 min ago',
-            '14 min ago',
-            '22 min ago',
-            '1 hr ago'
-        ];
-
-        let lastBuyerIndex = -1;
-        let hideTimeout = null;
-
-        window.hidePurchaseToast = function() {
-            toast.classList.add('-translate-x-16', 'opacity-0', 'pointer-events-none', 'scale-95');
-            toast.classList.remove('translate-x-0', 'opacity-100', 'pointer-events-auto', 'scale-100');
-        };
-
-        function showNextNotification() {
-            // Pick a different buyer than previous
-            let buyerIndex = Math.floor(Math.random() * buyers.length);
-            if (buyerIndex === lastBuyerIndex) {
-                buyerIndex = (buyerIndex + 1) % buyers.length;
-            }
-            lastBuyerIndex = buyerIndex;
-
-            const buyer = buyers[buyerIndex];
-            const timeAgo = relativeTimes[Math.floor(Math.random() * relativeTimes.length)];
-
-            buyerNameEl.textContent = buyer.name;
-            buyerCityEl.textContent = buyer.city;
-            timeAgoEl.textContent = timeAgo;
-
-            // Show Toast
-            toast.classList.remove('-translate-x-16', 'opacity-0', 'pointer-events-none', 'scale-95');
-            toast.classList.add('translate-x-0', 'opacity-100', 'pointer-events-auto', 'scale-100');
-
-            // Visible for ~3.5 seconds
-            if (hideTimeout) clearTimeout(hideTimeout);
-            hideTimeout = setTimeout(() => {
-                window.hidePurchaseToast();
-
-                // Next notification in random irregular gap (3 to 8 seconds)
-                const nextDelay = Math.floor(Math.random() * (8000 - 3000 + 1)) + 3000;
-                setTimeout(showNextNotification, nextDelay);
-            }, 3500);
-        }
-
-        // Start initial popup after 3-5 seconds on page load
-        const initialDelay = Math.floor(Math.random() * (5000 - 3000 + 1)) + 3000;
-        setTimeout(showNextNotification, initialDelay);
-    })();
 
     // Sample Reader Modal Handlers
     function openSampleReaderModal() {
@@ -915,66 +855,151 @@
     function submitNewReview(e) {
         e.preventDefault();
         
+        const form = document.getElementById('new-review-form');
         const nameInput = document.getElementById('review-author');
         const titleInput = document.getElementById('review-title');
+        const ratingInput = document.getElementById('review-rating');
         const commentInput = document.getElementById('review-comment');
+        const submitBtn = document.getElementById('review-submit-btn');
+        const statusDiv = document.getElementById('review-form-status');
 
-        if (!nameInput || !titleInput || !commentInput) return;
+        if (!form || !nameInput || !commentInput) return;
 
         const name = nameInput.value.trim();
-        const title = titleInput.value.trim();
-        const comment = commentInput.value.trim();
+        const profession = titleInput ? titleInput.value.trim() : '';
+        const rating = ratingInput ? parseInt(ratingInput.value) : 5;
+        const message = commentInput.value.trim();
 
-        if (!name || !title || !comment) return;
+        if (!name || !message) return;
 
-        const createCardHTML = () => `
-            <div class="review-card-item w-[290px] sm:w-[350px] shrink-0 bg-white rounded-2xl border border-brand-200 hover:border-brand-400/90 p-5 sm:p-6 shadow-2xs transition-colors duration-300 flex flex-col justify-between text-left group cursor-default animate-[fadeIn_0.4s_ease-out]">
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between gap-2.5">
-                        <div class="flex items-center gap-2.5 min-w-0">
-                            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-600 to-brand-400 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
-                                ${escapeHtml(name.substring(0, 2).toUpperCase())}
-                            </div>
-                            <div class="min-w-0">
-                                <h4 class="font-bold text-xs sm:text-sm text-slate-900 truncate leading-tight">${escapeHtml(name)}</h4>
-                                <div class="flex items-center gap-1.5 mt-0.5">
-                                    <span class="inline-flex items-center gap-0.5 text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
-                                        <i class="fa-solid fa-circle-check text-[8px] text-emerald-600"></i> Verified
-                                    </span>
-                                    <span class="text-[10px] text-slate-400">Just now</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-0.5 text-amber-400 text-xs shrink-0">
-                            <i class="fa-solid fa-star text-[10px]"></i>
-                            <i class="fa-solid fa-star text-[10px]"></i>
-                            <i class="fa-solid fa-star text-[10px]"></i>
-                            <i class="fa-solid fa-star text-[10px]"></i>
-                            <i class="fa-solid fa-star text-[10px]"></i>
-                        </div>
-                    </div>
-                    <div class="space-y-1 text-left">
-                        <h5 class="font-bold text-xs sm:text-sm text-slate-900 leading-snug line-clamp-1 group-hover:text-brand-600 transition-colors">${escapeHtml(title)}</h5>
-                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal line-clamp-4">${escapeHtml(comment)}</p>
-                    </div>
-                </div>
-                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
-                    <span class="inline-flex items-center gap-1 text-[11px] text-slate-500">
-                        <i class="fa-regular fa-thumbs-up text-[10px] text-slate-400"></i> Helpful (1)
-                    </span>
-                    <span class="text-[10px] text-brand-600 font-semibold uppercase tracking-wider">Verified Purchase</span>
-                </div>
-            </div>
-        `;
-
-        if (reviewsContinuousTrack) {
-            reviewsContinuousTrack.insertAdjacentHTML('afterbegin', createCardHTML());
+        const originalBtnHTML = submitBtn ? submitBtn.innerHTML : 'Submit Review';
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i> Submitting...';
         }
 
-        const form = document.getElementById('new-review-form');
-        if (form) form.reset();
-        toggleReviewForm();
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') 
+            || form.querySelector('input[name="_token"]')?.value;
+
+        fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+            },
+            body: JSON.stringify({
+                name: name,
+                profession: profession,
+                rating: rating,
+                message: message,
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => { throw new Error(data.message || 'Failed to submit review'); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            const rev = data.review || {
+                name: name,
+                title: profession || 'Verified Reader Review',
+                rating: rating,
+                comment: message,
+                date: 'Just now',
+                avatar: name.substring(0, 2).toUpperCase()
+            };
+
+            const starHTML = Array.from({length: rev.rating || 5}, () => '<i class="fa-solid fa-star text-[10px]"></i>').join('');
+
+            const cardHTML = `
+                <div class="review-card-item w-[290px] sm:w-[350px] shrink-0 bg-white rounded-2xl border border-brand-300 hover:border-brand-500 p-5 sm:p-6 shadow-2xs transition-colors duration-300 flex flex-col justify-between text-left group cursor-default">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between gap-2.5">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-600 to-brand-400 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                                    ${escapeHtml(rev.avatar || name.substring(0, 2).toUpperCase())}
+                                </div>
+                                <div class="min-w-0">
+                                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 truncate leading-tight">${escapeHtml(rev.name)}</h4>
+                                    <div class="flex items-center gap-1.5 mt-0.5">
+                                        <span class="text-[10px] text-brand-600 font-semibold">Verified Review • ${escapeHtml(rev.date || 'Just now')}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-0.5 text-amber-400 text-xs shrink-0">
+                                ${starHTML}
+                            </div>
+                        </div>
+                        <div class="space-y-1 text-left">
+                            <h5 class="font-bold text-xs sm:text-sm text-slate-900 leading-snug line-clamp-1 group-hover:text-brand-600 transition-colors">${escapeHtml(rev.title || 'Reader Review')}</h5>
+                            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal line-clamp-4">${escapeHtml(rev.comment || message)}</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span class="inline-flex items-center gap-1 text-[11px] text-slate-500">
+                            <i class="fa-regular fa-thumbs-up text-[10px] text-slate-400"></i> Helpful (1)
+                        </span>
+                    </div>
+                </div>
+            `;
+
+            if (reviewsContinuousTrack) {
+                reviewsContinuousTrack.insertAdjacentHTML('afterbegin', cardHTML);
+            }
+
+            const countDisplay = document.getElementById('reviews-count-display');
+            if (countDisplay) {
+                const currentCount = parseInt(countDisplay.textContent) || 0;
+                countDisplay.textContent = currentCount + 1;
+            }
+
+            form.reset();
+            toggleReviewForm();
+            alert('Thank you! Your review has been submitted.');
+        })
+        .catch(err => {
+            if (statusDiv) {
+                statusDiv.classList.remove('hidden');
+                statusDiv.className = 'text-xs font-semibold py-1 text-rose-600';
+                statusDiv.textContent = err.message || 'Error submitting review. Please try again.';
+            } else {
+                alert(err.message || 'Error submitting review.');
+            }
+        })
+        .finally(() => {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHTML;
+            }
+        });
     }
+
+    const currentBookData = {
+        id: @json($book['id'] ?? ''),
+        slug: @json($book['slug'] ?? ''),
+        title: @json($book['title']),
+        author: @json($book['author']),
+        category: @json($book['category'] ?? 'E-Book'),
+        price: @json($book['price']),
+        original_price: @json($book['original_price'] ?? ''),
+        image: @json(asset($book['image'])),
+        url: @json(route('books.show', $book['slug'] ?? $book['id']))
+    };
+
+    document.querySelectorAll('[data-purchase-action]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            initiateBookPurchase(currentBookData, event);
+        });
+    });
+
+    @if(request()->has('checkout') || session('payment_error'))
+        document.addEventListener('DOMContentLoaded', () => {
+            initiateBookPurchase(currentBookData);
+        });
+    @endif
 </script>
 
 @endsection

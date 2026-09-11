@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\CategoryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
@@ -22,6 +23,16 @@ class Category extends Model
         'status',
         'sort_order',
     ];
+
+    /**
+     * Get the books in this category.
+     *
+     * @return HasMany<Book, $this>
+     */
+    public function books(): HasMany
+    {
+        return $this->hasMany(Book::class);
+    }
 
     /** @var array<string,string> */
     protected $casts = [

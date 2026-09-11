@@ -130,29 +130,29 @@
             </div>
         </div>
 
-        {{-- Footer Actions --}}
-        <div class="flex items-center justify-between gap-3 pt-1">
-            {{-- Danger Zone inline --}}
-            <form method="POST" action="{{ route('admin.customers.destroy', $customer) }}"
-                  onsubmit="return confirm('Delete {{ addslashes($customer->name) }}? This cannot be undone.')">
-                @csrf @method('DELETE')
-                <button type="submit"
-                        class="px-5 py-2.5 rounded-xl border border-rose-200 text-rose-600 text-sm font-semibold hover:bg-rose-50 transition cursor-pointer flex items-center gap-2">
-                    <i class="fa-solid fa-trash text-xs"></i> Delete Customer
-                </button>
-            </form>
-
-            <div class="flex items-center gap-3">
-                <a href="{{ route('admin.customers.index') }}"
-                   class="px-5 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 text-sm font-semibold transition">Cancel</a>
-                <button type="submit"
-                        class="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-sm font-semibold shadow-sm transition cursor-pointer flex items-center gap-2">
-                    <i class="fa-solid fa-floppy-disk text-xs"></i> Save Changes
-                </button>
-            </div>
-        </div>
-
     </form>
+
+    {{-- Footer Actions --}}
+    <div class="flex items-center justify-between gap-3 pt-1">
+        {{-- Danger Zone inline --}}
+        <form method="POST" action="{{ route('admin.customers.destroy', $customer) }}"
+              onsubmit="return confirm('Delete {{ addslashes($customer->name) }}? This cannot be undone.')">
+            @csrf @method('DELETE')
+            <button type="submit"
+                    class="px-5 py-2.5 rounded-xl border border-rose-200 text-rose-600 text-sm font-semibold hover:bg-rose-50 transition cursor-pointer flex items-center gap-2">
+                <i class="fa-solid fa-trash text-xs"></i> Delete Customer
+            </button>
+        </form>
+
+        <div class="flex items-center gap-3">
+            <a href="{{ route('admin.customers.index') }}"
+               class="px-5 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 text-sm font-semibold transition">Cancel</a>
+            <button type="submit" form="customer-form"
+                    class="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-sm font-semibold shadow-sm transition cursor-pointer flex items-center gap-2">
+                <i class="fa-solid fa-floppy-disk text-xs"></i> Save Changes
+            </button>
+        </div>
+    </div>
 
 </div>
 

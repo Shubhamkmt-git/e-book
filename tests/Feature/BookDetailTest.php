@@ -2,10 +2,43 @@
 
 namespace Tests\Feature;
 
+use App\Models\Book;
+use App\Models\Category;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class BookDetailTest extends TestCase
 {
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $category = Category::create([
+            'title' => 'Tech & Coding',
+            'slug' => 'tech-coding',
+            'status' => 'active',
+            'icon' => 'fa-solid fa-laptop-code',
+        ]);
+
+        Book::create([
+            'title' => 'Algorithms & Elegance',
+            'slug' => 'algorithms-and-elegance',
+            'author_name' => 'Prof. Julian Hayes',
+            'category_id' => $category->id,
+            'price' => 999.00,
+            'selling_price' => 499.00,
+            'status' => 'active',
+            'is_featured' => true,
+            'pages' => 412,
+            'description' => 'A masterclass in crafting resilient, performant, and elegant code.',
+            'key_highlights' => "Master dynamic programming, graph theory, and algorithmic complexity trade-offs\nProduction-grade implementation blueprints",
+            'table_of_contents' => "Computational Complexity & Algorithmic Thinking\nAdvanced Trees, Heaps, and Spatial Indexing",
+            'suggested_for' => ['Software Engineers & Developers', 'Students & Academics'],
+        ]);
+    }
+
     /**
      * Test book detail page renders successfully with minimal layout.
      */

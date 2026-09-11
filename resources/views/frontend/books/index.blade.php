@@ -76,7 +76,7 @@
                         <!-- Book Cover with Realistic Spine Depth (10:7) -->
                         <a href="{{ route('books.show', $book['slug'] ?? $book['id']) }}" class="block aspect-[10/7] rounded-2xl overflow-hidden relative shadow-sm group-hover:shadow-md transition-all duration-300 bg-slate-950 ring-1 ring-black/5">
                             <img 
-                                src="{{ asset($book['image']) }}" 
+                                src="{{ str_starts_with($book['image'], 'http') ? $book['image'] : asset($book['image']) }}" 
                                 alt="{{ $book['title'] }}" 
                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                             >
@@ -97,7 +97,7 @@
                                     'category' => $book['category'] ?? 'E-Book',
                                     'price' => $book['price'],
                                     'original_price' => $book['original_price'] ?? '',
-                                    'image' => asset($book['image']),
+                                    'image' => str_starts_with($book['image'], 'http') ? $book['image'] : asset($book['image']),
                                     'url' => route('books.show', $book['slug'] ?? $book['id'])
                                 ]) }}, event)"
                                 class="absolute top-3 right-3 w-8.5 h-8.5 rounded-full bg-slate-950/60 hover:bg-white text-white hover:text-rose-500 backdrop-blur-md border border-white/20 hover:border-white flex items-center justify-center transition-all duration-200 shadow-md cursor-pointer z-10"
@@ -146,12 +146,23 @@
 
                     <!-- Card Footer: Action Button (Buy Now) -->
                     <div class="mt-5 pt-3.5 border-t border-slate-100">
-                        <a 
-                            href="{{ route('books.show', $book['slug'] ?? $book['id']) }}" 
-                            class="w-full h-11 inline-flex items-center justify-center px-5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 shadow-md shadow-brand-600/25 text-center transform hover:-translate-y-0.5"
+                        <button 
+                            type="button" 
+                            onclick="initiateBookPurchase({{ json_encode([
+                                'id' => $book['id'] ?? '',
+                                'slug' => $book['slug'] ?? '',
+                                'title' => $book['title'],
+                                'author' => $book['author'],
+                                'category' => $book['category'] ?? 'E-Book',
+                                'price' => $book['price'],
+                                'original_price' => $book['original_price'] ?? '',
+                                'image' => str_starts_with($book['image'], 'http') ? $book['image'] : asset($book['image']),
+                                'url' => route('books.show', $book['slug'] ?? $book['id'])
+                            ]) }}, event)"
+                            class="w-full h-11 inline-flex items-center justify-center px-5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 shadow-md shadow-brand-600/25 text-center transform hover:-translate-y-0.5 cursor-pointer"
                         >
                             <span>Buy Now</span>
-                        </a>
+                        </button>
                     </div>
 
                 </div>

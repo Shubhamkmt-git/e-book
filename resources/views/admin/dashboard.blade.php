@@ -41,67 +41,149 @@
     <!-- Dynamic Metrics Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
         
-        <!-- Metric 1: Registered Users -->
+        <!-- Metric 1: Total Orders -->
         <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Registered Users</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Orders</span>
                 <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg shadow-2xs">
-                    <i class="fa-solid fa-users"></i>
+                    <i class="fa-solid fa-cart-shopping"></i>
                 </div>
             </div>
             <div class="mt-4 flex items-baseline gap-2">
-                <span class="text-3xl sm:text-4xl font-extrabold text-slate-900">{{ $usersCount }}</span>
+                <span class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-roboto">{{ number_format($ordersCount) }}</span>
                 <span class="text-xs font-bold text-emerald-600 flex items-center gap-1">
-                    <i class="fa-solid fa-circle-check text-[10px]"></i> Active
+                    <i class="fa-solid fa-circle-check text-[10px]"></i> {{ $paidOrdersCount }} Paid
                 </span>
             </div>
-            <p class="text-xs text-slate-400 mt-1.5">Total database users</p>
+            <p class="text-xs text-slate-400 mt-1.5">Easebuzz online purchases</p>
         </div>
 
-        <!-- Metric 2: Database Connection -->
+        <!-- Metric 2: Total Revenue -->
         <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Database</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Revenue</span>
                 <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg shadow-2xs">
-                    <i class="fa-solid fa-database"></i>
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
                 </div>
             </div>
             <div class="mt-4 flex items-baseline gap-2">
-                <span class="text-2xl sm:text-3xl font-extrabold {{ $dbConnected ? 'text-emerald-600' : 'text-rose-600' }}">
-                    {{ $dbConnected ? 'Connected' : 'Offline' }}
-                </span>
+                <span class="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-roboto">₹{{ number_format($totalRevenue, 2) }}</span>
             </div>
-            <p class="text-xs text-slate-400 mt-1.5">MySQL Database engine</p>
+            <p class="text-xs text-slate-400 mt-1.5">Net realized sales</p>
         </div>
 
-        <!-- Metric 3: Application Environment -->
+        <!-- Metric 3: E-Books & Catalogue -->
         <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Environment</span>
-                <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg shadow-2xs">
-                    <i class="fa-solid fa-server"></i>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">E-Books</span>
+                <div class="w-11 h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg shadow-2xs">
+                    <i class="fa-solid fa-book-bookmark"></i>
                 </div>
             </div>
             <div class="mt-4 flex items-baseline gap-2">
-                <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 capitalize">{{ config('app.env', 'local') }}</span>
+                <span class="text-3xl sm:text-4xl font-extrabold text-slate-900">{{ $booksCount }}</span>
+                <span class="text-xs font-medium text-slate-500">in catalog</span>
             </div>
-            <p class="text-xs text-slate-400 mt-1.5">PHP {{ $phpVersion }} &bull; Laravel v{{ $laravelVersion }}</p>
+            <p class="text-xs text-slate-400 mt-1.5">{{ $customersCount }} registered customers</p>
         </div>
 
         <!-- Metric 4: System Status -->
         <div class="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs hover:shadow-md transition-shadow">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">System Health</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Database & System</span>
                 <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg shadow-2xs">
                     <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 animate-ping"></span>
                 </div>
             </div>
             <div class="mt-4 flex items-baseline gap-2">
-                <span class="text-2xl sm:text-3xl font-extrabold text-emerald-600">Operational</span>
+                <span class="text-2xl sm:text-3xl font-extrabold {{ $dbConnected ? 'text-emerald-600' : 'text-rose-600' }}">
+                    {{ $dbConnected ? 'Operational' : 'Offline' }}
+                </span>
             </div>
-            <p class="text-xs text-slate-400 mt-1.5">All services running smoothly</p>
+            <p class="text-xs text-slate-400 mt-1.5">PHP {{ $phpVersion }} &bull; Laravel v{{ $laravelVersion }}</p>
         </div>
 
+    </div>
+
+    <!-- Recent Orders List Preview -->
+    <div class="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden">
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+                <div>
+                    <h2 class="text-base font-bold text-slate-900">Recent Customer Orders</h2>
+                    <p class="text-xs text-slate-500">Latest transactions processed through Easebuzz</p>
+                </div>
+            </div>
+            <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-600 hover:text-brand-700 transition">
+                <span>View All Orders</span>
+                <i class="fa-solid fa-arrow-right text-[11px]"></i>
+            </a>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-50/80 border-b border-slate-200/80 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                        <th class="py-3 px-6">Txn ID</th>
+                        <th class="py-3 px-4">Customer</th>
+                        <th class="py-3 px-4">E-Book</th>
+                        <th class="py-3 px-4">Amount</th>
+                        <th class="py-3 px-4">Status</th>
+                        <th class="py-3 px-6 text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-xs">
+                    @forelse($recentOrders as $order)
+                    @php $status = strtolower($order->status); @endphp
+                    <tr class="hover:bg-slate-50/70 transition">
+                        <td class="py-3 px-6 font-mono font-bold text-slate-800">
+                            #{{ $order->id }} <span class="text-slate-400 text-[11px] font-normal block">{{ $order->transaction_id }}</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="font-semibold text-slate-900">{{ $order->customer->name ?? 'Customer' }}</span>
+                            <span class="text-slate-400 block text-[11px]">{{ $order->customer->email ?? '' }}</span>
+                        </td>
+                        <td class="py-3 px-4 font-medium text-slate-800 max-w-[200px] truncate">
+                            {{ $order->book_title }}
+                        </td>
+                        <td class="py-3 px-4 font-bold text-slate-900">
+                            ₹{{ number_format((float) $order->amount, 2) }}
+                        </td>
+                        <td class="py-3 px-4">
+                            @if($status === 'paid' || $status === 'success')
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Paid</span>
+                            </span>
+                            @elseif($status === 'pending')
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                <span>Pending</span>
+                            </span>
+                            @else
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                <span>{{ ucfirst($order->status) }}</span>
+                            </span>
+                            @endif
+                        </td>
+                        <td class="py-3 px-6 text-right">
+                            <a href="{{ route('admin.orders.show', $order) }}" class="text-brand-600 hover:text-brand-700 font-semibold text-xs">
+                                View &rarr;
+                            </a>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="py-8 text-center text-slate-400 italic">No orders received yet.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Active Administrator Session & System Overview -->

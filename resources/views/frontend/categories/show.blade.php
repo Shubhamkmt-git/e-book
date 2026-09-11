@@ -33,14 +33,14 @@
 
         <!-- 3 Cards Per Row Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            @foreach ($category['books'] as $book)
+            @forelse ($category['books'] as $book)
                 <div class="group bg-white rounded-3xl border border-brand-200/80 hover:border-brand-400/90 p-5 hover:shadow-[0_20px_45px_-12px_rgba(122,88,169,0.22)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full">
                     
                     <div>
                         <!-- Book Cover with Realistic Spine Depth (10:7) -->
                         <a href="{{ route('books.show', $book['slug'] ?? \Illuminate\Support\Str::slug($book['title'])) }}" class="block aspect-[10/7] rounded-2xl overflow-hidden relative shadow-sm group-hover:shadow-md transition-all duration-300 bg-slate-950 ring-1 ring-black/5">
                             <img 
-                                src="{{ asset($book['image']) }}" 
+                                src="{{ str_starts_with($book['image'], 'http') ? $book['image'] : asset($book['image']) }}" 
                                 alt="{{ $book['title'] }}" 
                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                             >
@@ -61,7 +61,7 @@
                                     'category' => $category['name'] ?? 'E-Book',
                                     'price' => $book['price'],
                                     'original_price' => $book['original_price'] ?? '',
-                                    'image' => asset($book['image']),
+                                    'image' => str_starts_with($book['image'], 'http') ? $book['image'] : asset($book['image']),
                                     'url' => route('books.show', $book['slug'] ?? \Illuminate\Support\Str::slug($book['title']))
                                 ]) }}, event)"
                                 class="absolute top-3 right-3 w-8.5 h-8.5 rounded-full bg-slate-950/60 hover:bg-white text-white hover:text-rose-500 backdrop-blur-md border border-white/20 hover:border-white flex items-center justify-center transition-all duration-200 shadow-md cursor-pointer z-10"
@@ -110,16 +110,38 @@
 
                     <!-- Card Footer: Action Button (Buy Now) -->
                     <div class="mt-5 pt-3.5 border-t border-slate-100">
-                        <a 
-                            href="{{ route('books.show', $book['slug'] ?? \Illuminate\Support\Str::slug($book['title'])) }}" 
-                            class="w-full h-11 inline-flex items-center justify-center px-5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 shadow-md shadow-brand-600/25 text-center transform hover:-translate-y-0.5"
+                        <button 
+                            type="button" 
+                            onclick="initiateBookPurchase({{ json_encode([
+                                'id' => $book['id'] ?? '',
+                                'slug' => $book['slug'] ?? \Illuminate\Support\Str::slug($book['title']),
+                                'title' => $book['title'],
+                                'author' => $book['author'],
+                                'category' => $category->title ?? 'E-Book',
+                                'price' => $book['price'],
+                                'original_price' => $book['original_price'] ?? '',
+                                'image' => str_starts_with($book['image'], 'http') ? $book['image'] : asset($book['image']),
+                                'url' => route('books.show', $book['slug'] ?? \Illuminate\Support\Str::slug($book['title']))
+                            ]) }}, event)"
+                            class="w-full h-11 inline-flex items-center justify-center px-5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 shadow-md shadow-brand-600/25 text-center transform hover:-translate-y-0.5 cursor-pointer"
                         >
                             <span>Buy Now</span>
-                        </a>
+                        </button>
                     </div>
 
                 </div>
-            @endforeach
+            @empty
+                <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-brand-200/80 p-8 shadow-xs">
+                    <div class="w-16 h-16 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center text-2xl mx-auto mb-4">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <h3 class="font-brand text-3xl text-slate-900 uppercase">No E-Books in this Category Yet</h3>
+                    <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-md mx-auto">We are regularly updating our digital catalogue. Check back soon for new titles!</p>
+                    <a href="{{ route('books.index') }}" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-brand-600 text-white font-brand text-lg uppercase tracking-wider mt-5 hover:bg-brand-500 transition shadow-xs">
+                        <span>Explore All E-Books</span>
+                    </a>
+                </div>
+            @endforelse
         </div>
 
     </div>

@@ -6,17 +6,17 @@
             <!-- Left: Logo & Brand -->
             <div class="flex items-center">
                 <a href="{{ route('home') }}" class="flex items-center gap-3.5 group">
-                    <div class="w-11 h-11 rounded-2xl bg-brand-600 text-white flex items-center justify-center shadow-md shadow-brand-600/25 group-hover:scale-105 transition-transform duration-200 font-bold">
-                        <i class="fa-solid fa-book-open text-xl"></i>
-                    </div>
-                    <div>
-                        <span class="font-brand text-2xl text-slate-900 tracking-wider leading-none block">
-                            E-Book<span class="text-brand-600">.</span>
-                        </span>
-                        <span class="text-[11px] font-semibold text-brand-600 tracking-wider uppercase mt-0.5 block">
-                            Store &amp; Library
-                        </span>
-                    </div>
+                    @if (!empty($appSetting?->logo_light_url))
+                        <img
+                            src="{{ $appSetting->logo_light_url }}"
+                            alt="{{ $appSetting->app_name }}"
+                            class="max-w-[180px] max-h-12 object-contain group-hover:scale-105 transition-transform duration-200"
+                        >
+                    @else
+                        <div class="w-11 h-11 rounded-2xl bg-brand-600 text-white flex items-center justify-center shadow-md shadow-brand-600/25 group-hover:scale-105 transition-transform duration-200 font-bold">
+                            <i class="fa-solid fa-book-open text-xl"></i>
+                        </div>
+                    @endif
                 </a>
             </div>
 
@@ -66,14 +66,23 @@
                         <span id="wishlist-nav-badge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold items-center justify-center shadow-xs">0</span>
                     </button>
 
-                    <!-- Sign In / Sign Up Button -->
-                    <button 
-                        type="button" 
-                        onclick="openAuthDrawer('signin')" 
-                        class="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white text-xs sm:text-sm font-semibold shadow-md shadow-brand-600/25 transition-all duration-150 active:scale-[0.98] cursor-pointer"
-                    >
-                        <span>Sign In / Up</span>
-                    </button>
+                    @if (auth('customer')->check())
+                        <span class="text-sm font-semibold text-slate-600">Hi, {{ auth('customer')->user()->name }}</span>
+                        <form action="{{ route('customer.logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-slate-200 text-slate-700 hover:border-brand-500 hover:text-brand-600 text-xs sm:text-sm font-semibold transition-all duration-150 cursor-pointer">
+                                Sign Out
+                            </button>
+                        </form>
+                    @else
+                        <button
+                            type="button"
+                            onclick="openAuthDrawer('signin')"
+                            class="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white text-xs sm:text-sm font-semibold shadow-md shadow-brand-600/25 transition-all duration-150 active:scale-[0.98] cursor-pointer"
+                        >
+                            <span>Sign In / Up</span>
+                        </button>
+                    @endif
                 </div>
 
             </div>
@@ -144,13 +153,23 @@
         </nav>
 
         <div class="pt-4 border-t border-slate-100 flex flex-col gap-3">
-            <button 
-                type="button" 
-                onclick="toggleFrontendMobileMenu(); openAuthDrawer('signin');" 
-                class="w-full text-center py-3 rounded-full bg-brand-600 text-white text-sm font-semibold shadow-md shadow-brand-600/25 cursor-pointer"
-            >
-                <span>Sign In / Up</span>
-            </button>
+            @if (auth('customer')->check())
+                <div class="px-3 text-sm font-semibold text-slate-600">Hi, {{ auth('customer')->user()->name }}</div>
+                <form action="{{ route('customer.logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="w-full text-center py-3 rounded-full border border-slate-200 text-slate-700 text-sm font-semibold cursor-pointer">
+                        Sign Out
+                    </button>
+                </form>
+            @else
+                <button
+                    type="button"
+                    onclick="toggleFrontendMobileMenu(); openAuthDrawer('signin');"
+                    class="w-full text-center py-3 rounded-full bg-brand-600 text-white text-sm font-semibold shadow-md shadow-brand-600/25 cursor-pointer"
+                >
+                    <span>Sign In / Up</span>
+                </button>
+            @endif
         </div>
     </div>
 </header>

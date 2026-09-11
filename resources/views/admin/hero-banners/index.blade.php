@@ -5,7 +5,7 @@
 @section('content')
 <div class="space-y-6">
 
-    {{-- Header --}}
+    {{-- Top Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <div class="flex items-center gap-2.5">
@@ -17,128 +17,179 @@
             </div>
             <p class="text-xs sm:text-sm text-slate-500 mt-1">Manage homepage hero banners – images, titles, and CTA buttons.</p>
         </div>
-        <a href="{{ route('admin.hero-banners.create') }}"
-           class="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-xs sm:text-sm font-semibold shadow-sm transition cursor-pointer">
-            <i class="fa-solid fa-plus text-xs"></i>
-            <span>Add Banner</span>
-        </a>
+        <div class="flex items-center gap-3 shrink-0">
+            <a href="{{ route('admin.hero-banners.create') }}"
+               class="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-xs sm:text-sm font-semibold shadow-sm transition cursor-pointer">
+                <i class="fa-solid fa-plus text-xs"></i>
+                <span>Add Banner</span>
+            </a>
+        </div>
     </div>
 
-    {{-- Grid --}}
-    @if($banners->count())
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-        @foreach($banners as $banner)
-        <div class="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden flex flex-col group">
-
-            {{-- Banner Image --}}
-            <div class="relative h-44 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
-                @if($banner->banner_image_url)
-                    <img src="{{ $banner->banner_image_url }}" alt="{{ $banner->title }}"
-                         class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
-                @else
-                    <div class="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-2">
-                        <i class="fa-solid fa-image text-3xl"></i>
-                        <span class="text-xs font-medium">No Image</span>
-                    </div>
+    {{-- Search & Filter Bar --}}
+    <div class="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-2xs">
+        <form method="GET" action="{{ route('admin.hero-banners.index') }}" class="flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Search by title…"
+                    class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-brand-400 transition"
+                >
+            </div>
+            <div class="flex gap-2">
+                <button type="submit"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold shadow-sm transition cursor-pointer">
+                    <i class="fa-solid fa-search text-xs"></i>
+                    Search
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('admin.hero-banners.index') }}"
+                       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition">
+                        <i class="fa-solid fa-xmark text-xs"></i>
+                        Clear
+                    </a>
                 @endif
+            </div>
+        </form>
+    </div>
 
-                {{-- Status Badge --}}
-                <div class="absolute top-3 right-3">
-                    @if($banner->is_active)
-                        <span class="px-2.5 py-1 rounded-full bg-emerald-500 text-white text-[11px] font-bold shadow-sm">Active</span>
+    {{-- Table --}}
+    <div class="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden">
+        @if($banners->count())
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200">
+                            <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">#</th>
+                            <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Image</th>
+                            <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Title</th>
+                            <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Buttons</th>
+                            <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Order</th>
+                            <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Status</th>
+                            <th class="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Created</th>
+                            <th class="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @foreach($banners as $banner)
+                        <tr class="hover:bg-slate-50/70 transition group">
+                            <td class="px-5 py-4 text-xs text-slate-400 font-mono">{{ $loop->iteration + ($banners->currentPage() - 1) * $banners->perPage() }}</td>
+
+                            {{-- Banner Image Thumbnail --}}
+                            <td class="px-5 py-4">
+                                @if($banner->banner_image_url)
+                                    <img src="{{ $banner->banner_image_url }}" alt="{{ $banner->title }}"
+                                         class="w-20 h-12 rounded-lg object-cover border border-slate-200">
+                                @else
+                                    <div class="w-20 h-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400">
+                                        <i class="fa-solid fa-image text-sm"></i>
+                                    </div>
+                                @endif
+                            </td>
+
+                            {{-- Title --}}
+                            <td class="px-5 py-4">
+                                <div class="min-w-0">
+                                    <p class="font-semibold text-slate-800 truncate max-w-[220px]">{{ $banner->title }}</p>
+                                    @if($banner->title_l2)
+                                        <p class="text-xs text-indigo-600 font-medium truncate max-w-[220px] mt-0.5">{{ $banner->title_l2 }}</p>
+                                    @endif
+                                </div>
+                            </td>
+
+                            {{-- Buttons --}}
+                            <td class="px-5 py-4">
+                                <div class="flex flex-wrap gap-1">
+                                    @if($banner->primary_button)
+                                        <span class="px-2 py-0.5 rounded-md bg-brand-50 text-brand-700 text-[11px] font-semibold border border-brand-200">{{ $banner->primary_button }}</span>
+                                    @endif
+                                    @if($banner->secondary_button)
+                                        <span class="px-2 py-0.5 rounded-md bg-slate-50 text-slate-600 text-[11px] font-semibold border border-slate-200">{{ $banner->secondary_button }}</span>
+                                    @endif
+                                    @if(!$banner->primary_button && !$banner->secondary_button)
+                                        <span class="text-slate-400">—</span>
+                                    @endif
+                                </div>
+                            </td>
+
+                            {{-- Sort Order --}}
+                            <td class="px-5 py-4 text-slate-600 text-sm font-mono">{{ $banner->sort_order ?: '—' }}</td>
+
+                            {{-- Status Toggle --}}
+                            <td class="px-5 py-4">
+                                <form method="POST" action="{{ route('admin.hero-banners.toggle-status', $banner) }}">
+                                    @csrf @method('PATCH')
+                                    <button type="submit" title="{{ $banner->is_active ? 'Deactivate' : 'Activate' }}"
+                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold transition cursor-pointer
+                                                   {{ $banner->is_active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100' : 'bg-slate-100 text-slate-500 border border-slate-200 hover:bg-slate-200' }}">
+                                        <i class="fa-solid {{ $banner->is_active ? 'fa-circle-check text-[10px]' : 'fa-circle-xmark text-[10px]' }}"></i>
+                                        {{ $banner->is_active ? 'Active' : 'Inactive' }}
+                                    </button>
+                                </form>
+                            </td>
+
+                            {{-- Created --}}
+                            <td class="px-5 py-4 text-slate-500 text-xs">{{ $banner->created_at->format('d M Y') }}</td>
+
+                            {{-- Actions --}}
+                            <td class="px-5 py-4">
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="{{ route('admin.hero-banners.show', $banner) }}"
+                                       title="View"
+                                       class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-500 flex items-center justify-center transition text-xs">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    <a href="{{ route('admin.hero-banners.edit', $banner) }}"
+                                       title="Edit"
+                                       class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-500 flex items-center justify-center transition text-xs">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <form method="POST" action="{{ route('admin.hero-banners.destroy', $banner) }}"
+                                          onsubmit="return confirm('Delete banner \'{{ addslashes($banner->title) }}\'?')">
+                                        @csrf @method('DELETE')
+                                        <button type="submit" title="Delete"
+                                                class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-500 flex items-center justify-center transition text-xs cursor-pointer">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            {{-- Pagination --}}
+            @if($banners->hasPages())
+            <div class="px-5 py-4 border-t border-slate-100 flex items-center justify-between gap-4">
+                <p class="text-xs text-slate-500">Showing {{ $banners->firstItem() }}–{{ $banners->lastItem() }} of {{ $banners->total() }} banners</p>
+                {{ $banners->links() }}
+            </div>
+            @endif
+        @else
+            <div class="py-20 flex flex-col items-center text-center gap-3">
+                <div class="w-16 h-16 rounded-full bg-indigo-50 text-indigo-400 flex items-center justify-center text-2xl">
+                    <i class="fa-solid fa-image"></i>
+                </div>
+                <p class="text-base font-semibold text-slate-700">No hero banners found</p>
+                <p class="text-sm text-slate-400">
+                    @if(request('search'))
+                        No banners match your search. <a href="{{ route('admin.hero-banners.index') }}" class="text-brand-600 hover:underline">Clear search</a>
                     @else
-                        <span class="px-2.5 py-1 rounded-full bg-slate-400 text-white text-[11px] font-bold shadow-sm">Inactive</span>
+                        Create your first hero banner to display on the homepage.
                     @endif
-                </div>
-
-                {{-- Sort Order --}}
-                <div class="absolute top-3 left-3">
-                    <span class="px-2 py-1 rounded-lg bg-black/50 text-white text-[11px] font-bold backdrop-blur-xs">#{{ $banner->sort_order ?: '—' }}</span>
-                </div>
+                </p>
+                <a href="{{ route('admin.hero-banners.create') }}"
+                   class="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold shadow-sm transition">
+                    <i class="fa-solid fa-plus text-xs"></i> Add Banner
+                </a>
             </div>
-
-            {{-- Content --}}
-            <div class="p-4 flex flex-col flex-1 gap-2">
-                <div>
-                    <h3 class="font-extrabold text-slate-900 text-base leading-snug line-clamp-1">{{ $banner->title }}</h3>
-                    @if($banner->title_l2)
-                        <p class="text-sm font-semibold text-indigo-600 mt-0.5 line-clamp-1">{{ $banner->title_l2 }}</p>
-                    @endif
-                    @if($banner->description)
-                        <p class="text-xs text-slate-500 mt-1.5 line-clamp-2">{{ $banner->description }}</p>
-                    @endif
-                </div>
-
-                {{-- Buttons Preview --}}
-                @if($banner->primary_button || $banner->secondary_button)
-                <div class="flex flex-wrap gap-1.5 mt-1">
-                    @if($banner->primary_button)
-                        <span class="px-2.5 py-1 rounded-lg bg-brand-600 text-white text-[11px] font-semibold">{{ $banner->primary_button }}</span>
-                    @endif
-                    @if($banner->secondary_button)
-                        <span class="px-2.5 py-1 rounded-lg border border-slate-300 text-slate-600 text-[11px] font-semibold">{{ $banner->secondary_button }}</span>
-                    @endif
-                </div>
-                @endif
-            </div>
-
-            {{-- Actions --}}
-            <div class="px-4 pb-4 pt-1 flex items-center justify-between gap-2 border-t border-slate-100 mt-auto pt-3">
-                {{-- Toggle --}}
-                <form method="POST" action="{{ route('admin.hero-banners.toggle-status', $banner) }}">
-                    @csrf @method('PATCH')
-                    <button type="submit" title="{{ $banner->is_active ? 'Deactivate' : 'Activate' }}"
-                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer
-                                   {{ $banner->is_active ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100' : 'bg-slate-100 text-slate-500 hover:bg-slate-200' }}">
-                        <i class="fa-solid {{ $banner->is_active ? 'fa-toggle-on' : 'fa-toggle-off' }} text-sm"></i>
-                        {{ $banner->is_active ? 'Active' : 'Inactive' }}
-                    </button>
-                </form>
-
-                <div class="flex items-center gap-2">
-                    <a href="{{ route('admin.hero-banners.show', $banner) }}" title="View"
-                       class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-500 flex items-center justify-center transition text-xs">
-                        <i class="fa-solid fa-eye"></i>
-                    </a>
-                    <a href="{{ route('admin.hero-banners.edit', $banner) }}" title="Edit"
-                       class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 text-slate-500 flex items-center justify-center transition text-xs">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                    </a>
-                    <form method="POST" action="{{ route('admin.hero-banners.destroy', $banner) }}"
-                          onsubmit="return confirm('Delete banner \'{{ addslashes($banner->title) }}\'?')">
-                        @csrf @method('DELETE')
-                        <button type="submit" title="Delete"
-                                class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-500 flex items-center justify-center transition text-xs cursor-pointer">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        @endforeach
+        @endif
     </div>
-
-    {{-- Pagination --}}
-    @if($banners->hasPages())
-    <div class="flex justify-center">
-        {{ $banners->links() }}
-    </div>
-    @endif
-
-    @else
-    {{-- Empty State --}}
-    <div class="bg-white border border-slate-200/90 rounded-2xl shadow-2xs py-20 flex flex-col items-center text-center gap-3">
-        <div class="w-16 h-16 rounded-full bg-indigo-50 text-indigo-400 flex items-center justify-center text-2xl">
-            <i class="fa-solid fa-image"></i>
-        </div>
-        <p class="text-base font-semibold text-slate-700">No hero banners yet</p>
-        <p class="text-sm text-slate-400">Create your first hero banner to display on the homepage.</p>
-        <a href="{{ route('admin.hero-banners.create') }}"
-           class="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold shadow-sm transition">
-            <i class="fa-solid fa-plus text-xs"></i> Add Banner
-        </a>
-    </div>
-    @endif
 
 </div>
 @endsection
