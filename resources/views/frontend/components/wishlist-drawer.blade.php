@@ -28,8 +28,8 @@
                             <h2 id="wishlist-title" class="font-brand text-2xl text-slate-900 tracking-wide uppercase leading-none">
                                 My Wishlist
                             </h2>
-                            <span id="wishlist-drawer-count" class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[11px] font-bold">
-                                0
+                            <span id="wishlist-drawer-count" class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[11px] font-bold whitespace-nowrap shrink-0">
+                                0 items
                             </span>
                         </div>
                         <p class="text-[11px] text-slate-400 mt-0.5 font-medium">Your saved favorite e-books</p>
