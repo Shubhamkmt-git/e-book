@@ -151,7 +151,7 @@
         <div class="content">
             <div class="greeting">Hello, {{ $customer?->name ?? 'Reader' }}!</div>
             <p class="intro-text">
-                Thank you for your purchase. Your payment via Easebuzz has been verified successfully. Your e-book files and receipt are available below.
+                Thank you for your purchase. Your payment {{ $purchase->payment_method ? 'via '.ucfirst($purchase->payment_method) : '' }} has been verified successfully. Your DRM-Free e-book edition is attached to this email and also available for instant download below.
             </p>
 
             <!-- Book Showcase Box -->
