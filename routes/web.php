@@ -33,6 +33,8 @@ Route::match(['get', 'post'], '/ebooks/{identifier}/payments/easebuzz', [Payment
 Route::get('/payments/easebuzz/mock/{purchase}', [PaymentController::class, 'mockCheckout'])->name('payments.mock-checkout');
 Route::post('/payments/easebuzz/mock/{purchase}/process', [PaymentController::class, 'processMockPayment'])->name('payments.mock-process');
 Route::match(['get', 'post'], '/payments/easebuzz/return/{purchase}', [PaymentController::class, 'handleReturn'])->name('payments.return');
+Route::post('/payments/easebuzz/webhook', [PaymentController::class, 'handleWebhook'])->name('payments.webhook');
+Route::post('/payments/webhook', [PaymentController::class, 'handleWebhook'])->name('payments.webhook.generic');
 Route::get('/purchases/{purchase}/download', [PaymentController::class, 'downloadPurchasedEbook'])->name('purchases.download');
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/{slug}', [CategoryController::class, 'show'])->name('categories.show');

@@ -223,4 +223,193 @@ class EasebuzzPaymentTest extends TestCase
         $this->assertNotNull($purchase);
         $response->assertRedirect(route('payments.mock-checkout', $purchase));
     }
+
+    public function test_valid_easebuzz_webhook_marks_purchase_as_paid_and_dispatches_email(): void
+    {
+        Mail::fake();
+
+        config()->set('services.easebuzz.key', 'test-key');
+        config()->set('services.easebuzz.salt', 'test-salt');
+
+        $customer = Customer::create([
+            'name' => 'Alice Webhook Tester',
+            'email' => 'alice@example.com',
+            'password' => 'password123',
+        ]);
+
+        $purchase = Purchase::create([
+            'customer_id' => $customer->id,
+            'book_identifier' => 'algorithms-and-elegance',
+            'book_title' => 'Algorithms & Elegance',
+            'amount' => 499,
+            'transaction_id' => 'EBWH123456',
+            'status' => 'pending',
+        ]);
+
+        $payload = [
+            'key' => 'test-key',
+            'txnid' => $purchase->transaction_id,
+            'amount' => '499.00',
+            'productinfo' => $purchase->book_title,
+            'firstname' => $customer->name,
+            'email' => $customer->email,
+            'status' => 'success',
+            'easepayid' => 'EASEPAY987654',
+        ];
+
+        $payload['hash'] = hash('sha512', implode('|', [
+            'test-salt', 'success', '', '', '', '', '', '', '', '', '', '',
+            $payload['email'], $payload['firstname'], $payload['productinfo'], $payload['amount'],
+            $payload['txnid'], $payload['key'],
+        ]));
+
+        $response = $this->postJson(route('payments.webhook'), $payload);
+
+        $response->assertOk();
+        $response->assertJson([
+            'status' => 'success',
+            'purchase_id' => $purchase->id,
+            'purchase_status' => 'paid',
+        ]);
+
+        $this->assertEquals('paid', $purchase->fresh()->status);
+        Mail::assertSent(EbookDeliveryMail::class, function ($mail) use ($customer) {
+            return $mail->hasTo($customer->email);
+        });
+    }
+
+    public function test_easebuzz_webhook_rejects_invalid_hash_signature(): void
+    {
+        config()->set('services.easebuzz.key', 'test-key');
+        config()->set('services.easebuzz.salt', 'test-salt');
+
+        $customer = Customer::create([
+            'name' => 'Bob Bad Signer',
+            'email' => 'bob@example.com',
+            'password' => 'password123',
+        ]);
+
+        $purchase = Purchase::create([
+            'customer_id' => $customer->id,
+            'book_identifier' => 'algorithms-and-elegance',
+            'book_title' => 'Algorithms & Elegance',
+            'amount' => 499,
+            'transaction_id' => 'EBWH999999',
+            'status' => 'pending',
+        ]);
+
+        $payload = [
+            'key' => 'test-key',
+            'txnid' => $purchase->transaction_id,
+            'amount' => '499.00',
+            'productinfo' => $purchase->book_title,
+            'firstname' => $customer->name,
+            'email' => $customer->email,
+            'status' => 'success',
+            'hash' => 'invalid_sha512_hash_signature_value',
+        ];
+
+        $response = $this->postJson(route('payments.webhook'), $payload);
+
+        $response->assertStatus(403);
+        $response->assertJson([
+            'status' => 'error',
+            'message' => 'Invalid signature verification.',
+        ]);
+
+        $this->assertEquals('pending', $purchase->fresh()->status);
+    }
+
+    public function test_easebuzz_webhook_rejects_amount_mismatch(): void
+    {
+        config()->set('services.easebuzz.key', 'test-key');
+        config()->set('services.easebuzz.salt', 'test-salt');
+
+        $customer = Customer::create([
+            'name' => 'Charlie Tamper',
+            'email' => 'charlie@example.com',
+            'password' => 'password123',
+        ]);
+
+        $purchase = Purchase::create([
+            'customer_id' => $customer->id,
+            'book_identifier' => 'algorithms-and-elegance',
+            'book_title' => 'Algorithms & Elegance',
+            'amount' => 499,
+            'transaction_id' => 'EBWH888888',
+            'status' => 'pending',
+        ]);
+
+        // Tampered amount (1.00 instead of 499.00)
+        $payload = [
+            'key' => 'test-key',
+            'txnid' => $purchase->transaction_id,
+            'amount' => '1.00',
+            'productinfo' => $purchase->book_title,
+            'firstname' => $customer->name,
+            'email' => $customer->email,
+            'status' => 'success',
+        ];
+
+        $payload['hash'] = hash('sha512', implode('|', [
+            'test-salt', 'success', '', '', '', '', '', '', '', '', '', '',
+            $payload['email'], $payload['firstname'], $payload['productinfo'], $payload['amount'],
+            $payload['txnid'], $payload['key'],
+        ]));
+
+        $response = $this->postJson(route('payments.webhook'), $payload);
+
+        $response->assertStatus(400);
+        $response->assertJson([
+            'status' => 'error',
+            'message' => 'Payment amount mismatch.',
+        ]);
+
+        $this->assertEquals('pending', $purchase->fresh()->status);
+    }
+
+    public function test_easebuzz_webhook_is_idempotent_for_already_paid_purchases(): void
+    {
+        config()->set('services.easebuzz.key', 'test-key');
+        config()->set('services.easebuzz.salt', 'test-salt');
+
+        $customer = Customer::create([
+            'name' => 'David Already Paid',
+            'email' => 'david@example.com',
+            'password' => 'password123',
+        ]);
+
+        $purchase = Purchase::create([
+            'customer_id' => $customer->id,
+            'book_identifier' => 'algorithms-and-elegance',
+            'book_title' => 'Algorithms & Elegance',
+            'amount' => 499,
+            'transaction_id' => 'EBWH777777',
+            'status' => 'paid',
+        ]);
+
+        $payload = [
+            'key' => 'test-key',
+            'txnid' => $purchase->transaction_id,
+            'amount' => '499.00',
+            'productinfo' => $purchase->book_title,
+            'firstname' => $customer->name,
+            'email' => $customer->email,
+            'status' => 'success',
+        ];
+
+        $payload['hash'] = hash('sha512', implode('|', [
+            'test-salt', 'success', '', '', '', '', '', '', '', '', '', '',
+            $payload['email'], $payload['firstname'], $payload['productinfo'], $payload['amount'],
+            $payload['txnid'], $payload['key'],
+        ]));
+
+        $response = $this->postJson(route('payments.webhook'), $payload);
+
+        $response->assertOk();
+        $response->assertJson([
+            'status' => 'success',
+            'message' => 'Purchase was already paid and processed.',
+        ]);
+    }
 }

@@ -18,6 +18,12 @@ return Application::configure(basePath: dirname(__DIR__))
             users: '/admin/dashboard',
         );
 
+        $middleware->validateCsrfTokens(except: [
+            'payments/easebuzz/webhook',
+            'payments/webhook',
+            'payments/easebuzz/return/*',
+        ]);
+
         $middleware->alias([
             'admin.permission' => AdminPermissionMiddleware::class,
         ]);

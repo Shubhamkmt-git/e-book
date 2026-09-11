@@ -7,6 +7,7 @@ use App\Mail\EbookDeliveryMail;
 use App\Models\Book;
 use App\Models\Customer;
 use App\Models\Purchase;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -126,6 +127,7 @@ class PaymentController extends Controller
             'phone' => $phone,
             'surl' => route('payments.return', $purchase),
             'furl' => route('payments.return', $purchase),
+            'webhook_url' => route('payments.webhook'),
             'udf1' => (string) Str::limit(preg_replace('/[^a-zA-Z0-9_-]/', '', (string) ($bookData['id'] ?? '')), 50, ''),
             'udf2' => (string) $customer->id,
             'udf3' => (string) Str::limit(preg_replace('/[^a-zA-Z0-9_-]/', '', (string) ($bookData['slug'] ?? '')), 50, ''),
@@ -252,6 +254,149 @@ class PaymentController extends Controller
 
         return redirect()->route('books.show', $purchase->book_identifier)
             ->with('payment_error', 'Your payment was not completed or was cancelled.');
+    }
+
+    /**
+     * Handle Server-to-Server Webhook Notification from Easebuzz.
+     */
+    public function handleWebhook(Request $request): JsonResponse
+    {
+        $payload = $request->all();
+
+        // 1. Audit Log: Log incoming webhook attempt securely
+        Log::info('Easebuzz Webhook Notification Received', [
+            'ip' => $request->ip(),
+            'txnid' => $payload['txnid'] ?? null,
+            'status' => $payload['status'] ?? null,
+            'easepayid' => $payload['easepayid'] ?? null,
+        ]);
+
+        $salt = trim((string) config('services.easebuzz.salt'));
+        $key = trim((string) config('services.easebuzz.key'));
+        $webhookSecret = trim((string) config('services.easebuzz.webhook_secret'));
+
+        // 2. Optional Webhook Secret Verification (Header or Query token)
+        if ($webhookSecret !== '') {
+            $providedSecret = (string) ($request->header('X-Webhook-Secret') ?: $request->query('secret', ''));
+            if (! hash_equals($webhookSecret, $providedSecret)) {
+                Log::warning('Payment Webhook Security Failure: Invalid webhook secret token.', [
+                    'ip' => $request->ip(),
+                ]);
+
+                return response()->json(['status' => 'error', 'message' => 'Unauthorized webhook secret.'], 401);
+            }
+        }
+
+        if ($salt === '' || $key === '') {
+            Log::error('Payment Webhook Error: Easebuzz merchant credentials not configured.');
+
+            return response()->json(['status' => 'error', 'message' => 'Gateway credentials missing.'], 500);
+        }
+
+        // 3. Validate essential transaction ID
+        $txnid = trim((string) ($payload['txnid'] ?? ''));
+        if ($txnid === '') {
+            Log::warning('Payment Webhook Warning: Missing transaction ID (txnid).', ['payload' => $payload]);
+
+            return response()->json(['status' => 'error', 'message' => 'Missing transaction ID.'], 400);
+        }
+
+        // 4. Find associated purchase record
+        /** @var Purchase|null $purchase */
+        $purchase = Purchase::where('transaction_id', $txnid)->first();
+        if (! $purchase) {
+            Log::warning('Payment Webhook Warning: Purchase record not found.', ['txnid' => $txnid]);
+
+            return response()->json(['status' => 'error', 'message' => 'Purchase not found.'], 404);
+        }
+
+        // 5. Verify Cryptographic SHA-512 Reverse Hash Signature
+        $receivedHash = (string) ($payload['hash'] ?? '');
+        $calculatedHash = $this->responseHash($payload, $salt);
+
+        if (! hash_equals($calculatedHash, $receivedHash)) {
+            Log::warning('Payment Webhook Security Failure: Hash signature mismatch.', [
+                'txnid' => $txnid,
+                'ip' => $request->ip(),
+            ]);
+
+            return response()->json(['status' => 'error', 'message' => 'Invalid signature verification.'], 403);
+        }
+
+        // 6. Verify Merchant Key and Amount
+        $merchantKey = (string) ($payload['key'] ?? '');
+        $paidAmount = (float) ($payload['amount'] ?? 0);
+        $expectedAmount = (float) $purchase->amount;
+
+        if ($merchantKey !== $key) {
+            Log::warning('Payment Webhook Security Failure: Merchant key mismatch.', [
+                'txnid' => $txnid,
+                'expected' => $key,
+                'received' => $merchantKey,
+            ]);
+
+            return response()->json(['status' => 'error', 'message' => 'Invalid merchant key.'], 403);
+        }
+
+        if (number_format($paidAmount, 2, '.', '') !== number_format($expectedAmount, 2, '.', '')) {
+            Log::warning('Payment Webhook Security Failure: Transaction amount mismatch.', [
+                'txnid' => $txnid,
+                'expected_amount' => $expectedAmount,
+                'received_amount' => $paidAmount,
+            ]);
+
+            return response()->json(['status' => 'error', 'message' => 'Payment amount mismatch.'], 400);
+        }
+
+        // 7. Idempotency Check: Avoid double fulfillment if already paid
+        if ($purchase->status === 'paid') {
+            Log::info('Payment Webhook: Purchase already processed as paid.', ['txnid' => $txnid]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Purchase was already paid and processed.',
+                'purchase_id' => $purchase->id,
+            ], 200);
+        }
+
+        // 8. Process Transaction Status
+        $status = strtolower((string) ($payload['status'] ?? ''));
+        $isSuccess = ($status === 'success');
+
+        $purchase->update([
+            'status' => $isSuccess ? 'paid' : 'failed',
+            'gateway_response' => $payload,
+        ]);
+
+        // 9. Dispatch Delivery Mail on Successful Payment
+        if ($isSuccess) {
+            $customer = $purchase->customer;
+            $dbBook = Book::where('slug', $purchase->book_identifier)
+                ->orWhere('id', $purchase->book_identifier)
+                ->first();
+
+            if ($customer && ! empty($customer->email)) {
+                try {
+                    Mail::to($customer->email)->send(new EbookDeliveryMail($purchase, $dbBook, $customer));
+                    Log::info('Payment Webhook: E-Book Delivery Email dispatched successfully.', [
+                        'txnid' => $txnid,
+                        'customer' => $customer->email,
+                    ]);
+                } catch (\Throwable $mailException) {
+                    Log::error('Payment Webhook: E-Book Delivery Email Failed: '.$mailException->getMessage(), [
+                        'purchase_id' => $purchase->id,
+                        'customer_email' => $customer->email,
+                    ]);
+                }
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Webhook notification processed successfully.',
+            'purchase_id' => $purchase->id,
+            'purchase_status' => $purchase->status,
+        ], 200);
     }
 
     /**
