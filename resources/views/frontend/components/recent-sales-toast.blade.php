@@ -65,8 +65,8 @@
 >
     <div class="bg-white/95 backdrop-blur-md rounded-2xl border border-brand-200/90 shadow-[0_16px_40px_-10px_rgba(122,88,169,0.28)] p-3.5 flex items-center gap-3 relative ring-1 ring-black/5 hover:border-brand-400 transition-colors">
         
-        <!-- Book Cover Thumbnail -->
-        <a id="sales-toast-link" href="#" class="block w-13 h-16 rounded-xl overflow-hidden bg-slate-950 shrink-0 border border-slate-200 shadow-sm relative group/img">
+        <!-- Book Cover Thumbnail (10:7 Rectangular) -->
+        <a id="sales-toast-link" href="#" class="block w-16 aspect-[10/7] rounded-xl overflow-hidden bg-slate-950 shrink-0 border border-slate-200 shadow-sm relative group/img">
             <img id="sales-toast-image" src="{{ asset('images/books/algorithms.jpg') }}" alt="Book Cover" class="w-full h-full object-cover">
             <div class="absolute inset-y-0 left-0 w-1 bg-gradient-to-r from-black/40 to-transparent pointer-events-none"></div>
         </a>

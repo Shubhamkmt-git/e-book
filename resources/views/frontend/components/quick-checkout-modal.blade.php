@@ -45,7 +45,7 @@
         <div class="p-6 sm:p-7 space-y-6 bg-slate-50/50">
             
             <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-white border border-brand-100 shadow-2xs">
-                <div class="w-16 h-20 rounded-xl overflow-hidden bg-slate-950 shrink-0 shadow-sm border border-slate-200/80 relative">
+                <div class="w-20 aspect-[10/7] rounded-xl overflow-hidden bg-slate-950 shrink-0 shadow-sm border border-slate-200/80 relative">
                     <img id="checkout-book-image" src="{{ asset('images/books/algorithms.jpg') }}" alt="Book Cover" class="w-full h-full object-cover">
                     <div class="absolute inset-y-0 left-0 w-1 bg-gradient-to-r from-black/40 to-transparent pointer-events-none"></div>
                 </div>

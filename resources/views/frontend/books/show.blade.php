@@ -158,9 +158,9 @@
             </div>
         </div>
 
-        <!-- 3. Centered Book Cover (Height: 80% of view height) -->
+        <!-- 3. Centered Book Cover (Rectangular Aspect Ratio on Mobile) -->
         <div id="book-hero-section" class="w-full max-w-5xl mx-auto flex flex-col items-center">
-            <div class="w-full h-[55vh] sm:h-[70vh] lg:h-[80vh] rounded-2xl sm:rounded-3xl overflow-hidden relative shadow-[0_20px_50px_-15px_rgba(122,88,169,0.35)] bg-slate-950 ring-1 ring-black/10 group">
+            <div class="w-full aspect-[10/7] sm:aspect-auto sm:h-[70vh] lg:h-[80vh] rounded-2xl sm:rounded-3xl overflow-hidden relative shadow-[0_20px_50px_-15px_rgba(122,88,169,0.35)] bg-slate-950 ring-1 ring-black/10 group">
                 <img 
                     src="{{ asset($book['image']) }}" 
                     alt="{{ $book['title'] }}" 
@@ -194,10 +194,10 @@
                 </button>
 
                 <!-- Bottom Image Overlay Gradient + Buy Now Button -->
-                <div class="absolute inset-x-0 bottom-0 pb-6 sm:pb-8 pt-20 bg-gradient-to-t from-slate-950/85 via-slate-950/40 to-transparent flex flex-col items-center justify-end px-4 z-10 pointer-events-auto">
+                <div class="absolute inset-x-0 bottom-0 pb-4 sm:pb-8 pt-14 sm:pt-20 bg-gradient-to-t from-slate-950/85 via-slate-950/40 to-transparent flex flex-col items-center justify-end px-4 z-10 pointer-events-auto">
                     <a 
                         href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
-                        class="btn-buy-motion w-full sm:w-auto min-w-[260px] sm:min-w-[280px] h-13 sm:h-14 inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-xl sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.04] active:scale-[0.98] shadow-2xl text-center cursor-pointer group/btn"
+                        class="btn-buy-motion w-full sm:w-auto min-w-[220px] sm:min-w-[280px] h-12 sm:h-14 inline-flex items-center justify-center gap-2.5 px-6 sm:px-10 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-lg sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.04] active:scale-[0.98] shadow-2xl text-center cursor-pointer group/btn"
                     >
                         <span>Buy Now ({{ $book['price'] }}/-)</span>
                         <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover/btn:translate-x-1 transition-transform duration-300"></i>
