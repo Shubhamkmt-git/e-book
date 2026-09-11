@@ -44,6 +44,12 @@ return [
         'production_url' => env('EASEBUZZ_PRODUCTION_URL', 'https://pay.easebuzz.in/payment/initiateLink'),
     ],
 
+    'razorpay' => [
+        'key' => env('RAZORPAY_KEY'),
+        'secret' => env('RAZORPAY_SECRET'),
+        'webhook_secret' => env('RAZORPAY_WEBHOOK_SECRET'),
+    ],
+
     'tinymce' => [
         'key' => env('TINYMCE_API_KEY', 'no-api-key'),
     ],

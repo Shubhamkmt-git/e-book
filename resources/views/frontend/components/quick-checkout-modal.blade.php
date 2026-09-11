@@ -3,6 +3,13 @@
      ========================================== -->
 <div id="quick-checkout-modal-backdrop" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 transition-opacity duration-300 opacity-0 pointer-events-none" onclick="closeQuickCheckoutModal()"></div>
 
+@php
+    $easebuzzActive = $appSetting->isEasebuzzEnabled();
+    $razorpayActive = $appSetting->isRazorpayEnabled();
+    $hasGateway = $easebuzzActive || $razorpayActive;
+    $defaultGateway = $razorpayActive ? 'razorpay' : ($easebuzzActive ? 'easebuzz' : '');
+@endphp
+
 <div 
     id="quick-checkout-modal" 
     class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 opacity-0 pointer-events-none transition-all duration-300 transform scale-95"
@@ -10,10 +17,10 @@
     aria-modal="true" 
     aria-labelledby="quick-checkout-title"
 >
-    <div class="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-brand-200/80 overflow-hidden flex flex-col">
+    <div class="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-brand-200/80 overflow-hidden flex flex-col max-h-[90vh]">
         
         <!-- Modal Top Brand Header -->
-        <div class="relative bg-gradient-to-r from-brand-900 via-brand-800 to-brand-900 text-white p-6 sm:p-7">
+        <div class="relative bg-gradient-to-r from-brand-900 via-brand-800 to-brand-900 text-white p-5 sm:p-6 shrink-0">
             <!-- Decorative Glow -->
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-brand-500/30 rounded-full blur-2xl pointer-events-none"></div>
 
@@ -26,7 +33,7 @@
                         <h3 id="quick-checkout-title" class="font-brand text-2xl sm:text-3xl text-white tracking-wide uppercase leading-tight">
                             Secure Checkout
                         </h3>
-                        <p class="text-xs text-brand-200/90 font-medium">Instant Download & Email Delivery</p>
+                        <p class="text-xs text-brand-200/90 font-medium">Instant Download &amp; Email Delivery</p>
                     </div>
                 </div>
 
@@ -41,31 +48,39 @@
             </div>
         </div>
 
-        <!-- Selected Book Highlight Card -->
-        <div class="p-6 sm:p-7 space-y-6 bg-slate-50/50">
+        <!-- Scrollable Modal Body -->
+        <div class="p-5 sm:p-6 space-y-5 bg-slate-50/50 overflow-y-auto">
             
+            <!-- Selected Book Highlight Card -->
             <div class="flex items-center gap-4 p-3.5 rounded-2xl bg-white border border-brand-100 shadow-2xs">
-                <div class="w-20 aspect-[10/7] rounded-xl overflow-hidden bg-slate-950 shrink-0 shadow-sm border border-slate-200/80 relative">
+                <div class="w-16 sm:w-20 aspect-[10/7] rounded-xl overflow-hidden bg-slate-950 shrink-0 shadow-sm border border-slate-200/80 relative">
                     <img id="checkout-book-image" src="{{ asset('images/books/algorithms.jpg') }}" alt="Book Cover" class="w-full h-full object-cover">
                     <div class="absolute inset-y-0 left-0 w-1 bg-gradient-to-r from-black/40 to-transparent pointer-events-none"></div>
                 </div>
                 <div class="flex-1 min-w-0">
                     <span id="checkout-book-category" class="text-[10px] font-bold text-brand-600 uppercase tracking-wider block">E-Book</span>
-                    <h4 id="checkout-book-title" class="font-bold text-sm sm:text-base text-slate-900 truncate leading-snug">Algorithms & Elegance</h4>
+                    <h4 id="checkout-book-title" class="font-bold text-sm sm:text-base text-slate-900 truncate leading-snug">Algorithms &amp; Elegance</h4>
                     <p id="checkout-book-author" class="text-xs text-slate-400 truncate mt-0.5">Author</p>
-                    <div class="flex items-baseline gap-2 mt-1.5">
+                    <div class="flex items-baseline gap-2 mt-1">
                         <span id="checkout-book-price" class="font-brand text-2xl text-brand-600 font-bold leading-none">₹499</span>
                         <span id="checkout-book-original-price" class="font-brand text-xs text-slate-400 line-through leading-none hidden">₹799</span>
                     </div>
                 </div>
             </div>
 
+            @if(! $hasGateway)
+                <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm space-y-1 text-center">
+                    <p class="font-bold"><i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Checkout Temporarily Unavailable</p>
+                    <p class="text-slate-600">Online payment gateways are currently inactive. Please contact store support.</p>
+                </div>
+            @endif
+
             <!-- Checkout Form -->
             <form id="quick-checkout-form" method="POST" action="" class="space-y-4">
                 @csrf
                 
                 <div>
-                    <label for="checkout-customer-name" class="block text-xs font-semibold text-slate-700 mb-1.5">Your Full Name</label>
+                    <label for="checkout-customer-name" class="block text-xs font-semibold text-slate-700 mb-1">Your Full Name</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                             <i class="fa-regular fa-user text-xs"></i>
@@ -83,8 +98,8 @@
                 </div>
 
                 <div>
-                    <label for="checkout-customer-email" class="block text-xs font-semibold text-slate-700 mb-1.5">
-                        Email Address <span class="text-brand-600 font-normal">(PDF will be sent here)</span>
+                    <label for="checkout-customer-email" class="block text-xs font-semibold text-slate-700 mb-1">
+                        Email Address <span class="text-brand-600 font-normal">(PDF download sent here)</span>
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -103,7 +118,7 @@
                 </div>
 
                 <div>
-                    <label for="checkout-customer-mobile" class="block text-xs font-semibold text-slate-700 mb-1.5">Mobile Number <span class="text-slate-400 font-normal">(For Payment SMS)</span></label>
+                    <label for="checkout-customer-mobile" class="block text-xs font-semibold text-slate-700 mb-1">Mobile Number <span class="text-slate-400 font-normal">(For Payment SMS)</span></label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                             <i class="fa-solid fa-phone text-xs"></i>
@@ -119,20 +134,53 @@
                     </div>
                 </div>
 
+                <!-- Payment Gateway Selector -->
+                @if($easebuzzActive && $razorpayActive)
+                    <div class="space-y-2 pt-1">
+                        <label class="block text-xs font-bold text-slate-800 uppercase tracking-wider">Select Payment Method</label>
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <!-- Razorpay Radio Card -->
+                            <label class="relative flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50/60 border-slate-200 bg-white hover:border-slate-300">
+                                <input type="radio" name="payment_gateway_choice" value="razorpay" class="sr-only" checked onchange="updateGatewayChoice('razorpay')">
+                                <div class="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center font-black text-xs shrink-0">
+                                    RZ
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <span class="block text-xs font-bold text-slate-900 leading-tight">Razorpay</span>
+                                    <span class="block text-[10px] text-slate-500 truncate">UPI, Cards, NetBanking</span>
+                                </div>
+                            </label>
+
+                            <!-- Easebuzz Radio Card -->
+                            <label class="relative flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/60 border-slate-200 bg-white hover:border-slate-300">
+                                <input type="radio" name="payment_gateway_choice" value="easebuzz" class="sr-only" onchange="updateGatewayChoice('easebuzz')">
+                                <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-black text-xs shrink-0">
+                                    EB
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <span class="block text-xs font-bold text-slate-900 leading-tight">Easebuzz</span>
+                                    <span class="block text-[10px] text-slate-500 truncate">UPI, NetBanking, Cards</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                @endif
+
                 <!-- Submit Button -->
                 <button 
                     type="submit" 
                     id="checkout-submit-btn"
-                    class="w-full h-12 inline-flex items-center justify-center gap-2 px-6 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl uppercase tracking-wider transition-all duration-200 shadow-lg shadow-brand-600/30 text-center cursor-pointer mt-2"
+                    {{ ! $hasGateway ? 'disabled' : '' }}
+                    class="w-full h-12 inline-flex items-center justify-center gap-2 px-6 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-brand text-xl uppercase tracking-wider transition-all duration-200 shadow-lg shadow-brand-600/30 text-center cursor-pointer mt-2"
                 >
                     <span id="checkout-submit-btn-text">Proceed to Payment</span>
                     <i class="fa-solid fa-arrow-right text-xs"></i>
                 </button>
 
                 <!-- Trust Guarantee Notice -->
-                <div class="flex items-center justify-center gap-3 pt-2 text-[11px] text-slate-500">
+                <div class="flex items-center justify-center gap-3 pt-1 text-[11px] text-slate-500">
                     <span class="flex items-center gap-1">
-                        <i class="fa-solid fa-lock text-emerald-500 text-[10px]"></i> Easebuzz Secured
+                        <i class="fa-solid fa-shield-halved text-emerald-500 text-[10px]"></i> 100% Secure SSL
                     </span>
                     <span>•</span>
                     <span class="flex items-center gap-1">
@@ -153,6 +201,23 @@
 <script>
 (function() {
     const isCustomerAuthenticated = @json(auth('customer')->check());
+    const easebuzzEnabled = @json($easebuzzActive);
+    const razorpayEnabled = @json($razorpayActive);
+    let selectedGateway = @json($defaultGateway);
+    let currentBookKey = '';
+
+    window.updateGatewayChoice = function(gateway) {
+        selectedGateway = gateway;
+        updateFormAction();
+    };
+
+    function updateFormAction() {
+        const form = document.getElementById('quick-checkout-form');
+        if (!form || !currentBookKey) return;
+
+        const gateway = selectedGateway || (razorpayEnabled ? 'razorpay' : 'easebuzz');
+        form.action = `/ebooks/${encodeURIComponent(currentBookKey)}/payments/${gateway}`;
+    }
 
     // Universal Buy Now redirect / checkout handler
     window.initiateBookPurchase = function(bookData, event) {
@@ -163,11 +228,12 @@
 
         if (!bookData) return;
 
-        const bookKey = bookData.slug || bookData.id;
-        const initiateUrl = `/ebooks/${encodeURIComponent(bookKey)}/payments/easebuzz`;
+        currentBookKey = bookData.slug || bookData.id;
+        const gateway = selectedGateway || (razorpayEnabled ? 'razorpay' : 'easebuzz');
+        const initiateUrl = `/ebooks/${encodeURIComponent(currentBookKey)}/payments/${gateway}`;
 
-        // If customer is already authenticated, submit direct POST without extra prompt
-        if (isCustomerAuthenticated) {
+        // If customer is already authenticated and only one gateway exists, submit direct POST
+        if (isCustomerAuthenticated && !(easebuzzEnabled && razorpayEnabled)) {
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = initiateUrl;
@@ -185,17 +251,17 @@
         }
 
         // Otherwise, open the Quick Checkout Modal for instant guest/customer checkout
-        openQuickCheckoutModal(bookData, initiateUrl);
+        openQuickCheckoutModal(bookData);
     };
 
-    window.openQuickCheckoutModal = function(bookData, initiateUrl) {
+    window.openQuickCheckoutModal = function(bookData) {
         const backdrop = document.getElementById('quick-checkout-modal-backdrop');
         const modal = document.getElementById('quick-checkout-modal');
         const form = document.getElementById('quick-checkout-form');
         if (!backdrop || !modal || !form) return;
 
-        const bookKey = bookData.slug || bookData.id;
-        form.action = initiateUrl || `/ebooks/${encodeURIComponent(bookKey)}/payments/easebuzz`;
+        currentBookKey = bookData.slug || bookData.id;
+        updateFormAction();
 
         // Update book details in modal
         const titleEl = document.getElementById('checkout-book-title');

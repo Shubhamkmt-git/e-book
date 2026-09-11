@@ -22,6 +22,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'payments/easebuzz/webhook',
             'payments/webhook',
             'payments/easebuzz/return/*',
+            'payments/razorpay/webhook',
+            'payments/razorpay/callback/*',
         ]);
 
         $middleware->alias([

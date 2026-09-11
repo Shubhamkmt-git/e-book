@@ -35,6 +35,14 @@ Route::post('/payments/easebuzz/mock/{purchase}/process', [PaymentController::cl
 Route::match(['get', 'post'], '/payments/easebuzz/return/{purchase}', [PaymentController::class, 'handleReturn'])->name('payments.return');
 Route::post('/payments/easebuzz/webhook', [PaymentController::class, 'handleWebhook'])->name('payments.webhook');
 Route::post('/payments/webhook', [PaymentController::class, 'handleWebhook'])->name('payments.webhook.generic');
+
+// Razorpay Routes
+Route::match(['get', 'post'], '/ebooks/{identifier}/payments/razorpay', [PaymentController::class, 'initiateRazorpay'])->name('payments.razorpay.initiate');
+Route::get('/payments/razorpay/mock/{purchase}', [PaymentController::class, 'mockRazorpayCheckout'])->name('payments.razorpay.mock-checkout');
+Route::post('/payments/razorpay/mock/{purchase}/process', [PaymentController::class, 'processRazorpayMockPayment'])->name('payments.razorpay.mock-process');
+Route::match(['get', 'post'], '/payments/razorpay/callback/{purchase}', [PaymentController::class, 'handleRazorpayCallback'])->name('payments.razorpay.callback');
+Route::post('/payments/razorpay/webhook', [PaymentController::class, 'handleRazorpayWebhook'])->name('payments.razorpay.webhook');
+
 Route::get('/purchases/{purchase}/download', [PaymentController::class, 'downloadPurchasedEbook'])->name('purchases.download');
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/{slug}', [CategoryController::class, 'show'])->name('categories.show');

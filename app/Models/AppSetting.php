@@ -25,6 +25,8 @@ class AppSetting extends Model
     protected $fillable = [
         'app_name',
         'app_short_description',
+        'easebuzz_enabled',
+        'razorpay_enabled',
         'logo_dark',
         'logo_light',
         'favicon',
@@ -43,6 +45,16 @@ class AppSetting extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'easebuzz_enabled' => 'boolean',
+        'razorpay_enabled' => 'boolean',
+    ];
+
+    /**
      * Retrieve the singleton settings record or initialize defaults.
      */
     public static function getSettings(): self
@@ -52,11 +64,37 @@ class AppSetting extends Model
             [
                 'app_name' => config('app.name', 'E-Book CMS'),
                 'app_short_description' => 'A modern and intuitive digital e-book library platform.',
+                'easebuzz_enabled' => true,
+                'razorpay_enabled' => true,
                 'meta_title' => config('app.name', 'E-Book CMS').' - Digital Library Platform',
                 'meta_description' => 'Discover, read, and explore high quality digital e-books and publications.',
                 'meta_keywords' => 'ebooks, digital library, books, pdf, reading',
             ]
         );
+    }
+
+    /**
+     * Check if Easebuzz payment gateway is enabled.
+     */
+    public function isEasebuzzEnabled(): bool
+    {
+        return (bool) ($this->easebuzz_enabled ?? true);
+    }
+
+    /**
+     * Check if Razorpay payment gateway is enabled.
+     */
+    public function isRazorpayEnabled(): bool
+    {
+        return (bool) ($this->razorpay_enabled ?? true);
+    }
+
+    /**
+     * Check if any online payment gateway is currently enabled.
+     */
+    public function hasAnyPaymentGatewayEnabled(): bool
+    {
+        return $this->isEasebuzzEnabled() || $this->isRazorpayEnabled();
     }
 
     /**

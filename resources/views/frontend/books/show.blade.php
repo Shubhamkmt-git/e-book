@@ -66,10 +66,6 @@
 
 @section('content')
 
-<form id="easebuzz-payment-form" action="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" method="POST" class="hidden">
-    @csrf
-</form>
-
 <section class="pt-3 pb-24 sm:pt-4 sm:pb-24 bg-gradient-to-b from-brand-100/60 via-brand-50/70 to-slate-50 min-h-screen">
     <div class="w-[94%] sm:w-[88%] lg:w-[70%] mx-auto px-2 sm:px-4 space-y-5 sm:space-y-6">
 

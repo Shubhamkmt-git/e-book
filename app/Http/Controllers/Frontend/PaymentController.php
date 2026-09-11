@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Mail\EbookDeliveryMail;
+use App\Models\AppSetting;
 use App\Models\Book;
 use App\Models\Customer;
 use App\Models\Purchase;
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Razorpay\Api\Api;
+use Razorpay\Api\Errors\SignatureVerificationError;
 use Symfony\Component\HttpFoundation\Response;
 
 class PaymentController extends Controller
@@ -25,17 +28,12 @@ class PaymentController extends Controller
     public function __construct(private BookController $books) {}
 
     /**
-     * Initiate Easebuzz payment gateway checkout for a book.
+     * Resolve or register customer from request before payment initiation.
      */
-    public function initiate(Request $request, string $identifier): RedirectResponse
+    private function resolveCustomer(Request $request, string $identifier): ?Customer
     {
         /** @var Customer|null $customer */
         $customer = $request->user('customer');
-        $bookData = $this->books->findBook($identifier);
-
-        if (! $bookData) {
-            abort(404, 'E-Book not found.');
-        }
 
         if (! $customer) {
             if ($request->filled('email')) {
@@ -63,10 +61,33 @@ class PaymentController extends Controller
                 }
 
                 Auth::guard('customer')->login($customer);
-            } else {
-                return redirect()->route('books.show', ['identifier' => $identifier, 'checkout' => 1])
-                    ->with('payment_error', 'Please enter your email to proceed directly to payment.');
             }
+        }
+
+        return $customer;
+    }
+
+    /**
+     * Initiate Easebuzz payment gateway checkout for a book.
+     */
+    public function initiate(Request $request, string $identifier): RedirectResponse
+    {
+        $appSetting = AppSetting::getSettings();
+        if (! $appSetting->isEasebuzzEnabled()) {
+            return redirect()->route('books.show', $identifier)
+                ->with('payment_error', 'Easebuzz payment method is currently disabled by administrator.');
+        }
+
+        $customer = $this->resolveCustomer($request, $identifier);
+        $bookData = $this->books->findBook($identifier);
+
+        if (! $bookData) {
+            abort(404, 'E-Book not found.');
+        }
+
+        if (! $customer) {
+            return redirect()->route('books.show', ['identifier' => $identifier, 'checkout' => 1])
+                ->with('payment_error', 'Please enter your email to proceed directly to payment.');
         }
 
         $key = trim((string) config('services.easebuzz.key'));
@@ -82,6 +103,7 @@ class PaymentController extends Controller
                 'book_identifier' => (string) ($bookData['slug'] ?? $bookData['id']),
                 'book_title' => (string) $bookData['title'],
                 'amount' => $amount,
+                'payment_method' => 'easebuzz',
                 'transaction_id' => 'EBMOCK'.now()->format('YmdHis').Str::upper(Str::random(4)),
                 'status' => 'pending',
             ]);
@@ -91,7 +113,7 @@ class PaymentController extends Controller
 
         if ($key === '' || $salt === '') {
             return redirect()->route('books.show', $identifier)
-                ->with('payment_error', 'Payment gateway is not configured yet. Set EASEBUZZ_ENV=mock in .env for test simulation, or provide Easebuzz merchant credentials.');
+                ->with('payment_error', 'Easebuzz payment gateway is not configured yet. Set EASEBUZZ_ENV=mock in .env for test simulation, or provide Easebuzz merchant credentials.');
         }
 
         $amount = max(1.0, $this->amountFrom($bookData['price']));
@@ -113,6 +135,7 @@ class PaymentController extends Controller
             'book_identifier' => (string) ($bookData['slug'] ?? $bookData['id']),
             'book_title' => (string) $bookData['title'],
             'amount' => $amount,
+            'payment_method' => 'easebuzz',
             'transaction_id' => 'EB'.now()->format('YmdHis').Str::upper(Str::random(6)),
             'status' => 'pending',
         ]);
@@ -397,6 +420,356 @@ class PaymentController extends Controller
             'purchase_id' => $purchase->id,
             'purchase_status' => $purchase->status,
         ], 200);
+    }
+
+    /**
+     * Initiate Razorpay payment gateway checkout for a book.
+     */
+    public function initiateRazorpay(Request $request, string $identifier): RedirectResponse|View
+    {
+        $appSetting = AppSetting::getSettings();
+        if (! $appSetting->isRazorpayEnabled()) {
+            return redirect()->route('books.show', $identifier)
+                ->with('payment_error', 'Razorpay payment method is currently disabled by administrator.');
+        }
+
+        $customer = $this->resolveCustomer($request, $identifier);
+        $bookData = $this->books->findBook($identifier);
+
+        if (! $bookData) {
+            abort(404, 'E-Book not found.');
+        }
+
+        if (! $customer) {
+            return redirect()->route('books.show', ['identifier' => $identifier, 'checkout' => 1])
+                ->with('payment_error', 'Please enter your email to proceed directly to payment.');
+        }
+
+        $key = trim((string) config('services.razorpay.key'));
+        $secret = trim((string) config('services.razorpay.secret'));
+        $env = strtolower(trim((string) config('services.razorpay.environment', 'test')));
+        $isMock = in_array($env, ['mock', 'simulation', 'local_test'], true)
+            || in_array(strtolower($key), ['mock', 'demo', 'test_mode'], true);
+
+        $amount = max(1.0, $this->amountFrom($bookData['price']));
+
+        if ($isMock) {
+            $purchase = Purchase::create([
+                'customer_id' => $customer->id,
+                'book_identifier' => (string) ($bookData['slug'] ?? $bookData['id']),
+                'book_title' => (string) $bookData['title'],
+                'amount' => $amount,
+                'payment_method' => 'razorpay',
+                'transaction_id' => 'RZMOCK'.now()->format('YmdHis').Str::upper(Str::random(4)),
+                'status' => 'pending',
+            ]);
+
+            return redirect()->route('payments.razorpay.mock-checkout', $purchase);
+        }
+
+        if ($key === '' || $secret === '') {
+            return redirect()->route('books.show', $identifier)
+                ->with('payment_error', 'Razorpay payment gateway is not configured yet. Set RAZORPAY_ENV=mock in .env for test simulation, or provide Razorpay Key and Secret in .env.');
+        }
+
+        $txnid = 'RZ'.now()->format('YmdHis').Str::upper(Str::random(6));
+
+        $purchase = Purchase::create([
+            'customer_id' => $customer->id,
+            'book_identifier' => (string) ($bookData['slug'] ?? $bookData['id']),
+            'book_title' => (string) $bookData['title'],
+            'amount' => $amount,
+            'payment_method' => 'razorpay',
+            'transaction_id' => $txnid,
+            'status' => 'pending',
+        ]);
+
+        try {
+            $api = new Api($key, $secret);
+            $order = $api->order->create([
+                'receipt' => $purchase->transaction_id,
+                'amount' => (int) round($amount * 100), // Amount in paise
+                'currency' => 'INR',
+                'notes' => [
+                    'purchase_id' => (string) $purchase->id,
+                    'book_identifier' => (string) ($bookData['slug'] ?? $bookData['id']),
+                    'customer_email' => (string) $customer->email,
+                ],
+            ]);
+
+            $purchase->update([
+                'razorpay_order_id' => $order['id'],
+                'gateway_response' => $order->toArray(),
+            ]);
+
+            return view('frontend.payments.razorpay-checkout', [
+                'purchase' => $purchase,
+                'razorpayOrder' => $order,
+                'razorpayKey' => $key,
+                'appName' => $appSetting->app_name ?? config('app.name', 'E-Book CMS'),
+                'appLogo' => $appSetting->logo_dark_url ?? $appSetting->logo_light_url ?? '',
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Razorpay Order Creation Error: '.$e->getMessage(), [
+                'purchase_id' => $purchase->id,
+            ]);
+
+            $purchase->update([
+                'status' => 'failed',
+                'gateway_response' => ['error' => $e->getMessage()],
+            ]);
+
+            return redirect()->route('books.show', $identifier)
+                ->with('payment_error', 'Unable to initialize Razorpay checkout: '.$e->getMessage());
+        }
+    }
+
+    /**
+     * Handle Razorpay standard checkout callback (success or client fail).
+     */
+    public function handleRazorpayCallback(Request $request, Purchase $purchase): RedirectResponse
+    {
+        $key = trim((string) config('services.razorpay.key'));
+        $secret = trim((string) config('services.razorpay.secret'));
+
+        $paymentId = (string) $request->input('razorpay_payment_id', '');
+        $orderId = (string) ($request->input('razorpay_order_id', '') ?: $purchase->razorpay_order_id);
+        $signature = (string) $request->input('razorpay_signature', '');
+
+        if ($paymentId === '' || $signature === '') {
+            $purchase->update([
+                'status' => 'failed',
+                'gateway_response' => $request->all(),
+            ]);
+
+            return redirect()->route('books.show', $purchase->book_identifier)
+                ->with('payment_error', 'Payment verification failed: Missing Razorpay transaction identifiers.');
+        }
+
+        try {
+            $api = new Api($key, $secret);
+            $api->utility->verifyPaymentSignature([
+                'razorpay_order_id' => $orderId,
+                'razorpay_payment_id' => $paymentId,
+                'razorpay_signature' => $signature,
+            ]);
+
+            $purchase->update([
+                'status' => 'paid',
+                'razorpay_payment_id' => $paymentId,
+                'razorpay_signature' => $signature,
+                'gateway_response' => $request->all(),
+            ]);
+
+            $customer = $purchase->customer;
+            $dbBook = Book::where('slug', $purchase->book_identifier)
+                ->orWhere('id', $purchase->book_identifier)
+                ->first();
+
+            // Automatically send the E-Book PDF delivery email to customer's registered email
+            if ($customer && ! empty($customer->email)) {
+                try {
+                    Mail::to($customer->email)->send(new EbookDeliveryMail($purchase, $dbBook, $customer));
+                } catch (\Throwable $mailException) {
+                    Log::error('Razorpay E-Book Delivery Email Failed: '.$mailException->getMessage(), [
+                        'purchase_id' => $purchase->id,
+                        'customer_email' => $customer->email,
+                    ]);
+                }
+            }
+
+            return redirect()->route('books.show', $purchase->book_identifier)->with([
+                'payment_success' => '🎉 Payment completed successfully via Razorpay! Your e-book is ready.',
+                'auto_download_url' => route('purchases.download', $purchase),
+                'purchased_book_title' => $purchase->book_title,
+                'customer_email' => $customer?->email ?? '',
+            ]);
+        } catch (SignatureVerificationError $e) {
+            Log::warning('Razorpay Signature Verification Error: '.$e->getMessage(), [
+                'purchase_id' => $purchase->id,
+                'payload' => $request->all(),
+            ]);
+
+            $purchase->update([
+                'status' => 'failed',
+                'gateway_response' => $request->all(),
+            ]);
+
+            return redirect()->route('books.show', $purchase->book_identifier)
+                ->with('payment_error', 'Razorpay payment signature verification failed.');
+        } catch (\Throwable $e) {
+            Log::error('Razorpay Callback Error: '.$e->getMessage(), [
+                'purchase_id' => $purchase->id,
+            ]);
+
+            return redirect()->route('books.show', $purchase->book_identifier)
+                ->with('payment_error', 'An error occurred while confirming your Razorpay payment.');
+        }
+    }
+
+    /**
+     * Handle Server-to-Server Webhook Notification from Razorpay.
+     */
+    public function handleRazorpayWebhook(Request $request): JsonResponse
+    {
+        $webhookBody = $request->getContent();
+        $webhookSignature = (string) $request->header('X-Razorpay-Signature', '');
+        $webhookSecret = trim((string) config('services.razorpay.webhook_secret'));
+
+        Log::info('Razorpay Webhook Notification Received', [
+            'ip' => $request->ip(),
+            'signature_present' => ! empty($webhookSignature),
+        ]);
+
+        // Verify signature if secret is configured
+        if ($webhookSecret !== '') {
+            if ($webhookSignature === '') {
+                Log::warning('Razorpay Webhook: Missing X-Razorpay-Signature header.');
+
+                return response()->json(['status' => 'error', 'message' => 'Missing webhook signature.'], 400);
+            }
+
+            try {
+                $api = new Api(config('services.razorpay.key'), config('services.razorpay.secret'));
+                $api->utility->verifyWebhookSignature($webhookBody, $webhookSignature, $webhookSecret);
+            } catch (\Throwable $e) {
+                Log::warning('Razorpay Webhook Signature Verification Failed: '.$e->getMessage());
+
+                return response()->json(['status' => 'error', 'message' => 'Invalid webhook signature.'], 403);
+            }
+        }
+
+        $payload = json_decode($webhookBody, true) ?? [];
+        $event = (string) ($payload['event'] ?? '');
+
+        Log::info('Razorpay Webhook Event: '.$event);
+
+        $paymentEntity = $payload['payload']['payment']['entity'] ?? [];
+        $orderId = $paymentEntity['order_id'] ?? ($payload['payload']['order']['entity']['id'] ?? null);
+        $paymentId = $paymentEntity['id'] ?? null;
+        $notes = $paymentEntity['notes'] ?? ($payload['payload']['order']['entity']['notes'] ?? []);
+        $purchaseId = $notes['purchase_id'] ?? null;
+
+        /** @var Purchase|null $purchase */
+        $purchase = null;
+        if ($orderId) {
+            $purchase = Purchase::where('razorpay_order_id', $orderId)->first();
+        }
+        if (! $purchase && $purchaseId) {
+            $purchase = Purchase::find($purchaseId);
+        }
+
+        if (! $purchase) {
+            Log::warning('Razorpay Webhook: Matching purchase record not found.', ['order_id' => $orderId, 'purchase_id' => $purchaseId]);
+
+            return response()->json(['status' => 'success', 'message' => 'Order not found, ignored.'], 200);
+        }
+
+        if (in_array($event, ['payment.captured', 'order.paid'], true)) {
+            if ($purchase->status === 'paid') {
+                return response()->json(['status' => 'success', 'message' => 'Already processed as paid.'], 200);
+            }
+
+            $purchase->update([
+                'status' => 'paid',
+                'razorpay_payment_id' => $paymentId ?: $purchase->razorpay_payment_id,
+                'gateway_response' => $payload,
+            ]);
+
+            $customer = $purchase->customer;
+            $dbBook = Book::where('slug', $purchase->book_identifier)
+                ->orWhere('id', $purchase->book_identifier)
+                ->first();
+
+            if ($customer && ! empty($customer->email)) {
+                try {
+                    Mail::to($customer->email)->send(new EbookDeliveryMail($purchase, $dbBook, $customer));
+                } catch (\Throwable $e) {
+                    Log::error('Razorpay Webhook: Delivery Mail Error: '.$e->getMessage());
+                }
+            }
+        } elseif ($event === 'payment.failed') {
+            $purchase->update([
+                'status' => 'failed',
+                'gateway_response' => $payload,
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Razorpay webhook processed successfully.',
+            'purchase_id' => $purchase->id,
+        ], 200);
+    }
+
+    /**
+     * Display mock Razorpay simulator checkout page.
+     */
+    public function mockRazorpayCheckout(Request $request, Purchase $purchase): View
+    {
+        return view('frontend.payments.razorpay-mock-checkout', compact('purchase'));
+    }
+
+    /**
+     * Process mock Razorpay payment simulation result.
+     */
+    public function processRazorpayMockPayment(Request $request, Purchase $purchase): RedirectResponse
+    {
+        $action = $request->input('action', 'success');
+
+        if ($action === 'success') {
+            $mockResponse = [
+                'status' => 'captured',
+                'razorpay_payment_id' => 'pay_'.Str::random(14),
+                'razorpay_order_id' => 'order_'.Str::random(14),
+                'amount' => (int) round($purchase->amount * 100),
+                'currency' => 'INR',
+                'payment_source' => 'Razorpay Sandbox Simulator',
+                'method' => 'upi',
+            ];
+
+            $purchase->update([
+                'status' => 'paid',
+                'razorpay_payment_id' => $mockResponse['razorpay_payment_id'],
+                'razorpay_order_id' => $mockResponse['razorpay_order_id'],
+                'gateway_response' => $mockResponse,
+            ]);
+
+            $customer = $purchase->customer;
+            $dbBook = Book::where('slug', $purchase->book_identifier)
+                ->orWhere('id', $purchase->book_identifier)
+                ->first();
+
+            // Automatically send the E-Book PDF delivery email to customer's registered email
+            if ($customer && ! empty($customer->email)) {
+                try {
+                    Mail::to($customer->email)->send(new EbookDeliveryMail($purchase, $dbBook, $customer));
+                } catch (\Throwable $mailException) {
+                    Log::error('E-Book Delivery Email Failed (Razorpay Mock): '.$mailException->getMessage(), [
+                        'purchase_id' => $purchase->id,
+                        'customer_email' => $customer->email,
+                    ]);
+                }
+            }
+
+            return redirect()->route('books.show', $purchase->book_identifier)->with([
+                'payment_success' => '🎉 Payment completed successfully via Razorpay! Your e-book is ready.',
+                'auto_download_url' => route('purchases.download', $purchase),
+                'purchased_book_title' => $purchase->book_title,
+                'customer_email' => $customer?->email ?? '',
+            ]);
+        }
+
+        $purchase->update([
+            'status' => 'failed',
+            'gateway_response' => [
+                'status' => 'cancelled',
+                'error' => 'Transaction cancelled by user (Razorpay Simulation)',
+            ],
+        ]);
+
+        return redirect()->route('books.show', $purchase->book_identifier)
+            ->with('payment_error', 'Your payment was cancelled or failed.');
     }
 
     /**
