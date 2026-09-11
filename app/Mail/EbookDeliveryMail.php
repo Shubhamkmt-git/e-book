@@ -11,7 +11,8 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class EbookDeliveryMail extends Mailable
 {
@@ -41,7 +42,7 @@ class EbookDeliveryMail extends Mailable
         $bookTitle = $this->book?->title ?? $this->purchase->book_title;
 
         return new Envelope(
-            subject: 'Your E-Book Delivery: '.$bookTitle.' (Instant PDF & Access)',
+            subject: 'Your E-Book Delivery: '.$bookTitle.' (Attached PDF)',
         );
     }
 
@@ -56,7 +57,6 @@ class EbookDeliveryMail extends Mailable
                 'purchase' => $this->purchase,
                 'book' => $this->book,
                 'customer' => $this->customer,
-                'downloadUrl' => URL::signedRoute('purchases.download', ['purchase' => $this->purchase->id], now()->addDays(365)),
             ],
         );
     }
@@ -68,6 +68,54 @@ class EbookDeliveryMail extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        $attachments = [];
+        $bookTitle = $this->book?->title ?? $this->purchase->book_title;
+        $cleanPdfName = Str::slug($bookTitle).'-complete-edition.pdf';
+
+        // 1. If physical full PDF exists in public disk
+        if ($this->book && $this->book->ebook_file && Storage::disk('public')->exists($this->book->ebook_file)) {
+            $filePath = Storage::disk('public')->path($this->book->ebook_file);
+            if (file_exists($filePath)) {
+                $attachments[] = Attachment::fromPath($filePath)
+                    ->as($cleanPdfName)
+                    ->withMime('application/pdf');
+
+                return $attachments;
+            }
+        }
+
+        // 2. If sample PDF exists in public disk
+        if ($this->book && $this->book->sample_file && Storage::disk('public')->exists($this->book->sample_file)) {
+            $filePath = Storage::disk('public')->path($this->book->sample_file);
+            if (file_exists($filePath)) {
+                $attachments[] = Attachment::fromPath($filePath)
+                    ->as(Str::slug($bookTitle).'-sample-edition.pdf')
+                    ->withMime('application/pdf');
+
+                return $attachments;
+            }
+        }
+
+        // 3. Fallback: attach printable complete HTML document
+        $htmlContent = view('frontend.books.ebook-full-download', [
+            'book' => [
+                'id' => $this->book?->id ?? 1,
+                'slug' => $this->book?->slug ?? Str::slug($bookTitle),
+                'title' => $bookTitle,
+                'author' => $this->book?->author_name ?? 'Author',
+                'category' => $this->book?->category?->title ?? 'Publication',
+                'pages' => $this->book?->pages ?: 320,
+                'format' => $this->book?->format ?: 'EPUB & PDF',
+                'description' => $this->book?->description ?? 'Official DRM-Free Digital Publication.',
+                'highlights' => $this->book?->highlights_list ?? [],
+            ],
+            'customer' => $this->customer,
+            'purchase' => $this->purchase,
+        ])->render();
+
+        $attachments[] = Attachment::fromData(fn () => $htmlContent, Str::slug($bookTitle).'-full-edition.html')
+            ->withMime('text/html');
+
+        return $attachments;
     }
 }

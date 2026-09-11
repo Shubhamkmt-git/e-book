@@ -163,16 +163,16 @@
                 </div>
             </div>
 
-            <!-- Download Button -->
-            <div class="btn-container">
-                <a href="{{ $downloadUrl }}" class="btn-download" target="_blank" download>
-                    <i class="fa-solid fa-cloud-arrow-down" style="margin-right: 8px;"></i>
-                    Download E-Book (PDF)
-                </a>
+            <!-- Attached PDF Callout -->
+            <div style="background: linear-gradient(135deg, #f3e8ff 0%, #ede9fe 100%); border: 2px dashed #a855f7; border-radius: 12px; padding: 22px 20px; text-align: center; margin: 25px 0;">
+                <div style="font-size: 32px; margin-bottom: 8px;">📎 📖</div>
+                <div style="font-size: 16px; font-weight: 700; color: #581c87; margin-bottom: 4px;">
+                    Your E-Book PDF is Attached to this Email
+                </div>
+                <p style="margin: 0; font-size: 13px; color: #6b21a8; line-height: 1.5;">
+                    We have attached the complete DRM-free PDF of <strong>{{ $book?->title ?? $purchase->book_title }}</strong> directly to this email. You can find, view, and save the attached file below or in your email attachments bar.
+                </p>
             </div>
-            <p style="text-align: center; font-size: 13px; color: #64748b; margin-top: 8px;">
-                Click the button above to download your complete PDF edition directly to your device.
-            </p>
 
             <!-- Transaction Details Table -->
             <h4 style="margin: 28px 0 10px 0; font-size: 14px; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">
