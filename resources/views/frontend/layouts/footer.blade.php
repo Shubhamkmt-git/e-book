@@ -236,7 +236,7 @@
             <!-- Trust Badge -->
             <div class="flex items-center gap-2 text-xs text-brand-100 shrink-0">
                 <i class="fa-solid fa-shield-halved text-brand-200"></i>
-                <span class="text-[11px] font-medium">256-Bit SSL Encrypted • Powered by Easebuzz</span>
+                <span class="text-[11px] font-medium">256-Bit SSL Encrypted • Instant Digital Delivery</span>
             </div>
         </div>
 

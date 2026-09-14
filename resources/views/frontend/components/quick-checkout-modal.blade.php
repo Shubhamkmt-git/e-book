@@ -3,13 +3,6 @@
      ========================================== -->
 <div id="quick-checkout-modal-backdrop" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 transition-opacity duration-300 opacity-0 pointer-events-none" onclick="closeQuickCheckoutModal()"></div>
 
-@php
-    $easebuzzActive = $appSetting->isEasebuzzEnabled();
-    $razorpayActive = $appSetting->isRazorpayEnabled();
-    $hasGateway = $easebuzzActive || $razorpayActive;
-    $defaultGateway = $razorpayActive ? 'razorpay' : ($easebuzzActive ? 'easebuzz' : '');
-@endphp
-
 <div 
     id="quick-checkout-modal" 
     class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 opacity-0 pointer-events-none transition-all duration-300 transform scale-95"
@@ -23,13 +16,13 @@
         <div class="relative bg-gradient-to-r from-brand-900 via-brand-800 to-brand-900 text-white px-5 py-4 shrink-0 flex items-center justify-between">
             <div class="flex items-center gap-2.5">
                 <div class="w-8 h-8 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-brand-300 flex items-center justify-center text-sm shadow-inner">
-                    <i class="fa-solid fa-shield-halved text-emerald-400 text-xs"></i>
+                    <i class="fa-solid fa-book-open text-emerald-400 text-xs"></i>
                 </div>
                 <div>
                     <h3 id="quick-checkout-title" class="font-brand text-xl sm:text-2xl text-white tracking-wide uppercase leading-tight">
-                        Secure Checkout
+                        Instant Checkout
                     </h3>
-                    <p class="text-[11px] text-brand-200/90 font-medium leading-none mt-0.5">Instant DRM-Free PDF Delivery</p>
+                    <p class="text-[11px] text-brand-200/90 font-medium leading-none mt-0.5">Instant DRM-Free PDF Download</p>
                 </div>
             </div>
 
@@ -53,7 +46,7 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <span id="checkout-book-category" class="text-[10px] font-bold text-brand-600 uppercase tracking-wider block leading-none mb-1">E-Book</span>
-                    <h4 id="checkout-book-title" class="font-bold text-sm sm:text-base text-slate-900 truncate leading-tight">Algorithms &amp; Elegance</h4>
+                    <h4 id="checkout-book-title" class="font-bold text-sm sm:text-base text-slate-900 truncate leading-tight">Selected Book</h4>
                     <p id="checkout-book-author" class="text-xs text-slate-400 truncate mt-0.5">Author</p>
                     <div class="flex items-baseline gap-2 mt-1">
                         <span id="checkout-book-price" class="font-brand text-xl text-brand-600 font-bold leading-none">₹499</span>
@@ -61,13 +54,6 @@
                     </div>
                 </div>
             </div>
-
-            @if(! $hasGateway)
-                <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs text-center">
-                    <p class="font-bold"><i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Checkout Unavailable</p>
-                    <p class="text-xs text-slate-600 mt-1">Payment gateways are currently paused. Please contact support.</p>
-                </div>
-            @endif
 
             <!-- Checkout Form -->
             <form id="quick-checkout-form" method="POST" action="" class="space-y-3.5">
@@ -86,7 +72,6 @@
                             name="name" 
                             value="{{ auth('customer')->user()?->name ?? '' }}" 
                             placeholder="John Doe"
-                            required
                             class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl border border-slate-200 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition bg-white text-slate-800 font-medium placeholder-slate-400"
                         >
                     </div>
@@ -107,7 +92,6 @@
                             name="email" 
                             value="{{ auth('customer')->user()?->email ?? '' }}" 
                             placeholder="you@example.com"
-                            required
                             class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl border border-slate-200 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition bg-white text-slate-800 font-medium placeholder-slate-400"
                         >
                     </div>
@@ -131,55 +115,14 @@
                     </div>
                 </div>
 
-                <!-- Payment Gateway Selector with Official Logos -->
-                @if($easebuzzActive && $razorpayActive)
-                    <div class="space-y-1.5 pt-0.5">
-                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">Payment Method</label>
-                        <div class="grid grid-cols-2 gap-2.5">
-                            
-                            <!-- Razorpay Official Logo Card -->
-                            <label class="group relative flex flex-col justify-between p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border-2 cursor-pointer transition-all has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50/50 has-[:checked]:shadow-2xs border-slate-200 bg-white hover:border-slate-300">
-                                <input type="radio" name="payment_gateway_choice" value="razorpay" class="sr-only" checked onchange="updateGatewayChoice('razorpay')">
-                                <div class="flex items-center justify-between">
-                                    <div class="h-6 flex items-center">
-                                        <!-- Razorpay Official Image Logo -->
-                                        <img src="{{ asset('images/gateways/razorpay.png') }}" alt="Razorpay" class="h-5 sm:h-6 w-auto object-contain">
-                                    </div>
-                                    <div class="w-4 h-4 rounded-full border-2 border-slate-300 group-has-[:checked]:border-sky-600 flex items-center justify-center transition-colors">
-                                        <div class="w-2 h-2 rounded-full bg-sky-600 scale-0 group-has-[:checked]:scale-100 transition-transform"></div>
-                                    </div>
-                                </div>
-                                <span class="text-[10px] sm:text-[11px] text-slate-400 mt-1.5 block leading-none font-medium">UPI, Cards, NetBanking</span>
-                            </label>
-
-                            <!-- Easebuzz Official Logo Card -->
-                            <label class="group relative flex flex-col justify-between p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border-2 cursor-pointer transition-all has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/50 has-[:checked]:shadow-2xs border-slate-200 bg-white hover:border-slate-300">
-                                <input type="radio" name="payment_gateway_choice" value="easebuzz" class="sr-only" onchange="updateGatewayChoice('easebuzz')">
-                                <div class="flex items-center justify-between">
-                                    <div class="h-6 flex items-center">
-                                        <!-- Easebuzz Official Image Logo -->
-                                        <img src="{{ asset('images/gateways/easebuzz.png') }}" alt="Easebuzz" class="h-5 sm:h-6 w-auto object-contain">
-                                    </div>
-                                    <div class="w-4 h-4 rounded-full border-2 border-slate-300 group-has-[:checked]:border-orange-500 flex items-center justify-center transition-colors">
-                                        <div class="w-2 h-2 rounded-full bg-orange-500 scale-0 group-has-[:checked]:scale-100 transition-transform"></div>
-                                    </div>
-                                </div>
-                                <span class="text-[10px] sm:text-[11px] text-slate-400 mt-1.5 block leading-none font-medium">UPI, Cards, Wallets</span>
-                            </label>
-
-                        </div>
-                    </div>
-                @endif
-
                 <!-- Submit Button -->
                 <button 
                     type="submit" 
                     id="checkout-submit-btn"
-                    {{ ! $hasGateway ? 'disabled' : '' }}
-                    class="w-full h-12 sm:h-13 inline-flex items-center justify-center gap-2.5 px-6 rounded-xl sm:rounded-2xl bg-brand-600 hover:bg-brand-500 active:bg-brand-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-brand text-xl uppercase tracking-wider transition-all shadow-md shadow-brand-600/25 text-center cursor-pointer mt-2"
+                    class="w-full h-12 sm:h-13 inline-flex items-center justify-center gap-2.5 px-6 rounded-xl sm:rounded-2xl bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl uppercase tracking-wider transition-all shadow-md shadow-brand-600/25 text-center cursor-pointer mt-2"
                 >
-                    <span id="checkout-submit-btn-text">Proceed to Payment</span>
-                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                    <span id="checkout-submit-btn-text">Complete Order &amp; Download</span>
+                    <i class="fa-solid fa-arrow-down text-xs"></i>
                 </button>
 
             </form>
@@ -195,23 +138,13 @@
 <script>
 (function() {
     const isCustomerAuthenticated = @json(auth('customer')->check());
-    const easebuzzEnabled = @json($easebuzzActive);
-    const razorpayEnabled = @json($razorpayActive);
-    let selectedGateway = @json($defaultGateway);
     let currentBookKey = '';
     let currentBookPriceText = '';
-
-    window.updateGatewayChoice = function(gateway) {
-        selectedGateway = gateway;
-        updateFormAction();
-    };
 
     function updateFormAction() {
         const form = document.getElementById('quick-checkout-form');
         if (!form || !currentBookKey) return;
-
-        const gateway = selectedGateway || (razorpayEnabled ? 'razorpay' : 'easebuzz');
-        form.action = `/ebooks/${encodeURIComponent(currentBookKey)}/payments/${gateway}`;
+        form.action = `/ebooks/${encodeURIComponent(currentBookKey)}/purchase`;
     }
 
     function resetSubmitButton() {
@@ -219,7 +152,7 @@
         if (btn) {
             btn.disabled = false;
             btn.classList.remove('opacity-75', 'cursor-wait');
-            btn.innerHTML = `<span id="checkout-submit-btn-text">Proceed to Payment ${currentBookPriceText ? `(${currentBookPriceText})` : ''}</span> <i class="fa-solid fa-arrow-right text-xs"></i>`;
+            btn.innerHTML = `<span id="checkout-submit-btn-text">Complete Order &amp; Download ${currentBookPriceText ? `(${currentBookPriceText})` : ''}</span> <i class="fa-solid fa-arrow-down text-xs"></i>`;
         }
     }
 
@@ -230,72 +163,6 @@
             btn.classList.add('opacity-75', 'cursor-wait');
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>${message || 'Processing...'}</span>`;
         }
-    }
-
-    // Launch direct seamless Razorpay Checkout in modal
-    function launchRazorpayCheckout(orderData) {
-        if (typeof Razorpay === 'undefined') {
-            alert('Razorpay SDK failed to load. Please check your internet connection.');
-            resetSubmitButton();
-            return;
-        }
-
-        const options = {
-            key: orderData.razorpay_key,
-            amount: orderData.amount,
-            currency: orderData.currency || 'INR',
-            name: orderData.app_name || 'E-Book CMS',
-            description: orderData.book_title || 'E-Book Publication',
-            image: orderData.app_logo || '',
-            order_id: orderData.razorpay_order_id,
-            handler: function (response) {
-                setSubmitLoading('Verifying payment & preparing your e-book...');
-
-                // Hidden form post to callback URL
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = orderData.callback_url;
-
-                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-                const fields = {
-                    '_token': csrfToken,
-                    'razorpay_payment_id': response.razorpay_payment_id,
-                    'razorpay_order_id': response.razorpay_order_id,
-                    'razorpay_signature': response.razorpay_signature
-                };
-
-                for (const [k, v] of Object.entries(fields)) {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = k;
-                    input.value = v;
-                    form.appendChild(input);
-                }
-
-                document.body.appendChild(form);
-                form.submit();
-            },
-            prefill: {
-                name: orderData.customer_name || 'Customer',
-                email: orderData.customer_email || '',
-                contact: orderData.customer_mobile || ''
-            },
-            theme: {
-                color: '#0284c7'
-            },
-            modal: {
-                ondismiss: function() {
-                    resetSubmitButton();
-                }
-            }
-        };
-
-        const rzp = new Razorpay(options);
-        rzp.on('payment.failed', function (resp) {
-            alert('Payment Failed: ' + (resp.error.description || 'Transaction unsuccessful.'));
-            resetSubmitButton();
-        });
-        rzp.open();
     }
 
     // Universal Buy Now redirect / checkout handler
@@ -317,13 +184,12 @@
 
         currentBookKey = bookData.slug || bookData.id;
         currentBookPriceText = bookData.price || '';
-        const gateway = selectedGateway || (razorpayEnabled ? 'razorpay' : 'easebuzz');
 
-        // If customer is already authenticated and only Easebuzz exists, direct POST
-        if (isCustomerAuthenticated && easebuzzEnabled && !razorpayEnabled) {
+        // If customer is already authenticated, direct POST
+        if (isCustomerAuthenticated) {
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = `/ebooks/${encodeURIComponent(currentBookKey)}/payments/easebuzz`;
+            form.action = `/ebooks/${encodeURIComponent(currentBookKey)}/purchase`;
 
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
             const csrfInput = document.createElement('input');
@@ -342,7 +208,6 @@
     };
 
     window.openQuickCheckoutModal = function(bookData) {
-        // If user is not logged in, open the Sign In drawer
         if (!isCustomerAuthenticated) {
             if (typeof openAuthDrawer === 'function') {
                 openAuthDrawer('signin');
@@ -387,7 +252,7 @@
         }
 
         if (btnTextEl) {
-            btnTextEl.textContent = `Proceed to Payment (${bookData.price || ''})`;
+            btnTextEl.textContent = `Complete Order & Download (${bookData.price || ''})`;
         }
 
         backdrop.classList.remove('pointer-events-none', 'opacity-0');
@@ -397,15 +262,6 @@
         modal.classList.add('pointer-events-auto', 'opacity-100', 'scale-100');
         document.body.style.overflow = 'hidden';
 
-        // Disable global toast notification while checking out
-        if (typeof window.dismissSalesToast === 'function') {
-            window.dismissSalesToast();
-        }
-        if (typeof window.pauseSalesToast === 'function') {
-            window.pauseSalesToast();
-        }
-
-        // Auto-focus first empty input
         setTimeout(() => {
             const nameInput = document.getElementById('checkout-customer-name');
             const emailInput = document.getElementById('checkout-customer-email');
@@ -432,11 +288,6 @@
             backdrop.classList.add('pointer-events-none');
             modal.classList.add('pointer-events-none');
             document.body.style.overflow = '';
-
-            // Resume global toast notification when checkout closes
-            if (typeof window.resumeSalesToast === 'function') {
-                window.resumeSalesToast();
-            }
         }, 300);
     };
 
@@ -447,57 +298,11 @@
         }
     });
 
-    // Handle form submit
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('quick-checkout-form');
         if (form) {
-            form.addEventListener('submit', function(e) {
-                const gateway = selectedGateway || (razorpayEnabled ? 'razorpay' : 'easebuzz');
-
-                if (gateway === 'razorpay') {
-                    e.preventDefault();
-                    setSubmitLoading('Initializing Razorpay...');
-
-                    const formData = new FormData(form);
-                    const url = `/ebooks/${encodeURIComponent(currentBookKey)}/payments/razorpay`;
-
-                    fetch(url, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => {
-                        return response.json().then(json => {
-                            if (!response.ok) {
-                                throw new Error(json.message || 'Payment initiation failed.');
-                            }
-                            return json;
-                        });
-                    })
-                    .then(data => {
-                        if (data.status === 'mock_redirect' && data.redirect_url) {
-                            window.location.href = data.redirect_url;
-                            return;
-                        }
-
-                        if (data.status === 'success' && data.razorpay_order_id) {
-                            closeQuickCheckoutModal();
-                            launchRazorpayCheckout(data);
-                        } else {
-                            throw new Error(data.message || 'Invalid response from payment gateway.');
-                        }
-                    })
-                    .catch(err => {
-                        alert(err.message || 'Unable to start Razorpay payment. Please try again.');
-                        resetSubmitButton();
-                    });
-                } else {
-                    // Easebuzz standard post redirect
-                    setSubmitLoading('Connecting to Easebuzz...');
-                }
+            form.addEventListener('submit', function() {
+                setSubmitLoading('Processing order...');
             });
         }
     });
