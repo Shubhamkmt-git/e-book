@@ -307,6 +307,14 @@
 
         if (!bookData) return;
 
+        // If user is not logged in, open the Sign In drawer
+        if (!isCustomerAuthenticated) {
+            if (typeof openAuthDrawer === 'function') {
+                openAuthDrawer('signin');
+            }
+            return;
+        }
+
         currentBookKey = bookData.slug || bookData.id;
         currentBookPriceText = bookData.price || '';
         const gateway = selectedGateway || (razorpayEnabled ? 'razorpay' : 'easebuzz');
@@ -334,6 +342,14 @@
     };
 
     window.openQuickCheckoutModal = function(bookData) {
+        // If user is not logged in, open the Sign In drawer
+        if (!isCustomerAuthenticated) {
+            if (typeof openAuthDrawer === 'function') {
+                openAuthDrawer('signin');
+            }
+            return;
+        }
+
         const backdrop = document.getElementById('quick-checkout-modal-backdrop');
         const modal = document.getElementById('quick-checkout-modal');
         const form = document.getElementById('quick-checkout-form');
