@@ -50,7 +50,6 @@ class CashfreePaymentTest extends TestCase
             'name' => 'Alice Developer',
             'email' => 'alice@example.com',
             'mobile' => '+919876543210',
-            'password' => bcrypt('password123'),
         ]);
 
         Config::set('services.cashfree.app_id', 'CF_TEST_APP_ID_123');
@@ -275,7 +274,6 @@ class CashfreePaymentTest extends TestCase
             'name' => 'Stranger',
             'email' => 'stranger@example.com',
             'mobile' => '+919999999999',
-            'password' => bcrypt('password123'),
         ]);
 
         $purchase = Purchase::create([

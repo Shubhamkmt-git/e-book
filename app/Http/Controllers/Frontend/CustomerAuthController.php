@@ -9,9 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User;
 
@@ -71,9 +69,9 @@ class CustomerAuthController extends Controller
                 'mobile' => $phone,
                 'firebase_uid' => $uid,
                 'avatar' => $firebaseUser['picture'] ?? null,
-                'password' => Hash::make(Str::random(24)),
                 'email_verified_at' => $firebaseUser['email_verified'] ? now() : null,
             ]);
+
         } else {
             $updates = [];
             if ($uid && ! $customer->firebase_uid) {

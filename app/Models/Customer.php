@@ -23,7 +23,6 @@ class Customer extends Authenticatable
         'firebase_uid',
         'avatar',
         'mobile',
-        'password',
         'email_verified_at',
     ];
 
@@ -33,7 +32,6 @@ class Customer extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'password',
         'remember_token',
     ];
 
@@ -44,7 +42,6 @@ class Customer extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
     ];
 
     /**

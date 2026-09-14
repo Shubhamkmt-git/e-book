@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Customer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GoogleProvider;
 use Laravel\Socialite\Two\User;
@@ -19,7 +18,6 @@ class CustomerAuthenticationTest extends TestCase
         $customer = Customer::create([
             'name' => 'Logout Customer',
             'email' => 'logout@example.com',
-            'password' => Hash::make('password123'),
         ]);
 
         $response = $this->actingAs($customer, 'customer')

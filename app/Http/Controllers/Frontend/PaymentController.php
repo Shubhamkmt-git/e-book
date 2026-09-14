@@ -13,7 +13,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -54,7 +53,6 @@ class PaymentController extends Controller
                         [
                             'name' => $name,
                             'mobile' => $mobile,
-                            'password' => Hash::make(Str::random(16)),
                         ]
                     );
                 } elseif ($mobile) {
@@ -62,7 +60,6 @@ class PaymentController extends Controller
                         ['mobile' => $mobile],
                         [
                             'name' => $name,
-                            'password' => Hash::make(Str::random(16)),
                         ]
                     );
                 }

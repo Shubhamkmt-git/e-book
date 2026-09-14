@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Customer;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
@@ -25,8 +24,8 @@ class CustomerFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'mobile' => fake()->numerify('##########'),
-            'password' => Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
+
     }
 }

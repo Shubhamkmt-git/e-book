@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -50,14 +49,12 @@ class CustomerController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:customers,email'],
             'mobile' => ['nullable', 'string', 'max:20'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         Customer::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'mobile' => $validated['mobile'] ?? null,
-            'password' => Hash::make($validated['password']),
         ]);
 
         return redirect()->route('admin.customers.index')
@@ -89,18 +86,13 @@ class CustomerController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('customers', 'email')->ignore($customer->id)],
             'mobile' => ['nullable', 'string', 'max:20'],
-            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
-        $customer->name = $validated['name'];
-        $customer->email = $validated['email'];
-        $customer->mobile = $validated['mobile'] ?? null;
-
-        if (! empty($validated['password'])) {
-            $customer->password = Hash::make($validated['password']);
-        }
-
-        $customer->save();
+        $customer->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'mobile' => $validated['mobile'] ?? null,
+        ]);
 
         return redirect()->route('admin.customers.index')
             ->with('success', 'Customer updated successfully.');

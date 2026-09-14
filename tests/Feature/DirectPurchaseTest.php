@@ -14,6 +14,14 @@ class DirectPurchaseTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        config(['services.cashfree.app_id' => null]);
+        config(['services.cashfree.secret_key' => null]);
+    }
+
     private function createTestBook(string $slug, string $title, float $price = 299): Book
     {
         $category = Category::create([

@@ -81,7 +81,6 @@ class BookDetailTest extends TestCase
         $customer = Customer::create([
             'name' => 'Book Buyer',
             'email' => 'buyer@example.com',
-            'password' => 'secret123',
         ]);
 
         $purchase = Purchase::create([

@@ -89,47 +89,6 @@
             </div>
         </div>
 
-        {{-- Card: Reset Password --}}
-        <div class="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-8 shadow-2xs space-y-6">
-            <div class="flex items-center gap-2.5 pb-4 border-b border-slate-100">
-                <div class="w-7 h-7 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center text-xs">
-                    <i class="fa-solid fa-lock"></i>
-                </div>
-                <div>
-                    <h2 class="text-sm font-bold text-slate-800">Reset Password</h2>
-                    <p class="text-[11px] text-slate-400 mt-0.5">Leave blank to keep the current password.</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-1.5">
-                    <label for="password" class="block text-xs font-bold uppercase tracking-wider text-slate-700">New Password</label>
-                    <div class="relative">
-                        <input type="password" name="password" id="password"
-                            placeholder="Min 8 characters"
-                            class="w-full px-3.5 pr-10 py-3 rounded-xl bg-slate-50 focus:bg-white text-slate-900 placeholder-slate-400 text-sm border border-slate-200 focus:border-brand-500 focus:outline-none transition font-medium @error('password') border-rose-300 bg-rose-50/50 @enderror">
-                        <button type="button" onclick="togglePwd('password', 'eye-pwd')"
-                                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer">
-                            <i id="eye-pwd" class="fa-solid fa-eye text-sm"></i>
-                        </button>
-                    </div>
-                    @error('password')<p class="text-xs text-rose-600 font-medium">{{ $message }}</p>@enderror
-                </div>
-                <div class="space-y-1.5">
-                    <label for="password_confirmation" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Confirm New Password</label>
-                    <div class="relative">
-                        <input type="password" name="password_confirmation" id="password_confirmation"
-                            placeholder="Repeat new password"
-                            class="w-full px-3.5 pr-10 py-3 rounded-xl bg-slate-50 focus:bg-white text-slate-900 placeholder-slate-400 text-sm border border-slate-200 focus:border-brand-500 focus:outline-none transition font-medium">
-                        <button type="button" onclick="togglePwd('password_confirmation', 'eye-confirm')"
-                                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer">
-                            <i id="eye-confirm" class="fa-solid fa-eye text-sm"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </form>
 
     {{-- Footer Actions --}}
@@ -155,20 +114,5 @@
     </div>
 
 </div>
-
-@push('scripts')
-<script>
-function togglePwd(fieldId, iconId) {
-    const input = document.getElementById(fieldId);
-    const icon  = document.getElementById(iconId);
-    if (input.type === 'password') {
-        input.type = 'text';
-        icon.classList.replace('fa-eye', 'fa-eye-slash');
-    } else {
-        input.type = 'password';
-        icon.classList.replace('fa-eye-slash', 'fa-eye');
-    }
-}
-</script>
-@endpush
 @endsection
+
