@@ -532,7 +532,21 @@
                     if (typeof grecaptcha !== 'undefined') grecaptcha.reset(widgetId);
                 });
             }
-            showAuthAlert('error', error.message || 'Failed to send OTP. Please verify phone number and Firebase setup.');
+
+            let userMsg = error.message || 'Failed to send OTP. Please check your connection and Firebase configuration.';
+            if (error.code === 'auth/operation-not-allowed') {
+                userMsg = 'SMS delivery is disabled for this region. In Firebase Console > Authentication > Settings > "SMS Region Policy", enable your country (e.g. India), or add this number in "Phone numbers for testing".';
+            } else if (error.code === 'auth/invalid-phone-number') {
+                userMsg = 'The phone number entered is invalid. Please ensure the country code and digits are correct.';
+            } else if (error.code === 'auth/quota-exceeded') {
+                userMsg = 'Daily SMS quota exceeded. Add test phone numbers in Firebase Console > Authentication > Sign-in method > Phone.';
+            } else if (error.code === 'auth/too-many-requests') {
+                userMsg = 'Too many attempts. Please wait a moment before trying again.';
+            } else if (error.code === 'auth/captcha-check-failed') {
+                userMsg = 'reCAPTCHA verification failed. Please refresh the page and try again.';
+            }
+
+            showAuthAlert('error', userMsg);
         } finally {
             btn.disabled = false;
             if (textSpan) textSpan.textContent = 'Send OTP';
