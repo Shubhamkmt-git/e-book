@@ -15,16 +15,24 @@
         
         <!-- Drawer Header -->
         <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-            <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold text-sm shadow-sm shadow-brand-600/25">
-                    <i class="fa-solid fa-book-open"></i>
-                </div>
-                <div>
-                    <h3 id="auth-drawer-title" class="font-brand text-2xl text-slate-900 uppercase tracking-wide leading-none">
-                        E-Book<span class="text-brand-600">.</span>
-                    </h3>
-                    <p class="text-[11px] text-slate-400 font-medium">Your Digital Reading Gateway</p>
-                </div>
+            <div class="flex items-center">
+                @if (!empty($appSetting?->logo_light_url) || !empty($appSetting?->logo_dark_url))
+                    <img 
+                        id="auth-drawer-title"
+                        src="{{ $appSetting->logo_light_url ?? $appSetting->logo_dark_url }}" 
+                        alt="{{ $appSetting->app_name ?? 'Logo' }}" 
+                        class="max-w-[160px] max-h-10 object-contain"
+                    >
+                @else
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold text-sm shadow-sm shadow-brand-600/25">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <h3 id="auth-drawer-title" class="font-brand text-2xl text-slate-900 uppercase tracking-wide leading-none">
+                            {{ $appSetting->app_name ?? 'E-Book' }}<span class="text-brand-600">.</span>
+                        </h3>
+                    </div>
+                @endif
             </div>
 
             <!-- Close Button -->
