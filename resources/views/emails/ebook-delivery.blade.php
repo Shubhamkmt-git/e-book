@@ -3,214 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your E-Book Delivery</title>
+    <title>{{ $appSetting->app_name ?? 'E-Book' }} - Your Digital Delivery</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: #f8fafc;
-            color: #1e293b;
+            color: #334155;
             margin: 0;
             padding: 0;
             -webkit-text-size-adjust: 100%;
             -ms-text-size-adjust: 100%;
         }
-        .wrapper {
-            max-width: 600px;
-            margin: 30px auto;
-            background-color: #ffffff;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e2e8f0;
-        }
-        .header {
-            background: linear-gradient(135deg, #6b46c1 0%, #7a58a9 50%, #4c1d95 100%);
-            padding: 35px 30px;
-            text-align: center;
-            color: #ffffff;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-        .header p {
-            margin: 8px 0 0 0;
-            font-size: 14px;
-            color: #e9d5ff;
-        }
-        .content {
-            padding: 35px 30px;
-        }
-        .greeting {
-            font-size: 18px;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 12px;
-        }
-        .intro-text {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #475569;
-            margin-bottom: 25px;
-        }
-        .book-card {
-            background: #faf5ff;
-            border: 1px solid #e9d5ff;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .book-info h3 {
-            margin: 0 0 4px 0;
-            font-size: 16px;
-            font-weight: 700;
-            color: #4c1d95;
-        }
-        .book-info p {
-            margin: 0 0 6px 0;
-            font-size: 13px;
-            color: #64748b;
-        }
-        .badge {
-            display: inline-block;
-            background-color: #7a58a9;
-            color: #ffffff;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 3px 8px;
-            border-radius: 9999px;
-        }
-        .receipt-table {
-            width: 100%;
+        table {
             border-collapse: collapse;
-            margin-bottom: 30px;
-            font-size: 13px;
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
         }
-        .receipt-table th {
-            text-align: left;
-            padding: 10px 12px;
-            background: #f1f5f9;
-            color: #475569;
-            font-weight: 600;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .receipt-table td {
-            padding: 12px;
-            border-bottom: 1px solid #f1f5f9;
-            color: #1e293b;
-        }
-        .btn-container {
-            text-align: center;
-            margin: 30px 0 20px 0;
-        }
-        .btn-download {
-            display: inline-block;
-            background: linear-gradient(135deg, #7a58a9 0%, #6b46c1 100%);
-            color: #ffffff !important;
+        img {
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
             text-decoration: none;
-            font-size: 15px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 14px 34px;
-            border-radius: 9999px;
-            box-shadow: 0 4px 14px rgba(122, 88, 169, 0.4);
-        }
-        .footer {
-            background-color: #f8fafc;
-            border-top: 1px solid #e2e8f0;
-            padding: 24px 30px;
-            text-align: center;
-            font-size: 12px;
-            color: #94a3b8;
-            line-height: 1.5;
-        }
-        .footer a {
-            color: #7a58a9;
-            text-decoration: none;
+            display: block;
         }
     </style>
 </head>
-<body>
-    <div class="wrapper">
-        <!-- Header -->
-        <div class="header">
-            <h1>Payment Confirmed</h1>
-            <p>Your digital e-book is ready for instant reading</p>
-        </div>
+<body style="margin: 0; padding: 30px 15px; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 580px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);">
+        
+        <!-- Header / Dynamic App Logo & Brand -->
+        <tr>
+            <td style="padding: 28px 32px 20px 32px; border-bottom: 1px solid #f1f5f9;">
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                        <td align="left" style="vertical-align: middle;">
+                            @if (!empty($appSetting?->logo_light_url) || !empty($appSetting?->logo_dark_url))
+                                <img 
+                                    src="{{ $appSetting->logo_light_url ?? $appSetting->logo_dark_url }}" 
+                                    alt="{{ $appSetting->app_name ?? 'Logo' }}" 
+                                    style="max-height: 38px; max-width: 170px; object-contain: contain; height: auto;" 
+                                    border="0"
+                                >
+                            @else
+                                <span style="font-size: 20px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; text-transform: uppercase;">
+                                    {{ $appSetting->app_name ?? 'E-Book' }}<span style="color: #7c3aed;">.</span>
+                                </span>
+                            @endif
+                        </td>
+                        <td align="right" style="vertical-align: middle;">
+                            <span style="display: inline-block; font-size: 11px; font-weight: 700; color: #059669; background-color: #ecfdf5; border: 1px solid #a7f3d0; padding: 4px 10px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Paid &amp; Delivered
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
 
-        <!-- Content -->
-        <div class="content">
-            <div class="greeting">Hello, {{ $customer?->name ?? 'Reader' }}!</div>
-            <p class="intro-text">
-                Thank you for your purchase. Your payment {{ $purchase->payment_method ? 'via '.ucfirst($purchase->payment_method) : '' }} has been verified successfully. Your digital publication is ready for immediate reading.
-            </p>
-
-            <!-- Book Showcase Box -->
-            <div class="book-card">
-                <div class="book-info">
-                    <span class="badge">DRM-Free Edition</span>
-                    <h3 style="margin-top: 6px;">{{ $book?->title ?? $purchase->book_title }}</h3>
-                    <p>By {{ $book?->author_name ?? 'Featured Author' }} • {{ $book?->format ?? 'EPUB & PDF' }}</p>
-                </div>
-            </div>
-
-            <!-- Attached PDF Callout -->
-            <div style="background: linear-gradient(135deg, #f3e8ff 0%, #ede9fe 100%); border: 2px dashed #a855f7; border-radius: 12px; padding: 22px 20px; text-align: center; margin: 25px 0;">
-                <div style="font-size: 32px; margin-bottom: 8px;">📎 📖</div>
-                <div style="font-size: 16px; font-weight: 700; color: #581c87; margin-bottom: 4px;">
-                    Your E-Book PDF is Attached to this Email
-                </div>
-                <p style="margin: 0; font-size: 13px; color: #6b21a8; line-height: 1.5;">
-                    We have attached the complete DRM-free PDF of <strong>{{ $book?->title ?? $purchase->book_title }}</strong> directly to this email. You can find, view, and save the attached file below or in your email attachments bar.
+        <!-- Main Body -->
+        <tr>
+            <td style="padding: 32px 32px 24px 32px;">
+                <p style="margin: 0 0 16px 0; font-size: 17px; font-weight: 700; color: #0f172a;">
+                    Hello {{ $customer?->name ?? 'Reader' }},
                 </p>
-            </div>
+                <p style="margin: 0 0 24px 0; font-size: 14px; line-height: 1.6; color: #475569;">
+                    Thank you for your purchase from <strong>{{ $appSetting->app_name ?? 'our digital library' }}</strong>. Your payment was verified successfully and your DRM-free publication is ready.
+                </p>
 
-            <!-- Transaction Details Table -->
-            <h4 style="margin: 28px 0 10px 0; font-size: 14px; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">
-                Transaction Receipt
-            </h4>
-            <table class="receipt-table">
-                <tr>
-                    <th>Item Description</th>
-                    <td style="font-weight: 600;">{{ $purchase->book_title }}</td>
-                </tr>
-                <tr>
-                    <th>Transaction ID</th>
-                    <td style="font-family: monospace; color: #64748b;">{{ $purchase->transaction_id }}</td>
-                </tr>
-                <tr>
-                    <th>Amount Paid</th>
-                    <td style="font-weight: 700; color: #059669;">₹{{ number_format((float)$purchase->amount, 2) }}</td>
-                </tr>
-                <tr>
-                    <th>Date & Time</th>
-                    <td>{{ $purchase->updated_at ? $purchase->updated_at->format('M d, Y h:i A') : now()->format('M d, Y') }}</td>
-                </tr>
-                <tr>
-                    <th>Payment Status</th>
-                    <td><span style="color: #059669; font-weight: 700; text-transform: uppercase;">● Completed</span></td>
-                </tr>
-            </table>
+                <!-- Book Highlight Card -->
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 24px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;">
+                    <tr>
+                        <td style="padding: 18px 20px;">
+                            <span style="display: block; font-size: 10px; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px;">
+                                Digital E-Book • DRM-Free
+                            </span>
+                            <h2 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 700; color: #0f172a; line-height: 1.4;">
+                                {{ $book?->title ?? $purchase->book_title }}
+                            </h2>
+                            <p style="margin: 0; font-size: 13px; color: #64748b;">
+                                By {{ $book?->author_name ?? 'Featured Author' }}
+                            </p>
+                        </td>
+                    </tr>
+                </table>
 
-            <p style="font-size: 13px; color: #64748b; line-height: 1.6; margin-top: 20px;">
-                Need help or have questions about your publication? Simply reply directly to this email or visit our help center.
-            </p>
-        </div>
+                <!-- Attached PDF Notice Box -->
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 28px; background-color: #faf5ff; border: 1px solid #e9d5ff; border-radius: 12px;">
+                    <tr>
+                        <td style="padding: 18px 20px;">
+                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td width="36" style="vertical-align: top; font-size: 22px; line-height: 1;">
+                                        📎
+                                    </td>
+                                    <td style="vertical-align: top;">
+                                        <p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 700; color: #581c87;">
+                                            PDF Attached to this Email
+                                        </p>
+                                        <p style="margin: 0; font-size: 12px; line-height: 1.5; color: #6b21a8;">
+                                            The complete PDF file is attached below. You can download and read it anytime on any phone, tablet, e-reader, or computer.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Transaction Summary Table -->
+                <p style="margin: 0 0 10px 0; font-size: 12px; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.8px;">
+                    Order Receipt
+                </p>
+                <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse; margin-bottom: 24px; font-size: 13px; border: 1px solid #f1f5f9; border-radius: 8px; overflow: hidden;">
+                    <tr style="background-color: #f8fafc;">
+                        <td style="padding: 10px 14px; color: #64748b; font-weight: 500; border-bottom: 1px solid #f1f5f9;" width="40%">Order ID</td>
+                        <td style="padding: 10px 14px; color: #0f172a; font-weight: 600; font-family: monospace; border-bottom: 1px solid #f1f5f9;" width="60%">#{{ $purchase->transaction_id }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px 14px; color: #64748b; font-weight: 500; border-bottom: 1px solid #f1f5f9;">Date</td>
+                        <td style="padding: 10px 14px; color: #0f172a; font-weight: 500; border-bottom: 1px solid #f1f5f9;">{{ $purchase->updated_at ? $purchase->updated_at->format('M d, Y h:i A') : now()->format('M d, Y') }}</td>
+                    </tr>
+                    <tr style="background-color: #f8fafc;">
+                        <td style="padding: 10px 14px; color: #64748b; font-weight: 500; border-bottom: 1px solid #f1f5f9;">Payment Method</td>
+                        <td style="padding: 10px 14px; color: #0f172a; font-weight: 600; border-bottom: 1px solid #f1f5f9;">{{ ucfirst($purchase->payment_method ?? 'Online Payment') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px 14px; color: #64748b; font-weight: 500;">Amount Paid</td>
+                        <td style="padding: 10px 14px; color: #059669; font-weight: 700; font-size: 14px;">₹{{ number_format((float)$purchase->amount, 2) }}</td>
+                    </tr>
+                </table>
+
+                <!-- Support Info -->
+                <p style="margin: 0; font-size: 12px; line-height: 1.6; color: #94a3b8;">
+                    Questions or need help? 
+                    @if (!empty($appSetting?->contact_email))
+                        Reach us anytime at <a href="mailto:{{ $appSetting->contact_email }}" style="color: #7c3aed; text-decoration: none; font-weight: 500;">{{ $appSetting->contact_email }}</a>.
+                    @else
+                        Reply directly to this email and our team will be glad to assist you.
+                    @endif
+                </p>
+            </td>
+        </tr>
 
         <!-- Footer -->
-        <div class="footer">
-            <p>&copy; {{ date('Y') }} {{ config('app.name', 'E-Book Store') }}. All rights reserved.</p>
-            <p>You received this email because you completed a verified digital purchase.</p>
-        </div>
-    </div>
+        <tr>
+            <td style="padding: 20px 32px; background-color: #f8fafc; border-top: 1px solid #f1f5f9; text-align: center;">
+                <p style="margin: 0 0 4px 0; font-size: 11px; color: #94a3b8; line-height: 1.5;">
+                    &copy; {{ date('Y') }} <strong>{{ $appSetting->app_name ?? config('app.name', 'E-Book') }}</strong>. All rights reserved.
+                </p>
+                <p style="margin: 0; font-size: 10px; color: #cbd5e1;">
+                    This is an automated delivery email for your digital transaction.
+                </p>
+            </td>
+        </tr>
+
+    </table>
 </body>
 </html>

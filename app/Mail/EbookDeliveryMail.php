@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\AppSetting;
 use App\Models\Book;
 use App\Models\Customer;
 use App\Models\Purchase;
@@ -40,9 +41,10 @@ class EbookDeliveryMail extends Mailable
     public function envelope(): Envelope
     {
         $bookTitle = $this->book?->title ?? $this->purchase->book_title;
+        $appName = AppSetting::getSettings()->app_name ?? config('app.name', 'E-Book');
 
         return new Envelope(
-            subject: 'Your E-Book Delivery: '.$bookTitle.' (Attached PDF)',
+            subject: '['.$appName.'] Your E-Book Delivery: '.$bookTitle,
         );
     }
 
@@ -57,6 +59,7 @@ class EbookDeliveryMail extends Mailable
                 'purchase' => $this->purchase,
                 'book' => $this->book,
                 'customer' => $this->customer,
+                'appSetting' => AppSetting::getSettings(),
             ],
         );
     }
