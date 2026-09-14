@@ -1,5 +1,5 @@
 <!-- ==========================================
-     AUTHENTICATION SIDE DRAWER (MINIMAL & CLEAN)
+     FIREBASE AUTHENTICATION SIDE DRAWER
      ========================================== -->
 <div 
     id="auth-drawer-backdrop" 
@@ -60,28 +60,8 @@
                 </div>
             @endif
 
-            <!-- Minimal Tab Switcher -->
-            <div id="auth-tabs-switcher" class="mt-5 p-1 bg-slate-100 rounded-xl flex items-center">
-                <button 
-                    id="tab-btn-signin"
-                    type="button" 
-                    onclick="switchAuthTab('signin')" 
-                    class="flex-1 py-2 rounded-lg text-xs font-semibold transition-all bg-white text-slate-900 shadow-2xs cursor-pointer text-center"
-                >
-                    Sign In
-                </button>
-                <button 
-                    id="tab-btn-signup"
-                    type="button" 
-                    onclick="switchAuthTab('signup')" 
-                    class="flex-1 py-2 rounded-lg text-xs font-semibold transition-all text-slate-500 hover:text-slate-900 cursor-pointer text-center"
-                >
-                    Create Account
-                </button>
-            </div>
-
-            <!-- Google Sign-In -->
-            <div id="auth-social-container" class="mt-4">
+            <!-- Firebase Google Sign-In -->
+            <div class="mt-5">
                 <button 
                     type="button" 
                     id="btn-google-auth"
@@ -106,15 +86,15 @@
             </div>
 
             <!-- ==========================================
-                 SIGN IN FORM (EMAIL + OTP)
+                 FIREBASE EMAIL AUTHENTICATION FORM
                  ========================================== -->
-            <form id="form-signin" onsubmit="handleSendLoginOtp(event)" class="space-y-3.5">
+            <form id="form-firebase-auth" onsubmit="handleFirebaseEmailAuth(event)" class="space-y-3.5">
                 @csrf
                 <div>
-                    <label for="signin-email" class="block text-xs font-medium text-slate-700 mb-1">Email address</label>
+                    <label for="firebase-email" class="block text-xs font-medium text-slate-700 mb-1">Email address</label>
                     <input 
                         type="email" 
-                        id="signin-email" 
+                        id="firebase-email" 
                         name="email" 
                         placeholder="you@example.com"
                         required
@@ -124,138 +104,11 @@
 
                 <button 
                     type="submit" 
-                    id="btn-signin-submit"
+                    id="btn-firebase-email-submit"
                     class="w-full h-10 inline-flex items-center justify-center gap-2 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-semibold text-xs transition cursor-pointer shadow-xs"
                 >
-                    <span>Continue with Code</span>
+                    <span>Send Firebase Sign-in Link</span>
                     <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                </button>
-            </form>
-
-            <!-- ==========================================
-                 SIGN UP FORM (EMAIL + OTP)
-                 ========================================== -->
-            <form id="form-signup" onsubmit="handleSendRegistrationOtp(event)" class="hidden space-y-3.5">
-                @csrf
-                <!-- Full Name -->
-                <div>
-                    <label for="signup-name" class="block text-xs font-medium text-slate-700 mb-1">Full name</label>
-                    <input 
-                        type="text" 
-                        id="signup-name" 
-                        name="name" 
-                        placeholder="John Doe"
-                        required
-                        class="w-full h-10 px-3.5 rounded-xl bg-slate-50/50 text-slate-900 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 focus:outline-none transition font-medium"
-                    >
-                </div>
-
-                <!-- Email Address -->
-                <div>
-                    <label for="signup-email" class="block text-xs font-medium text-slate-700 mb-1">Email address</label>
-                    <input 
-                        type="email" 
-                        id="signup-email" 
-                        name="email" 
-                        placeholder="you@example.com"
-                        required
-                        class="w-full h-10 px-3.5 rounded-xl bg-slate-50/50 text-slate-900 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 focus:outline-none transition font-medium"
-                    >
-                </div>
-
-                <!-- Mobile Number (Optional) -->
-                <div>
-                    <label for="signup-phone" class="block text-xs font-medium text-slate-700 mb-1">
-                        Mobile number <span class="text-slate-400 text-[11px]">(optional)</span>
-                    </label>
-                    <input 
-                        type="tel" 
-                        id="signup-phone" 
-                        name="mobile"
-                        placeholder="+91 98765 43210"
-                        class="w-full h-10 px-3.5 rounded-xl bg-slate-50/50 text-slate-900 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 focus:outline-none transition font-medium"
-                    >
-                </div>
-
-                <!-- Terms -->
-                <div class="flex items-start gap-2 pt-0.5">
-                    <input type="checkbox" id="terms" required class="mt-0.5 w-3.5 h-3.5 rounded text-brand-600 border-slate-300 focus:ring-brand-500 cursor-pointer">
-                    <label for="terms" class="text-[11px] text-slate-500 leading-tight">
-                        I agree to the <a href="{{ route('terms') }}" target="_blank" class="text-brand-600 hover:underline">Terms</a> &amp; <a href="{{ route('privacy-policy') }}" target="_blank" class="text-brand-600 hover:underline">Privacy Policy</a>
-                    </label>
-                </div>
-
-                <button 
-                    type="submit" 
-                    id="btn-signup-submit"
-                    class="w-full h-10 inline-flex items-center justify-center gap-2 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-semibold text-xs transition cursor-pointer shadow-xs"
-                >
-                    <span>Create Account</span>
-                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                </button>
-            </form>
-
-            <!-- ==========================================
-                 OTP VERIFICATION FORM
-                 ========================================== -->
-            <form id="form-otp" onsubmit="handleVerifyOtp(event)" class="hidden space-y-4">
-                @csrf
-                
-                <div class="flex items-center justify-between">
-                    <button 
-                        type="button" 
-                        onclick="backFromOtpForm()" 
-                        class="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 transition cursor-pointer"
-                    >
-                        <i class="fa-solid fa-arrow-left text-[10px]"></i>
-                        <span id="otp-back-btn-text">Back</span>
-                    </button>
-                </div>
-
-                <!-- Minimal Notice -->
-                <div class="text-center py-2">
-                    <p class="text-xs text-slate-500">
-                        Enter the 6-digit code sent to<br>
-                        <span id="otp-display-email" class="font-semibold text-slate-800"></span>
-                    </p>
-                </div>
-
-                <!-- 6-Digit OTP Input -->
-                <div>
-                    <input 
-                        type="text" 
-                        id="otp-code-input" 
-                        name="otp" 
-                        maxlength="6" 
-                        inputmode="numeric" 
-                        pattern="[0-9]*"
-                        autocomplete="one-time-code"
-                        placeholder="••••••"
-                        required
-                        class="w-full h-12 text-center text-2xl tracking-[0.3em] font-mono font-bold rounded-xl bg-slate-50 text-slate-900 placeholder-slate-300 border border-slate-200 focus:bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 outline-none transition"
-                    >
-                </div>
-
-                <!-- Resend Option -->
-                <div class="flex items-center justify-between text-xs px-0.5">
-                    <span class="text-slate-400">Didn't receive code?</span>
-                    <button 
-                        type="button" 
-                        id="btn-resend-otp" 
-                        onclick="handleResendOtp()" 
-                        class="font-medium text-brand-600 hover:underline disabled:text-slate-400 disabled:no-underline disabled:cursor-not-allowed cursor-pointer transition"
-                    >
-                        Resend code
-                    </button>
-                </div>
-
-                <button 
-                    type="submit" 
-                    id="btn-verify-submit"
-                    class="w-full h-10 inline-flex items-center justify-center gap-2 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-semibold text-xs transition cursor-pointer shadow-xs"
-                >
-                    <span id="btn-verify-text">Verify &amp; Sign In</span>
-                    <i class="fa-solid fa-check text-[10px]"></i>
                 </button>
             </form>
         </div>
@@ -263,14 +116,14 @@
         <!-- Minimal Footer -->
         <div class="pt-4 border-t border-slate-100 text-center">
             <p class="text-[11px] text-slate-400">
-                Encrypted &bull; Instant access to your books
+                Powered by Firebase Auth &bull; 256-bit Encrypted
             </p>
         </div>
     </div>
 </div>
 
 <!-- ==========================================
-     FIREBASE & AUTH DRAWER SCRIPT
+     FIREBASE SDK & CLIENT AUTH SCRIPT
      ========================================== -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -295,19 +148,14 @@
             firebaseAuthInstance = firebase.auth();
         }
     } catch (e) {
-        console.warn('Firebase initialization warning:', e);
+        console.warn('Firebase initialization notice:', e);
     }
 
-    let registeredEmail = '';
-    let authOtpMode = 'signin'; // 'signin' or 'signup'
-    let resendTimerInterval = null;
-    let resendSecondsLeft = 0;
-
-    function openAuthDrawer(tab = 'signin') {
+    function openAuthDrawer() {
         const backdrop = document.getElementById('auth-drawer-backdrop');
         const drawer = document.getElementById('auth-drawer');
         
-        switchAuthTab(tab);
+        clearAuthAlert();
 
         backdrop.classList.remove('pointer-events-none', 'opacity-0');
         backdrop.classList.add('opacity-100');
@@ -331,69 +179,20 @@
         document.body.classList.remove('overflow-hidden');
     }
 
-    function switchAuthTab(tab) {
-        clearAuthAlert();
-        const signinBtn = document.getElementById('tab-btn-signin');
-        const signupBtn = document.getElementById('tab-btn-signup');
-        const signinForm = document.getElementById('form-signin');
-        const signupForm = document.getElementById('form-signup');
-        const otpForm = document.getElementById('form-otp');
-        const tabsSwitcher = document.getElementById('auth-tabs-switcher');
-        const socialContainer = document.getElementById('auth-social-container');
-
-        if (tabsSwitcher) tabsSwitcher.classList.remove('hidden');
-        if (socialContainer) socialContainer.classList.remove('hidden');
-        if (otpForm) otpForm.classList.add('hidden');
-
-        if (tab === 'signin') {
-            authOtpMode = 'signin';
-            signinBtn.className = 'flex-1 py-2 rounded-lg text-xs font-semibold transition-all bg-white text-slate-900 shadow-2xs cursor-pointer text-center';
-            signupBtn.className = 'flex-1 py-2 rounded-lg text-xs font-semibold transition-all text-slate-500 hover:text-slate-900 cursor-pointer text-center';
-            signinForm.classList.remove('hidden');
-            signupForm.classList.add('hidden');
-        } else {
-            authOtpMode = 'signup';
-            signupBtn.className = 'flex-1 py-2 rounded-lg text-xs font-semibold transition-all bg-white text-slate-900 shadow-2xs cursor-pointer text-center';
-            signinBtn.className = 'flex-1 py-2 rounded-lg text-xs font-semibold transition-all text-slate-500 hover:text-slate-900 cursor-pointer text-center';
-            signupForm.classList.remove('hidden');
-            signinForm.classList.add('hidden');
-        }
-    }
-
-    function backFromOtpForm() {
-        clearAuthAlert();
-        const signupForm = document.getElementById('form-signup');
-        const signinForm = document.getElementById('form-signin');
-        const otpForm = document.getElementById('form-otp');
-        const tabsSwitcher = document.getElementById('auth-tabs-switcher');
-        const socialContainer = document.getElementById('auth-social-container');
-
-        if (otpForm) otpForm.classList.add('hidden');
-        if (tabsSwitcher) tabsSwitcher.classList.remove('hidden');
-        if (socialContainer) socialContainer.classList.remove('hidden');
-
-        if (authOtpMode === 'signup') {
-            signupForm.classList.remove('hidden');
-            signinForm.classList.add('hidden');
-        } else {
-            signinForm.classList.remove('hidden');
-            signupForm.classList.add('hidden');
-        }
-    }
-
     function showAuthAlert(type, message) {
         const alertBox = document.getElementById('auth-drawer-alert');
         if (!alertBox) return;
 
-        alertBox.classList.remove('hidden', 'bg-rose-50', 'border', 'border-rose-200', 'text-rose-700', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-700');
+        alertBox.classList.remove('hidden', 'bg-rose-50', 'border', 'border-rose-200', 'text-rose-700', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-700', 'bg-amber-50', 'border-amber-200', 'text-amber-700');
         
         if (type === 'success') {
             alertBox.classList.add('bg-emerald-50', 'border', 'border-emerald-200', 'text-emerald-700');
-            alertBox.textContent = message;
+        } else if (type === 'warning') {
+            alertBox.classList.add('bg-amber-50', 'border', 'border-amber-200', 'text-amber-700');
         } else {
             alertBox.classList.add('bg-rose-50', 'border', 'border-rose-200', 'text-rose-700');
-            alertBox.textContent = message;
         }
+        alertBox.textContent = message;
     }
 
     function clearAuthAlert() {
@@ -404,138 +203,31 @@
         }
     }
 
-    async function handleSendLoginOtp(event) {
+    // Google Sign-In with Firebase
+    async function handleGoogleSignIn(event) {
         event.preventDefault();
         clearAuthAlert();
 
-        const submitBtn = document.getElementById('btn-signin-submit');
-        const emailInput = document.getElementById('signin-email');
+        const btn = document.getElementById('btn-google-auth');
+        const textSpan = document.getElementById('google-auth-text');
 
-        registeredEmail = emailInput.value.trim().toLowerCase();
-        authOtpMode = 'signin';
-
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Sending...</span>`;
-
-        try {
-            const response = await fetch('{{ route('customer.send-login-otp') }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                },
-                body: JSON.stringify({ email: registeredEmail })
-            });
-
-            const data = await response.json();
-
-            if (response.ok && data.success) {
-                document.getElementById('form-signin').classList.add('hidden');
-                document.getElementById('auth-tabs-switcher').classList.add('hidden');
-                document.getElementById('auth-social-container').classList.add('hidden');
-
-                const otpForm = document.getElementById('form-otp');
-                otpForm.classList.remove('hidden');
-
-                document.getElementById('otp-back-btn-text').textContent = 'Change email';
-                document.getElementById('btn-verify-text').textContent = 'Verify & Sign In';
-                document.getElementById('otp-display-email').textContent = registeredEmail;
-                document.getElementById('otp-code-input').value = '';
-                document.getElementById('otp-code-input').focus();
-
-                showAuthAlert('success', data.message || 'Verification code sent.');
-                startResendCountdown(30);
-            } else {
-                showAuthAlert('error', data.message || 'Unable to send code. Please try again.');
-            }
-        } catch (error) {
-            showAuthAlert('error', 'A network error occurred. Please try again.');
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = `<span>Continue with Code</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>`;
-        }
-    }
-
-    async function handleSendRegistrationOtp(event) {
-        event.preventDefault();
-        clearAuthAlert();
-
-        const form = document.getElementById('form-signup');
-        const submitBtn = document.getElementById('btn-signup-submit');
-        const emailInput = document.getElementById('signup-email');
-
-        registeredEmail = emailInput.value.trim().toLowerCase();
-        authOtpMode = 'signup';
-
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Sending...</span>`;
-
-        const formData = new FormData(form);
-
-        try {
-            const response = await fetch('{{ route('customer.send-otp') }}', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                },
-                body: formData
-            });
-
-            const data = await response.json();
-
-            if (response.ok && data.success) {
-                document.getElementById('form-signup').classList.add('hidden');
-                document.getElementById('auth-tabs-switcher').classList.add('hidden');
-                document.getElementById('auth-social-container').classList.add('hidden');
-                
-                const otpForm = document.getElementById('form-otp');
-                otpForm.classList.remove('hidden');
-                
-                document.getElementById('otp-back-btn-text').textContent = 'Change details';
-                document.getElementById('btn-verify-text').textContent = 'Verify & Create Account';
-                document.getElementById('otp-display-email').textContent = registeredEmail;
-                document.getElementById('otp-code-input').value = '';
-                document.getElementById('otp-code-input').focus();
-
-                showAuthAlert('success', data.message || 'Verification code sent.');
-                startResendCountdown(30);
-            } else {
-                showAuthAlert('error', data.message || 'Unable to send code. Please check details.');
-            }
-        } catch (error) {
-            showAuthAlert('error', 'A network error occurred. Please try again.');
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = `<span>Create Account</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>`;
-        }
-    }
-
-    async function handleVerifyOtp(event) {
-        event.preventDefault();
-        clearAuthAlert();
-
-        const otpInput = document.getElementById('otp-code-input');
-        const verifyBtn = document.getElementById('btn-verify-submit');
-        const otpCode = otpInput.value.trim();
-
-        if (otpCode.length !== 6) {
-            showAuthAlert('error', 'Please enter a 6-digit code.');
+        if (!firebaseAuthInstance) {
+            showAuthAlert('warning', 'Firebase credentials not attached yet. Please set FIREBASE_API_KEY and FIREBASE_PROJECT_ID in .env');
             return;
         }
 
-        verifyBtn.disabled = true;
-        verifyBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Verifying...</span>`;
-
-        const verifyRoute = authOtpMode === 'signin' 
-            ? '{{ route('customer.verify-login-otp') }}' 
-            : '{{ route('customer.verify-otp') }}';
+        btn.disabled = true;
+        if (textSpan) textSpan.textContent = 'Connecting...';
 
         try {
-            const response = await fetch(verifyRoute, {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            provider.addScope('profile');
+            provider.addScope('email');
+
+            const result = await firebaseAuthInstance.signInWithPopup(provider);
+            const idToken = await result.user.getIdToken();
+
+            const response = await fetch('{{ route('customer.firebase-auth') }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -544,148 +236,101 @@
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                 },
                 body: JSON.stringify({
-                    email: registeredEmail,
-                    otp: otpCode
+                    id_token: idToken,
+                    name: result.user.displayName || '',
+                    mobile: result.user.phoneNumber || ''
                 })
             });
 
             const data = await response.json();
 
             if (response.ok && data.success) {
-                showAuthAlert('success', 'Verified! Signing in...');
+                showAuthAlert('success', 'Signed in successfully!');
                 setTimeout(() => {
-                    window.location.reload();
-                }, 600);
+                    window.location.href = data.redirect_url || window.location.href;
+                }, 500);
             } else {
-                showAuthAlert('error', data.message || 'Invalid code. Please try again.');
-                verifyBtn.disabled = false;
-                verifyBtn.innerHTML = `<span>${authOtpMode === 'signin' ? 'Verify & Sign In' : 'Verify & Create Account'}</span> <i class="fa-solid fa-check text-[10px]"></i>`;
-            }
-        } catch (error) {
-            showAuthAlert('error', 'Network error. Please try again.');
-            verifyBtn.disabled = false;
-            verifyBtn.innerHTML = `<span>Verify</span> <i class="fa-solid fa-check text-[10px]"></i>`;
-        }
-    }
-
-    async function handleResendOtp() {
-        if (resendSecondsLeft > 0 || !registeredEmail) return;
-
-        const resendBtn = document.getElementById('btn-resend-otp');
-        resendBtn.disabled = true;
-        resendBtn.textContent = 'Sending...';
-
-        const resendRoute = authOtpMode === 'signin' 
-            ? '{{ route('customer.resend-login-otp') }}' 
-            : '{{ route('customer.resend-otp') }}';
-
-        try {
-            const response = await fetch(resendRoute, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                },
-                body: JSON.stringify({ email: registeredEmail })
-            });
-
-            const data = await response.json();
-
-            if (response.ok && data.success) {
-                showAuthAlert('success', 'Code resent!');
-                startResendCountdown(30);
-            } else {
-                showAuthAlert('error', data.message || 'Unable to resend code.');
-                resendBtn.disabled = false;
-                resendBtn.textContent = 'Resend code';
+                showAuthAlert('error', data.message || 'Firebase sign-in verification failed.');
             }
         } catch (err) {
-            showAuthAlert('error', 'Network error. Please try again.');
-            resendBtn.disabled = false;
-            resendBtn.textContent = 'Resend code';
+            if (err.code !== 'auth/popup-closed-by-user') {
+                showAuthAlert('error', err.message || 'Google sign-in encountered an error.');
+            }
+        } finally {
+            btn.disabled = false;
+            if (textSpan) textSpan.textContent = 'Continue with Google';
         }
     }
 
-    function startResendCountdown(seconds) {
-        const resendBtn = document.getElementById('btn-resend-otp');
-        if (!resendBtn) return;
-
-        clearInterval(resendTimerInterval);
-        resendSecondsLeft = seconds;
-        resendBtn.disabled = true;
-        resendBtn.textContent = `Resend (${resendSecondsLeft}s)`;
-
-        resendTimerInterval = setInterval(() => {
-            resendSecondsLeft--;
-            if (resendSecondsLeft <= 0) {
-                clearInterval(resendTimerInterval);
-                resendBtn.disabled = false;
-                resendBtn.textContent = 'Resend code';
-            } else {
-                resendBtn.textContent = `Resend (${resendSecondsLeft}s)`;
-            }
-        }, 1000);
-    }
-
-    async function handleGoogleSignIn(event) {
+    // Firebase Passwordless Email Link Auth
+    async function handleFirebaseEmailAuth(event) {
         event.preventDefault();
         clearAuthAlert();
 
-        const btn = document.getElementById('btn-google-auth');
-        const textSpan = document.getElementById('google-auth-text');
+        const emailInput = document.getElementById('firebase-email');
+        const submitBtn = document.getElementById('btn-firebase-email-submit');
+        const email = emailInput.value.trim().toLowerCase();
 
-        if (firebaseAuthInstance) {
-            btn.disabled = true;
-            if (textSpan) textSpan.textContent = 'Connecting...';
-
-            try {
-                const provider = new firebase.auth.GoogleAuthProvider();
-                provider.addScope('profile');
-                provider.addScope('email');
-
-                const result = await firebaseAuthInstance.signInWithPopup(provider);
-                const idToken = await result.user.getIdToken();
-
-                const response = await fetch('{{ route('customer.firebase-auth') }}', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                    },
-                    body: JSON.stringify({
-                        id_token: idToken,
-                        name: result.user.displayName || '',
-                        mobile: result.user.phoneNumber || ''
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    showAuthAlert('success', 'Signed in!');
-                    setTimeout(() => {
-                        window.location.href = data.redirect_url || window.location.href;
-                    }, 500);
-                } else {
-                    showAuthAlert('error', data.message || 'Google sign-in failed.');
-                }
-            } catch (err) {
-                if (err.code !== 'auth/popup-closed-by-user') {
-                    showAuthAlert('error', err.message || 'Google sign-in failed.');
-                }
-            } finally {
-                btn.disabled = false;
-                if (textSpan) textSpan.textContent = 'Continue with Google';
-            }
+        if (!firebaseAuthInstance) {
+            showAuthAlert('warning', 'Firebase credentials not attached yet. Please set FIREBASE_API_KEY and FIREBASE_PROJECT_ID in .env');
             return;
         }
 
-        window.location.href = '{{ route('auth.google') }}';
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Sending link...</span>`;
+
+        const actionCodeSettings = {
+            url: window.location.origin + window.location.pathname,
+            handleCodeInApp: true,
+        };
+
+        try {
+            await firebaseAuthInstance.sendSignInLinkToEmail(email, actionCodeSettings);
+            window.localStorage.setItem('emailForSignIn', email);
+            showAuthAlert('success', 'Sign-in link sent via Firebase! Check your email to sign in.');
+            emailInput.value = '';
+        } catch (error) {
+            showAuthAlert('error', error.message || 'Failed to send Firebase sign-in link.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<span>Send Firebase Sign-in Link</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>`;
+        }
     }
+
+    // Check if returning from a Firebase Email Link
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (firebaseAuthInstance && firebaseAuthInstance.isSignInWithEmailLink(window.location.href)) {
+            let email = window.localStorage.getItem('emailForSignIn');
+            if (!email) {
+                email = window.prompt('Please provide your email for confirmation:');
+            }
+            if (email) {
+                try {
+                    const result = await firebaseAuthInstance.signInWithEmailLink(email, window.location.href);
+                    window.localStorage.removeItem('emailForSignIn');
+                    const idToken = await result.user.getIdToken();
+
+                    const response = await fetch('{{ route('customer.firebase-auth') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                        },
+                        body: JSON.stringify({ id_token: idToken })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        window.location.href = data.redirect_url || window.location.origin;
+                    }
+                } catch (e) {
+                    console.error('Firebase email link sign-in error:', e);
+                }
+            }
+        }
+    });
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
@@ -694,6 +339,6 @@
     });
 
     @if ($errors->any() || session('open_auth_drawer'))
-        openAuthDrawer(@json(session('auth_tab', 'signin')));
+        openAuthDrawer();
     @endif
 </script>

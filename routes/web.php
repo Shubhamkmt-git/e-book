@@ -52,14 +52,6 @@ Route::get('/terms', [LegalPageController::class, 'termsOfService'])->name('term
 Route::get('/terms-of-service', [LegalPageController::class, 'termsOfService'])->name('terms-of-service');
 
 Route::middleware('guest:customer')->group(function () {
-    Route::post('/customer/register', [CustomerAuthController::class, 'register'])->name('customer.register');
-    Route::post('/customer/send-otp', [CustomerAuthController::class, 'sendRegistrationOtp'])->name('customer.send-otp');
-    Route::post('/customer/verify-otp', [CustomerAuthController::class, 'verifyOtpAndRegister'])->name('customer.verify-otp');
-    Route::post('/customer/resend-otp', [CustomerAuthController::class, 'resendRegistrationOtp'])->name('customer.resend-otp');
-    Route::post('/customer/login', [CustomerAuthController::class, 'login'])->name('customer.login');
-    Route::post('/customer/send-login-otp', [CustomerAuthController::class, 'sendLoginOtp'])->name('customer.send-login-otp');
-    Route::post('/customer/verify-login-otp', [CustomerAuthController::class, 'verifyLoginOtp'])->name('customer.verify-login-otp');
-    Route::post('/customer/resend-login-otp', [CustomerAuthController::class, 'resendLoginOtp'])->name('customer.resend-login-otp');
     Route::post('/customer/firebase-auth', [CustomerAuthController::class, 'firebaseAuth'])->name('customer.firebase-auth');
     Route::get('/auth/google', [CustomerAuthController::class, 'redirectToGoogle'])->name('auth.google');
     Route::get('/auth/google/callback', [CustomerAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
