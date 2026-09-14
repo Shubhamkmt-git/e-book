@@ -17,68 +17,68 @@
     aria-modal="true" 
     aria-labelledby="quick-checkout-title"
 >
-    <div class="relative w-full max-w-[440px] bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden flex flex-col">
+    <div class="relative w-full max-w-[460px] sm:max-w-[480px] bg-white rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200/80 overflow-hidden flex flex-col">
         
         <!-- Modal Compact Header -->
-        <div class="relative bg-gradient-to-r from-brand-900 via-brand-800 to-brand-900 text-white px-5 py-3.5 shrink-0 flex items-center justify-between">
+        <div class="relative bg-gradient-to-r from-brand-900 via-brand-800 to-brand-900 text-white px-5 py-4 shrink-0 flex items-center justify-between">
             <div class="flex items-center gap-2.5">
-                <div class="w-7 h-7 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-brand-300 flex items-center justify-center text-xs shadow-inner">
-                    <i class="fa-solid fa-shield-halved text-emerald-400 text-[11px]"></i>
+                <div class="w-8 h-8 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-brand-300 flex items-center justify-center text-sm shadow-inner">
+                    <i class="fa-solid fa-shield-halved text-emerald-400 text-xs"></i>
                 </div>
                 <div>
                     <h3 id="quick-checkout-title" class="font-brand text-xl sm:text-2xl text-white tracking-wide uppercase leading-tight">
                         Secure Checkout
                     </h3>
-                    <p class="text-[10px] text-brand-200/90 font-medium leading-none">Instant DRM-Free PDF Delivery</p>
+                    <p class="text-[11px] text-brand-200/90 font-medium leading-none mt-0.5">Instant DRM-Free PDF Delivery</p>
                 </div>
             </div>
 
             <button 
                 type="button" 
                 onclick="closeQuickCheckoutModal()" 
-                class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition cursor-pointer"
+                class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition cursor-pointer"
                 aria-label="Close Checkout"
             >
-                <i class="fa-solid fa-xmark text-xs"></i>
+                <i class="fa-solid fa-xmark text-sm"></i>
             </button>
         </div>
 
-        <!-- Modal Body (No Scroll, Compact & Clean) -->
-        <div class="p-4 sm:p-5 space-y-3.5 bg-slate-50/40">
+        <!-- Modal Body -->
+        <div class="p-5 sm:p-6 space-y-4 bg-slate-50/40">
             
-            <!-- Compact Selected Book Card -->
-            <div class="flex items-center gap-3 p-2.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs">
-                <div class="w-11 h-14 rounded-lg overflow-hidden bg-slate-900 shrink-0 shadow-2xs border border-slate-200 relative">
+            <!-- Selected Book Card -->
+            <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
+                <div class="w-12 h-16 rounded-xl overflow-hidden bg-slate-900 shrink-0 shadow-2xs border border-slate-200 relative">
                     <img id="checkout-book-image" src="{{ asset('images/books/algorithms.jpg') }}" alt="Book Cover" class="w-full h-full object-cover">
                 </div>
                 <div class="flex-1 min-w-0">
-                    <span id="checkout-book-category" class="text-[9px] font-bold text-brand-600 uppercase tracking-wider block leading-none mb-0.5">E-Book</span>
-                    <h4 id="checkout-book-title" class="font-bold text-xs sm:text-sm text-slate-900 truncate leading-tight">Algorithms &amp; Elegance</h4>
-                    <p id="checkout-book-author" class="text-[11px] text-slate-400 truncate">Author</p>
-                    <div class="flex items-baseline gap-1.5 mt-0.5">
-                        <span id="checkout-book-price" class="font-brand text-lg text-brand-600 font-bold leading-none">₹499</span>
-                        <span id="checkout-book-original-price" class="font-brand text-[11px] text-slate-400 line-through leading-none hidden">₹799</span>
+                    <span id="checkout-book-category" class="text-[10px] font-bold text-brand-600 uppercase tracking-wider block leading-none mb-1">E-Book</span>
+                    <h4 id="checkout-book-title" class="font-bold text-sm sm:text-base text-slate-900 truncate leading-tight">Algorithms &amp; Elegance</h4>
+                    <p id="checkout-book-author" class="text-xs text-slate-400 truncate mt-0.5">Author</p>
+                    <div class="flex items-baseline gap-2 mt-1">
+                        <span id="checkout-book-price" class="font-brand text-xl text-brand-600 font-bold leading-none">₹499</span>
+                        <span id="checkout-book-original-price" class="font-brand text-xs text-slate-400 line-through leading-none hidden">₹799</span>
                     </div>
                 </div>
             </div>
 
             @if(! $hasGateway)
-                <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs text-center">
+                <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs text-center">
                     <p class="font-bold"><i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Checkout Unavailable</p>
-                    <p class="text-[11px] text-slate-600 mt-0.5">Payment gateways are currently paused. Please contact support.</p>
+                    <p class="text-xs text-slate-600 mt-1">Payment gateways are currently paused. Please contact support.</p>
                 </div>
             @endif
 
             <!-- Checkout Form -->
-            <form id="quick-checkout-form" method="POST" action="" class="space-y-2.5">
+            <form id="quick-checkout-form" method="POST" action="" class="space-y-3.5">
                 @csrf
                 
                 <!-- Full Name -->
                 <div>
-                    <label for="checkout-customer-name" class="block text-[11px] font-semibold text-slate-700 mb-1">Your Full Name</label>
+                    <label for="checkout-customer-name" class="block text-xs font-semibold text-slate-700 mb-1.5">Your Full Name</label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                            <i class="fa-regular fa-user text-[11px]"></i>
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-regular fa-user text-sm"></i>
                         </div>
                         <input 
                             type="text" 
@@ -87,19 +87,19 @@
                             value="{{ auth('customer')->user()?->name ?? '' }}" 
                             placeholder="John Doe"
                             required
-                            class="w-full pl-8.5 pr-3 py-1.5 rounded-xl border border-slate-200 text-xs focus:border-brand-500 focus:ring-1 focus:ring-brand-500/20 outline-none transition bg-white text-slate-800 font-medium"
+                            class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl border border-slate-200 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition bg-white text-slate-800 font-medium placeholder-slate-400"
                         >
                     </div>
                 </div>
 
                 <!-- Email -->
                 <div>
-                    <label for="checkout-customer-email" class="block text-[11px] font-semibold text-slate-700 mb-1">
-                        Email Address <span class="text-brand-600 font-normal">(PDF delivery)</span>
+                    <label for="checkout-customer-email" class="block text-xs font-semibold text-slate-700 mb-1.5">
+                        Email Address <span class="text-brand-600 font-normal text-[11px]">(PDF delivery)</span>
                     </label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                            <i class="fa-regular fa-envelope text-[11px]"></i>
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-regular fa-envelope text-sm"></i>
                         </div>
                         <input 
                             type="email" 
@@ -108,17 +108,17 @@
                             value="{{ auth('customer')->user()?->email ?? '' }}" 
                             placeholder="you@example.com"
                             required
-                            class="w-full pl-8.5 pr-3 py-1.5 rounded-xl border border-slate-200 text-xs focus:border-brand-500 focus:ring-1 focus:ring-brand-500/20 outline-none transition bg-white text-slate-800 font-medium"
+                            class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl border border-slate-200 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition bg-white text-slate-800 font-medium placeholder-slate-400"
                         >
                     </div>
                 </div>
 
                 <!-- Mobile Number -->
                 <div>
-                    <label for="checkout-customer-mobile" class="block text-[11px] font-semibold text-slate-700 mb-1">Mobile Number</label>
+                    <label for="checkout-customer-mobile" class="block text-xs font-semibold text-slate-700 mb-1.5">Mobile Number</label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                            <i class="fa-solid fa-phone text-[11px]"></i>
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-phone text-sm"></i>
                         </div>
                         <input 
                             type="tel" 
@@ -126,45 +126,45 @@
                             name="mobile" 
                             value="{{ auth('customer')->user()?->mobile ?? '' }}" 
                             placeholder="9876543210"
-                            class="w-full pl-8.5 pr-3 py-1.5 rounded-xl border border-slate-200 text-xs focus:border-brand-500 focus:ring-1 focus:ring-brand-500/20 outline-none transition bg-white text-slate-800 font-medium"
+                            class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl border border-slate-200 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition bg-white text-slate-800 font-medium placeholder-slate-400"
                         >
                     </div>
                 </div>
 
                 <!-- Payment Gateway Selector with Official Logos -->
                 @if($easebuzzActive && $razorpayActive)
-                    <div class="space-y-1 pt-0.5">
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Payment Method</label>
-                        <div class="grid grid-cols-2 gap-2">
+                    <div class="space-y-1.5 pt-0.5">
+                        <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">Payment Method</label>
+                        <div class="grid grid-cols-2 gap-2.5">
                             
                             <!-- Razorpay Official Logo Card -->
-                            <label class="group relative flex flex-col justify-between p-2.5 rounded-xl border-2 cursor-pointer transition-all has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50/50 has-[:checked]:shadow-2xs border-slate-200 bg-white hover:border-slate-300">
+                            <label class="group relative flex flex-col justify-between p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border-2 cursor-pointer transition-all has-[:checked]:border-sky-600 has-[:checked]:bg-sky-50/50 has-[:checked]:shadow-2xs border-slate-200 bg-white hover:border-slate-300">
                                 <input type="radio" name="payment_gateway_choice" value="razorpay" class="sr-only" checked onchange="updateGatewayChoice('razorpay')">
                                 <div class="flex items-center justify-between">
-                                    <div class="h-5 flex items-center">
+                                    <div class="h-6 flex items-center">
                                         <!-- Razorpay Official Image Logo -->
-                                        <img src="{{ asset('images/gateways/razorpay.png') }}" alt="Razorpay" class="h-5 w-auto object-contain">
+                                        <img src="{{ asset('images/gateways/razorpay.png') }}" alt="Razorpay" class="h-5 sm:h-6 w-auto object-contain">
                                     </div>
                                     <div class="w-4 h-4 rounded-full border-2 border-slate-300 group-has-[:checked]:border-sky-600 flex items-center justify-center transition-colors">
                                         <div class="w-2 h-2 rounded-full bg-sky-600 scale-0 group-has-[:checked]:scale-100 transition-transform"></div>
                                     </div>
                                 </div>
-                                <span class="text-[9px] text-slate-400 mt-1 block leading-none font-medium">UPI, Cards, NetBanking</span>
+                                <span class="text-[10px] sm:text-[11px] text-slate-400 mt-1.5 block leading-none font-medium">UPI, Cards, NetBanking</span>
                             </label>
 
                             <!-- Easebuzz Official Logo Card -->
-                            <label class="group relative flex flex-col justify-between p-2.5 rounded-xl border-2 cursor-pointer transition-all has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/50 has-[:checked]:shadow-2xs border-slate-200 bg-white hover:border-slate-300">
+                            <label class="group relative flex flex-col justify-between p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border-2 cursor-pointer transition-all has-[:checked]:border-orange-500 has-[:checked]:bg-orange-50/50 has-[:checked]:shadow-2xs border-slate-200 bg-white hover:border-slate-300">
                                 <input type="radio" name="payment_gateway_choice" value="easebuzz" class="sr-only" onchange="updateGatewayChoice('easebuzz')">
                                 <div class="flex items-center justify-between">
-                                    <div class="h-5 flex items-center">
+                                    <div class="h-6 flex items-center">
                                         <!-- Easebuzz Official Image Logo -->
-                                        <img src="{{ asset('images/gateways/easebuzz.png') }}" alt="Easebuzz" class="h-5 w-auto object-contain">
+                                        <img src="{{ asset('images/gateways/easebuzz.png') }}" alt="Easebuzz" class="h-5 sm:h-6 w-auto object-contain">
                                     </div>
                                     <div class="w-4 h-4 rounded-full border-2 border-slate-300 group-has-[:checked]:border-orange-500 flex items-center justify-center transition-colors">
                                         <div class="w-2 h-2 rounded-full bg-orange-500 scale-0 group-has-[:checked]:scale-100 transition-transform"></div>
                                     </div>
                                 </div>
-                                <span class="text-[9px] text-slate-400 mt-1 block leading-none font-medium">UPI, Cards, Wallets</span>
+                                <span class="text-[10px] sm:text-[11px] text-slate-400 mt-1.5 block leading-none font-medium">UPI, Cards, Wallets</span>
                             </label>
 
                         </div>
@@ -176,7 +176,7 @@
                     type="submit" 
                     id="checkout-submit-btn"
                     {{ ! $hasGateway ? 'disabled' : '' }}
-                    class="w-full h-11 inline-flex items-center justify-center gap-2 px-5 rounded-xl bg-brand-600 hover:bg-brand-500 active:bg-brand-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-brand text-lg uppercase tracking-wider transition-all shadow-md shadow-brand-600/25 text-center cursor-pointer mt-1"
+                    class="w-full h-12 sm:h-13 inline-flex items-center justify-center gap-2.5 px-6 rounded-xl sm:rounded-2xl bg-brand-600 hover:bg-brand-500 active:bg-brand-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-brand text-xl uppercase tracking-wider transition-all shadow-md shadow-brand-600/25 text-center cursor-pointer mt-2"
                 >
                     <span id="checkout-submit-btn-text">Proceed to Payment</span>
                     <i class="fa-solid fa-arrow-right text-xs"></i>
