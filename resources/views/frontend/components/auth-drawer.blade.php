@@ -187,7 +187,7 @@
         </form>
 
         <!-- ==========================================
-             SIGN UP FORM (STEP 1: DETAILS)
+             SIGN UP FORM (EMAIL + OTP REGISTRATION)
              ========================================== -->
         <form id="form-signup" onsubmit="handleSendRegistrationOtp(event)" class="hidden space-y-3.5">
             @csrf
@@ -241,60 +241,6 @@
                         placeholder="+91 98765 43210"
                         class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition font-medium"
                     >
-                </div>
-            </div>
-
-            <!-- Password -->
-            <div>
-                <label for="signup-password" class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <i class="fa-solid fa-lock text-xs"></i>
-                    </div>
-                    <input 
-                        type="password" 
-                        id="signup-password" 
-                        name="password" 
-                        autocomplete="new-password"
-                        placeholder="At least 8 characters"
-                        required
-                        minlength="8"
-                        class="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition font-medium"
-                    >
-                    <button 
-                        type="button" 
-                        onclick="togglePasswordVisibility('signup-password', this)"
-                        class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
-                    >
-                        <i class="fa-regular fa-eye text-xs"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Confirm Password -->
-            <div>
-                <label for="signup-confirm-password" class="block text-xs font-semibold text-slate-700 mb-1">Confirm Password</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <i class="fa-solid fa-shield-halved text-xs"></i>
-                    </div>
-                    <input 
-                        type="password" 
-                        id="signup-confirm-password" 
-                        name="password_confirmation" 
-                        autocomplete="new-password"
-                        placeholder="Re-enter password"
-                        required
-                        minlength="8"
-                        class="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition font-medium"
-                    >
-                    <button 
-                        type="button" 
-                        onclick="togglePasswordVisibility('signup-confirm-password', this)"
-                        class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
-                    >
-                        <i class="fa-regular fa-eye text-xs"></i>
-                    </button>
                 </div>
             </div>
 
@@ -606,13 +552,6 @@
         const form = document.getElementById('form-signup');
         const submitBtn = document.getElementById('btn-signup-submit');
         const emailInput = document.getElementById('signup-email');
-        const passwordInput = document.getElementById('signup-password');
-        const confirmPasswordInput = document.getElementById('signup-confirm-password');
-
-        if (passwordInput.value !== confirmPasswordInput.value) {
-            showAuthAlert('error', 'The password confirmation does not match.');
-            return;
-        }
 
         registeredEmail = emailInput.value.trim().toLowerCase();
         authOtpMode = 'signup';

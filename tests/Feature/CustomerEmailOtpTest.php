@@ -22,8 +22,6 @@ class CustomerEmailOtpTest extends TestCase
             'name' => 'Alice Reader',
             'email' => 'alice@example.com',
             'mobile' => '9876543210',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
         ]);
 
         $response->assertOk()
