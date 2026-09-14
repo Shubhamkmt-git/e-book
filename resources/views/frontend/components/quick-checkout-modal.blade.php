@@ -1,5 +1,5 @@
 <!-- ==========================================
-     GLOBAL QUICK CHECKOUT MODAL (INSTANT BUY NOW)
+     GLOBAL QUICK CHECKOUT MODAL (CASHFREE PAYMENTS)
      ========================================== -->
 <div id="quick-checkout-modal-backdrop" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 transition-opacity duration-300 opacity-0 pointer-events-none" onclick="closeQuickCheckoutModal()"></div>
 
@@ -16,13 +16,13 @@
         <div class="relative bg-gradient-to-r from-brand-900 via-brand-800 to-brand-900 text-white px-5 py-4 shrink-0 flex items-center justify-between">
             <div class="flex items-center gap-2.5">
                 <div class="w-8 h-8 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-brand-300 flex items-center justify-center text-sm shadow-inner">
-                    <i class="fa-solid fa-book-open text-emerald-400 text-xs"></i>
+                    <i class="fa-solid fa-shield-halved text-emerald-400 text-xs"></i>
                 </div>
                 <div>
                     <h3 id="quick-checkout-title" class="font-brand text-xl sm:text-2xl text-white tracking-wide uppercase leading-tight">
-                        Instant Checkout
+                        Secure Checkout
                     </h3>
-                    <p class="text-[11px] text-brand-200/90 font-medium leading-none mt-0.5">Instant DRM-Free PDF Download</p>
+                    <p class="text-[11px] text-brand-200/90 font-medium leading-none mt-0.5">Instant DRM-Free PDF &bull; Cashfree Verified</p>
                 </div>
             </div>
 
@@ -39,6 +39,12 @@
         <!-- Modal Body -->
         <div class="p-5 sm:p-6 space-y-4 bg-slate-50/40">
             
+            <!-- Error Banner -->
+            <div id="checkout-error-banner" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation text-rose-500 shrink-0"></i>
+                <span id="checkout-error-text">Payment initialization failed.</span>
+            </div>
+
             <!-- Selected Book Card -->
             <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
                 <div class="w-12 h-16 rounded-xl overflow-hidden bg-slate-900 shrink-0 shadow-2xs border border-slate-200 relative">
@@ -56,7 +62,7 @@
             </div>
 
             <!-- Checkout Form -->
-            <form id="quick-checkout-form" method="POST" action="" class="space-y-3.5">
+            <form id="quick-checkout-form" method="POST" action="" class="space-y-3.5" onsubmit="handleQuickCheckoutSubmit(event)">
                 @csrf
                 
                 <!-- Full Name -->
@@ -99,7 +105,7 @@
 
                 <!-- Mobile Number -->
                 <div>
-                    <label for="checkout-customer-mobile" class="block text-xs font-semibold text-slate-700 mb-1.5">Mobile Number</label>
+                    <label for="checkout-customer-mobile" class="block text-xs font-semibold text-slate-700 mb-1.5">Mobile Number (UPI / Cards)</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                             <i class="fa-solid fa-phone text-sm"></i>
@@ -121,9 +127,15 @@
                     id="checkout-submit-btn"
                     class="w-full h-12 sm:h-13 inline-flex items-center justify-center gap-2.5 px-6 rounded-xl sm:rounded-2xl bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl uppercase tracking-wider transition-all shadow-md shadow-brand-600/25 text-center cursor-pointer mt-2"
                 >
-                    <span id="checkout-submit-btn-text">Complete Order &amp; Download</span>
-                    <i class="fa-solid fa-arrow-down text-xs"></i>
+                    <span id="checkout-submit-btn-text">Proceed to Pay</span>
+                    <i class="fa-solid fa-lock text-xs"></i>
                 </button>
+
+                <!-- Payment Trust Footer -->
+                <div class="pt-2 flex items-center justify-center gap-2 text-[11px] text-slate-400">
+                    <i class="fa-solid fa-shield-check text-emerald-500 text-xs"></i>
+                    <span>Secured with 256-bit encryption by <strong>Cashfree Payments</strong></span>
+                </div>
 
             </form>
 
@@ -132,19 +144,29 @@
     </div>
 </div>
 
+<!-- Cashfree Web JS SDK v3 -->
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+
 <!-- ==========================================
      GLOBAL QUICK CHECKOUT JAVASCRIPT ENGINE
      ========================================== -->
 <script>
 (function() {
     const isCustomerAuthenticated = @json(auth('customer')->check());
+    const cashfreeMode = @json(strtoupper((string) config('services.cashfree.env', 'SANDBOX')) === 'PRODUCTION' ? 'production' : 'sandbox');
     let currentBookKey = '';
     let currentBookPriceText = '';
+    let cashfreeInstance = null;
 
-    function updateFormAction() {
-        const form = document.getElementById('quick-checkout-form');
-        if (!form || !currentBookKey) return;
-        form.action = `/ebooks/${encodeURIComponent(currentBookKey)}/purchase`;
+    function getCashfree() {
+        if (!cashfreeInstance && typeof Cashfree !== 'undefined') {
+            try {
+                cashfreeInstance = Cashfree({ mode: cashfreeMode });
+            } catch (e) {
+                console.warn('Cashfree SDK initialization warning:', e);
+            }
+        }
+        return cashfreeInstance;
     }
 
     function resetSubmitButton() {
@@ -152,7 +174,7 @@
         if (btn) {
             btn.disabled = false;
             btn.classList.remove('opacity-75', 'cursor-wait');
-            btn.innerHTML = `<span id="checkout-submit-btn-text">Complete Order &amp; Download ${currentBookPriceText ? `(${currentBookPriceText})` : ''}</span> <i class="fa-solid fa-arrow-down text-xs"></i>`;
+            btn.innerHTML = `<span id="checkout-submit-btn-text">Proceed to Pay ${currentBookPriceText ? `(${currentBookPriceText})` : ''}</span> <i class="fa-solid fa-lock text-xs"></i>`;
         }
     }
 
@@ -161,7 +183,23 @@
         if (btn) {
             btn.disabled = true;
             btn.classList.add('opacity-75', 'cursor-wait');
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>${message || 'Processing...'}</span>`;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>${message || 'Connecting to Cashfree...'}</span>`;
+        }
+    }
+
+    function showCheckoutError(msg) {
+        const banner = document.getElementById('checkout-error-banner');
+        const text = document.getElementById('checkout-error-text');
+        if (banner && text) {
+            text.textContent = msg || 'An error occurred. Please try again.';
+            banner.classList.remove('hidden');
+        }
+    }
+
+    function hideCheckoutError() {
+        const banner = document.getElementById('checkout-error-banner');
+        if (banner) {
+            banner.classList.add('hidden');
         }
     }
 
@@ -185,25 +223,7 @@
         currentBookKey = bookData.slug || bookData.id;
         currentBookPriceText = bookData.price || '';
 
-        // If customer is already authenticated, direct POST
-        if (isCustomerAuthenticated) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = `/ebooks/${encodeURIComponent(currentBookKey)}/purchase`;
-
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = csrfToken;
-            form.appendChild(csrfInput);
-
-            document.body.appendChild(form);
-            form.submit();
-            return;
-        }
-
-        // Open the Quick Checkout Modal
+        // Open the Quick Checkout Modal for instant confirmation and Cashfree drop-in
         openQuickCheckoutModal(bookData);
     };
 
@@ -217,12 +237,11 @@
 
         const backdrop = document.getElementById('quick-checkout-modal-backdrop');
         const modal = document.getElementById('quick-checkout-modal');
-        const form = document.getElementById('quick-checkout-form');
-        if (!backdrop || !modal || !form) return;
+        if (!backdrop || !modal) return;
 
         currentBookKey = bookData.slug || bookData.id;
         currentBookPriceText = bookData.price || '';
-        updateFormAction();
+        hideCheckoutError();
 
         // Update book details in modal
         const titleEl = document.getElementById('checkout-book-title');
@@ -251,9 +270,7 @@
             imgEl.src = bookData.image;
         }
 
-        if (btnTextEl) {
-            btnTextEl.textContent = `Complete Order & Download (${bookData.price || ''})`;
-        }
+        resetSubmitButton();
 
         backdrop.classList.remove('pointer-events-none', 'opacity-0');
         backdrop.classList.add('pointer-events-auto', 'opacity-100');
@@ -288,22 +305,79 @@
             backdrop.classList.add('pointer-events-none');
             modal.classList.add('pointer-events-none');
             document.body.style.overflow = '';
+            resetSubmitButton();
         }, 300);
+    };
+
+    window.handleQuickCheckoutSubmit = async function(event) {
+        event.preventDefault();
+        hideCheckoutError();
+        setSubmitLoading('Initiating Cashfree Payment...');
+
+        const form = document.getElementById('quick-checkout-form');
+        const formData = new FormData(form);
+        const name = formData.get('name') || '';
+        const email = formData.get('email') || '';
+        const mobile = formData.get('mobile') || '';
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+        try {
+            const response = await fetch(`/ebooks/${encodeURIComponent(currentBookKey)}/purchase`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ name, email, mobile })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Payment initiation failed.');
+            }
+
+            // If Cashfree session is returned
+            if (data.gateway === 'cashfree' && data.payment_session_id) {
+                const cf = getCashfree();
+                if (cf) {
+                    cf.checkout({
+                        paymentSessionId: data.payment_session_id,
+                        redirectTarget: "_self"
+                    }).then(function(result) {
+                        if (result.error) {
+                            showCheckoutError(result.error.message || 'Payment failed.');
+                            resetSubmitButton();
+                        }
+                    });
+                    return;
+                } else if (data.return_url) {
+                    window.location.href = data.return_url;
+                    return;
+                }
+            }
+
+            // Direct fulfillment / fallback
+            if (data.redirect_url) {
+                window.location.href = data.redirect_url;
+                return;
+            }
+
+            // Fallback reload
+            window.location.reload();
+        } catch (err) {
+            console.error('Checkout error:', err);
+            showCheckoutError(err.message || 'Payment connection error. Please try again.');
+            resetSubmitButton();
+        }
     };
 
     // Close on Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeQuickCheckoutModal();
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('quick-checkout-form');
-        if (form) {
-            form.addEventListener('submit', function() {
-                setSubmitLoading('Processing order...');
-            });
         }
     });
 })();

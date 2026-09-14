@@ -48,15 +48,13 @@ class AppSettingController extends Controller
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:1000'],
             'meta_keywords' => ['nullable', 'string', 'max:500'],
-            'easebuzz_enabled' => ['nullable', 'boolean'],
-            'razorpay_enabled' => ['nullable', 'boolean'],
+            'cashfree_enabled' => ['nullable', 'boolean'],
             'remove_logo_dark' => ['nullable', 'boolean'],
             'remove_logo_light' => ['nullable', 'boolean'],
             'remove_favicon' => ['nullable', 'boolean'],
         ]);
 
-        $validated['easebuzz_enabled'] = $request->boolean('easebuzz_enabled');
-        $validated['razorpay_enabled'] = $request->boolean('razorpay_enabled');
+        $validated['cashfree_enabled'] = $request->boolean('cashfree_enabled');
 
         // Handle Dark Logo removal / upload
         if ($request->boolean('remove_logo_dark')) {

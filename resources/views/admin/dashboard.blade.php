@@ -259,7 +259,8 @@
                 </div>
                 <div>
                     <h2 class="text-base font-bold text-slate-900">Recent Customer Orders</h2>
-                    <p class="text-xs text-slate-500">Latest transactions processed through Easebuzz payment gateway</p>
+                    <p class="text-xs text-slate-500">Latest transactions processed through Cashfree Payments</p>
+
                 </div>
             </div>
             <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-600 hover:text-brand-700 transition">

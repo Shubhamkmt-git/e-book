@@ -19,11 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         $middleware->validateCsrfTokens(except: [
-            'payments/easebuzz/webhook',
+            'payments/cashfree/webhook',
+            'payments/cashfree/callback*',
             'payments/webhook',
-            'payments/easebuzz/return/*',
-            'payments/razorpay/webhook',
-            'payments/razorpay/callback/*',
         ]);
 
         $middleware->alias([

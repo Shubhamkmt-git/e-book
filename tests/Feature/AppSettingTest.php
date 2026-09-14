@@ -146,20 +146,17 @@ class AppSettingTest extends TestCase
         $response = $this->actingAs($this->admin)
             ->put(route('admin.app-setting.update'), [
                 'app_name' => 'E-Book Platform',
-                'easebuzz_enabled' => 0,
-                'razorpay_enabled' => 1,
+                'cashfree_enabled' => 1,
             ]);
 
         $response->assertRedirect(route('admin.app-setting.index'));
         $this->assertDatabaseHas('app_settings', [
             'id' => 1,
-            'easebuzz_enabled' => false,
-            'razorpay_enabled' => true,
+            'cashfree_enabled' => true,
         ]);
 
         $setting = AppSetting::getSettings();
-        $this->assertFalse($setting->isEasebuzzEnabled());
-        $this->assertTrue($setting->isRazorpayEnabled());
+        $this->assertTrue($setting->isCashfreeEnabled());
     }
 
     public function test_app_setting_url_validation(): void

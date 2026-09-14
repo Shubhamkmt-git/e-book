@@ -25,8 +25,7 @@ class AppSetting extends Model
     protected $fillable = [
         'app_name',
         'app_short_description',
-        'easebuzz_enabled',
-        'razorpay_enabled',
+        'cashfree_enabled',
         'logo_dark',
         'logo_light',
         'favicon',
@@ -50,8 +49,7 @@ class AppSetting extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'easebuzz_enabled' => 'boolean',
-        'razorpay_enabled' => 'boolean',
+        'cashfree_enabled' => 'boolean',
     ];
 
     /**
@@ -64,8 +62,7 @@ class AppSetting extends Model
             [
                 'app_name' => config('app.name', 'E-Book CMS'),
                 'app_short_description' => 'A modern and intuitive digital e-book library platform.',
-                'easebuzz_enabled' => true,
-                'razorpay_enabled' => true,
+                'cashfree_enabled' => true,
                 'meta_title' => config('app.name', 'E-Book CMS').' - Digital Library Platform',
                 'meta_description' => 'Discover, read, and explore high quality digital e-books and publications.',
                 'meta_keywords' => 'ebooks, digital library, books, pdf, reading',
@@ -74,19 +71,11 @@ class AppSetting extends Model
     }
 
     /**
-     * Check if Easebuzz payment gateway is enabled.
+     * Check if Cashfree payment gateway is enabled.
      */
-    public function isEasebuzzEnabled(): bool
+    public function isCashfreeEnabled(): bool
     {
-        return (bool) ($this->easebuzz_enabled ?? true);
-    }
-
-    /**
-     * Check if Razorpay payment gateway is enabled.
-     */
-    public function isRazorpayEnabled(): bool
-    {
-        return (bool) ($this->razorpay_enabled ?? true);
+        return (bool) ($this->cashfree_enabled ?? true);
     }
 
     /**
@@ -94,7 +83,7 @@ class AppSetting extends Model
      */
     public function hasAnyPaymentGatewayEnabled(): bool
     {
-        return $this->isEasebuzzEnabled() || $this->isRazorpayEnabled();
+        return $this->isCashfreeEnabled();
     }
 
     /**

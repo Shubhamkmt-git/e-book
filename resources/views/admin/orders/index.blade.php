@@ -158,8 +158,9 @@
                                 </button>
                             </div>
                             <span class="inline-block mt-1 text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
-                                Easebuzz
+                                {{ $order->payment_method ?: 'Cashfree' }}
                             </span>
+
                         </td>
 
                         <!-- Customer -->
@@ -308,8 +309,9 @@
                                     @if(request('search') || request('status') || request('date_from') || request('date_to'))
                                         No transactions match your current search or filter criteria.
                                     @else
-                                        Customer orders and Easebuzz payments will automatically appear here once purchases are made.
+                                        Customer orders and verified payments will automatically appear here once purchases are made.
                                     @endif
+
                                 </p>
                                 @if(request('search') || request('status') || request('date_from') || request('date_to'))
                                 <div>

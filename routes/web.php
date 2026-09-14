@@ -30,9 +30,13 @@ Route::get('/ebooks', [BookController::class, 'index'])->name('books.index');
 Route::get('/ebooks/{identifier}', [BookController::class, 'show'])->name('books.show');
 Route::post('/ebooks/{identifier}/reviews', [BookController::class, 'storeReview'])->name('books.reviews.store');
 Route::get('/ebooks/{identifier}/preview', [BookController::class, 'downloadPreview'])->name('books.preview');
-Route::match(['get', 'post'], '/ebooks/{identifier}/purchase', [PaymentController::class, 'directPurchase'])->name('payments.initiate');
+Route::match(['get', 'post'], '/ebooks/{identifier}/purchase', [PaymentController::class, 'initiatePayment'])->name('payments.initiate');
 
+Route::post('/ebooks/{identifier}/purchase/cashfree', [PaymentController::class, 'initiatePayment'])->name('payments.cashfree.initiate');
+Route::match(['get', 'post'], '/payments/cashfree/callback', [PaymentController::class, 'cashfreeCallback'])->name('payments.cashfree.callback');
+Route::post('/payments/cashfree/webhook', [PaymentController::class, 'cashfreeWebhook'])->name('payments.cashfree.webhook');
 Route::get('/purchases/{purchase}/download', [PaymentController::class, 'downloadPurchasedEbook'])->name('purchases.download');
+
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
 Route::get('/categories/{slug}', [CategoryController::class, 'show'])->name('categories.show');
 Route::get('/privacy-policy', [LegalPageController::class, 'privacyPolicy'])->name('privacy-policy');

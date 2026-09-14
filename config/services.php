@@ -51,4 +51,11 @@ return [
         'auth_domain' => env('FIREBASE_AUTH_DOMAIN', env('FIREBASE_PROJECT_ID') ? env('FIREBASE_PROJECT_ID').'.firebaseapp.com' : null),
     ],
 
+    'cashfree' => [
+        'app_id' => env('CASHFREE_APP_ID'),
+        'secret_key' => env('CASHFREE_SECRET_KEY'),
+        'env' => env('CASHFREE_ENV', 'SANDBOX'),
+        'api_version' => env('CASHFREE_API_VERSION', '2023-08-01'),
+    ],
+
 ];

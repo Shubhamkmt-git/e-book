@@ -93,8 +93,9 @@
                         </div>
                         <h2 class="font-bold text-slate-900 text-sm uppercase tracking-wide">Transaction & Payment Details</h2>
                     </div>
-                    <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">Easebuzz Gateway</span>
+                    <span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 capitalize">{{ $order->payment_method ?: 'Cashfree' }} Gateway</span>
                 </div>
+
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
@@ -206,17 +207,18 @@
                 </div>
             </div>
 
-            <!-- Easebuzz Raw Payload & Gateway Response -->
+            <!-- Gateway Response Payload -->
             <div class="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-2xs space-y-3">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                     <div class="flex items-center gap-2.5">
                         <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center text-sm">
                             <i class="fa-solid fa-code"></i>
                         </div>
-                        <h2 class="font-bold text-slate-900 text-sm uppercase tracking-wide">Gateway Response Payload (Easebuzz)</h2>
+                        <h2 class="font-bold text-slate-900 text-sm uppercase tracking-wide">Gateway Response Payload (Cashfree / PG)</h2>
                     </div>
                     <span class="text-[11px] text-slate-400 font-mono">JSON</span>
                 </div>
+
 
                 @if(!empty($order->gateway_response) && is_array($order->gateway_response))
                 <div class="bg-slate-900 text-slate-100 p-4 rounded-xl text-xs font-mono overflow-x-auto max-h-80 border border-slate-800">

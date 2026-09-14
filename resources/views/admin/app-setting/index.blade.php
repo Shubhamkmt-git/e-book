@@ -632,23 +632,23 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Easebuzz Gateway Card -->
+            <div class="grid grid-cols-1 gap-6">
+                <!-- Cashfree Gateway Card -->
                 <div class="p-5 rounded-2xl border border-slate-200/90 bg-slate-50/50 hover:bg-slate-50 transition flex flex-col justify-between space-y-4">
                     <div class="flex items-start justify-between gap-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-black text-xs">
-                                EB
+                            <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-black text-xs">
+                                CF
                             </div>
                             <div>
-                                <h3 class="text-sm font-bold text-slate-900">Easebuzz Payment Gateway</h3>
-                                <p class="text-xs text-slate-500">UPI, Net Banking, Cards & Wallets</p>
+                                <h3 class="text-sm font-bold text-slate-900">Cashfree Payments</h3>
+                                <p class="text-xs text-slate-500">UPI, Net Banking, Credit/Debit Cards, QR & Wallets</p>
                             </div>
                         </div>
 
                         <!-- Toggle Switch -->
                         <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" name="easebuzz_enabled" value="1" class="sr-only peer" {{ old('easebuzz_enabled', $setting->easebuzz_enabled) ? 'checked' : '' }}>
+                            <input type="checkbox" name="cashfree_enabled" value="1" class="sr-only peer" {{ old('cashfree_enabled', $setting->cashfree_enabled) ? 'checked' : '' }}>
                             <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
                         </label>
                     </div>
@@ -656,58 +656,22 @@
                     <div class="pt-3 border-t border-slate-200/60 flex items-center justify-between text-xs">
                         <span class="text-slate-500 flex items-center gap-1.5">
                             <i class="fa-solid fa-key text-[10px] text-slate-400"></i>
-                            Environment Status:
+                            Environment Status ({{ config('services.cashfree.env', 'SANDBOX') }}):
                         </span>
-                        @if(config('services.easebuzz.key') && config('services.easebuzz.salt'))
+                        @if(config('services.cashfree.app_id') && config('services.cashfree.secret_key'))
                             <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                 <i class="fa-solid fa-circle-check text-[9px]"></i> Configured
                             </span>
                         @else
                             <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                                <i class="fa-solid fa-triangle-exclamation text-[9px]"></i> Key/Salt Missing in .env
-                            </span>
-                        @endif
-                    </div>
-                </div>
-
-                <!-- Razorpay Gateway Card -->
-                <div class="p-5 rounded-2xl border border-slate-200/90 bg-slate-50/50 hover:bg-slate-50 transition flex flex-col justify-between space-y-4">
-                    <div class="flex items-start justify-between gap-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center font-black text-xs">
-                                RZ
-                            </div>
-                            <div>
-                                <h3 class="text-sm font-bold text-slate-900">Razorpay Payment Gateway</h3>
-                                <p class="text-xs text-slate-500">Fast UPI, Cards, International & Net Banking</p>
-                            </div>
-                        </div>
-
-                        <!-- Toggle Switch -->
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" name="razorpay_enabled" value="1" class="sr-only peer" {{ old('razorpay_enabled', $setting->razorpay_enabled) ? 'checked' : '' }}>
-                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
-                        </label>
-                    </div>
-
-                    <div class="pt-3 border-t border-slate-200/60 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 flex items-center gap-1.5">
-                            <i class="fa-solid fa-key text-[10px] text-slate-400"></i>
-                            Environment Status:
-                        </span>
-                        @if(config('services.razorpay.key') && config('services.razorpay.secret'))
-                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                <i class="fa-solid fa-circle-check text-[9px]"></i> Configured
-                            </span>
-                        @else
-                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                                <i class="fa-solid fa-triangle-exclamation text-[9px]"></i> Key/Secret Missing in .env
+                                <i class="fa-solid fa-triangle-exclamation text-[9px]"></i> APP_ID/SECRET_KEY Missing in .env
                             </span>
                         @endif
                     </div>
                 </div>
             </div>
         </div>
+
 
         <!-- Bottom Actions Sticky Bar -->
         <div class="flex items-center justify-end gap-4 pt-4 border-t border-slate-200/80">

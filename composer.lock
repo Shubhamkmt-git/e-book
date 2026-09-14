@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c8f8d9659a1aba816a794953506542e8",
+    "content-hash": "b1b6bce8572a58ca8f5b47709a3fe95f",
     "packages": [
         {
             "name": "brick/math",
@@ -138,6 +138,65 @@
                 }
             ],
             "time": "2026-09-06T14:11:38+00:00"
+        },
+        {
+            "name": "cashfree/cashfree-pg",
+            "version": "6.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cashfree/cashfree-pg-sdk-php.git",
+                "reference": "15cdf3d08d6f7f4798c76fe3511d7ef0d7ab3c7b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cashfree/cashfree-pg-sdk-php/zipball/15cdf3d08d6f7f4798c76fe3511d7ef0d7ab3c7b",
+                "reference": "15cdf3d08d6f7f4798c76fe3511d7ef0d7ab3c7b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "guzzlehttp/guzzle": "^7.3",
+                "guzzlehttp/psr7": "^1.7 || ^2.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.5",
+                "phpunit/phpunit": "^8.0 || ^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "OpenAPI\\Client\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "unlicense"
+            ],
+            "authors": [
+                {
+                    "name": "OpenAPI",
+                    "homepage": "https://openapi-generator.tech"
+                }
+            ],
+            "description": "Cashfree's Payment Gateway APIs provide developers with a streamlined pathway to integrate advanced payment processing capabilities into their applications, platforms and websites.",
+            "homepage": "https://openapi-generator.tech",
+            "keywords": [
+                "api",
+                "openapi",
+                "openapi-generator",
+                "openapitools",
+                "php",
+                "rest",
+                "sdk"
+            ],
+            "support": {
+                "issues": "https://github.com/cashfree/cashfree-pg-sdk-php/issues",
+                "source": "https://github.com/cashfree/cashfree-pg-sdk-php/tree/6.0.5"
+            },
+            "time": "2026-05-18T09:32:25+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
