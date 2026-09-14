@@ -60,13 +60,33 @@
                 </div>
             @endif
 
+            <!-- Tab Mode Switcher -->
+            <div class="mt-4 flex p-1 bg-slate-100 rounded-xl">
+                <button 
+                    type="button" 
+                    id="tab-signin" 
+                    onclick="setAuthMode('signin')" 
+                    class="flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-900 bg-white shadow-2xs cursor-pointer"
+                >
+                    Sign In
+                </button>
+                <button 
+                    type="button" 
+                    id="tab-signup" 
+                    onclick="setAuthMode('signup')" 
+                    class="flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-500 hover:text-slate-900 cursor-pointer"
+                >
+                    Create Account
+                </button>
+            </div>
+
             <!-- Firebase Google Quick Sign-In -->
-            <div class="mt-5">
+            <div class="mt-4">
                 <button 
                     type="button" 
                     id="btn-google-auth"
                     onclick="handleGoogleSignIn(event)" 
-                    class="w-full h-11 inline-flex items-center justify-center gap-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 shadow-2xs transition-all cursor-pointer"
+                    class="w-full h-10 inline-flex items-center justify-center gap-2.5 px-4 rounded-xl bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 shadow-2xs transition-all cursor-pointer"
                 >
                     <svg class="w-4 h-4" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -78,19 +98,20 @@
                 </button>
 
                 <!-- Minimal Divider -->
-                <div class="relative flex py-4 items-center">
+                <div class="relative flex py-3.5 items-center">
                     <div class="flex-grow border-t border-slate-200"></div>
-                    <span class="flex-shrink mx-3 text-[10px] font-medium uppercase tracking-wider text-slate-400">or sign in with OTP</span>
+                    <span class="flex-shrink mx-3 text-[10px] font-medium uppercase tracking-wider text-slate-400">or with phone OTP</span>
                     <div class="flex-grow border-t border-slate-200"></div>
                 </div>
             </div>
 
             <!-- ==========================================
-                 STEP 1: PHONE NUMBER & DETAILS
+                 STEP 1: DETAILS & PHONE NUMBER
                  ========================================== -->
-            <div id="auth-phone-step" class="space-y-3.5">
-                <div>
-                    <label for="customer-name" class="block text-xs font-medium text-slate-700 mb-1">Full Name <span class="text-slate-400 font-normal">(optional)</span></label>
+            <div id="auth-phone-step" class="space-y-3">
+                <!-- Signup-Only Fields: Name & Email -->
+                <div id="field-signup-name" class="hidden">
+                    <label for="customer-name" class="block text-xs font-medium text-slate-700 mb-1">Full Name</label>
                     <input 
                         type="text" 
                         id="customer-name" 
@@ -100,8 +121,8 @@
                     >
                 </div>
 
-                <div>
-                    <label for="customer-email" class="block text-xs font-medium text-slate-700 mb-1">Email Address <span class="text-slate-400 font-normal">(optional)</span></label>
+                <div id="field-signup-email" class="hidden">
+                    <label for="customer-email" class="block text-xs font-medium text-slate-700 mb-1">Email Address</label>
                     <input 
                         type="email" 
                         id="customer-email" 
@@ -111,6 +132,7 @@
                     >
                 </div>
 
+                <!-- Common Field: Mobile Number -->
                 <div>
                     <label for="customer-phone" class="block text-xs font-medium text-slate-700 mb-1">Mobile Number</label>
                     <div class="flex items-center gap-2">
@@ -127,7 +149,7 @@
                             class="flex-1 h-10 px-3.5 rounded-xl bg-slate-50/50 text-slate-900 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 focus:outline-none transition font-medium"
                         >
                     </div>
-                    <p class="text-[11px] text-slate-400 mt-1">We will send a 6-digit verification code via SMS</p>
+                    <p class="text-[11px] text-slate-400 mt-1">We will send a 6-digit OTP code via SMS</p>
                 </div>
 
                 <!-- Invisible Recaptcha Container for Firebase -->
@@ -142,6 +164,18 @@
                     <span id="send-otp-text">Send OTP</span>
                     <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </button>
+
+                <!-- Bottom Toggle Helper Text -->
+                <div class="text-center pt-2">
+                    <p id="toggle-signin-prompt" class="text-xs text-slate-500">
+                        Don't have an account? 
+                        <button type="button" onclick="setAuthMode('signup')" class="text-brand-600 font-semibold hover:underline cursor-pointer">Sign Up</button>
+                    </p>
+                    <p id="toggle-signup-prompt" class="hidden text-xs text-slate-500">
+                        Already have an account? 
+                        <button type="button" onclick="setAuthMode('signin')" class="text-brand-600 font-semibold hover:underline cursor-pointer">Sign In</button>
+                    </p>
+                </div>
             </div>
 
             <!-- ==========================================
@@ -222,9 +256,49 @@
         projectId: @json(config('services.firebase.project_id')),
     };
 
+    let authMode = 'signin';
     let firebaseAuthInstance = null;
     let confirmationResult = null;
     let resendInterval = null;
+
+    function setAuthMode(mode) {
+        authMode = mode;
+        clearAuthAlert();
+
+        const tabSignIn = document.getElementById('tab-signin');
+        const tabSignUp = document.getElementById('tab-signup');
+        const nameField = document.getElementById('field-signup-name');
+        const emailField = document.getElementById('field-signup-email');
+        const signinPrompt = document.getElementById('toggle-signin-prompt');
+        const signupPrompt = document.getElementById('toggle-signup-prompt');
+        const sendBtnText = document.getElementById('send-otp-text');
+
+        if (mode === 'signup') {
+            tabSignUp.classList.add('text-slate-900', 'bg-white', 'shadow-2xs');
+            tabSignUp.classList.remove('text-slate-500');
+
+            tabSignIn.classList.remove('text-slate-900', 'bg-white', 'shadow-2xs');
+            tabSignIn.classList.add('text-slate-500');
+
+            nameField.classList.remove('hidden');
+            emailField.classList.remove('hidden');
+            signinPrompt.classList.add('hidden');
+            signupPrompt.classList.remove('hidden');
+            if (sendBtnText) sendBtnText.textContent = 'Send OTP';
+        } else {
+            tabSignIn.classList.add('text-slate-900', 'bg-white', 'shadow-2xs');
+            tabSignIn.classList.remove('text-slate-500');
+
+            tabSignUp.classList.remove('text-slate-900', 'bg-white', 'shadow-2xs');
+            tabSignUp.classList.add('text-slate-500');
+
+            nameField.classList.add('hidden');
+            emailField.classList.add('hidden');
+            signinPrompt.classList.remove('hidden');
+            signupPrompt.classList.add('hidden');
+            if (sendBtnText) sendBtnText.textContent = 'Send OTP';
+        }
+    }
 
     try {
         if (typeof firebase !== 'undefined' && firebaseConfig.apiKey && firebaseConfig.projectId) {
@@ -252,11 +326,12 @@
         }
     }
 
-    function openAuthDrawer() {
+    function openAuthDrawer(mode = 'signin') {
         const backdrop = document.getElementById('auth-drawer-backdrop');
         const drawer = document.getElementById('auth-drawer');
         
         clearAuthAlert();
+        setAuthMode(mode);
 
         backdrop.classList.remove('pointer-events-none', 'opacity-0');
         backdrop.classList.add('opacity-100');
@@ -398,9 +473,28 @@
         const btn = document.getElementById('btn-send-phone-otp');
         const textSpan = document.getElementById('send-otp-text');
 
+        if (authMode === 'signup') {
+            const nameInput = document.getElementById('customer-name');
+            const emailInput = document.getElementById('customer-email');
+
+            if (!nameInput.value.trim()) {
+                showAuthAlert('error', 'Please enter your full name.');
+                nameInput.focus();
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailInput.value.trim() || !emailRegex.test(emailInput.value.trim())) {
+                showAuthAlert('error', 'Please enter a valid email address.');
+                emailInput.focus();
+                return;
+            }
+        }
+
         const rawPhone = phoneInput.value.trim().replace(/[^0-9+]/g, '');
         if (!rawPhone || rawPhone.length < 8) {
             showAuthAlert('error', 'Please enter a valid mobile number.');
+            phoneInput.focus();
             return;
         }
 
