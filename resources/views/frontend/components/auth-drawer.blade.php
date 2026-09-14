@@ -121,42 +121,6 @@
                 </div>
             </div>
 
-            <!-- Optional Password Container (Collapsible) -->
-            <div id="signin-password-wrapper" class="hidden space-y-4">
-                <div>
-                    <div class="flex items-center justify-between mb-1.5">
-                        <label for="signin-password" class="block text-xs font-semibold text-slate-700">Password</label>
-                    </div>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <i class="fa-solid fa-lock text-xs"></i>
-                        </div>
-                        <input 
-                            type="password" 
-                            id="signin-password" 
-                            name="password" 
-                            autocomplete="current-password"
-                            placeholder="••••••••"
-                            class="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition font-medium"
-                        >
-                        <button 
-                            type="button" 
-                            onclick="togglePasswordVisibility('signin-password', this)"
-                            class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
-                        >
-                            <i class="fa-regular fa-eye text-xs"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="flex items-center pt-1">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" name="remember" class="w-3.5 h-3.5 rounded text-brand-600 border-slate-300 focus:ring-brand-500">
-                        <span class="text-xs text-slate-500 font-medium">Remember me for 30 days</span>
-                    </label>
-                </div>
-            </div>
-
             <button 
                 type="submit" 
                 id="btn-signin-submit"
@@ -165,18 +129,6 @@
                 <span>Send Login Code</span>
                 <i class="fa-solid fa-arrow-right text-xs"></i>
             </button>
-
-            <!-- Password Login Toggle Option -->
-            <div class="text-center pt-1">
-                <button 
-                    type="button" 
-                    id="btn-toggle-password-mode"
-                    onclick="togglePasswordLoginMode()" 
-                    class="text-[11px] font-semibold text-slate-500 hover:text-brand-600 hover:underline cursor-pointer"
-                >
-                    Sign in with Password instead
-                </button>
-            </div>
 
             <p class="text-center text-xs text-slate-500 pt-2">
                 Don't have an account? 
@@ -356,7 +308,6 @@
 <script>
     let registeredEmail = '';
     let authOtpMode = 'signin'; // 'signin' or 'signup'
-    let isPasswordMode = false;
     let resendTimerInterval = null;
     let resendSecondsLeft = 0;
 
@@ -417,26 +368,6 @@
         }
     }
 
-    function togglePasswordLoginMode() {
-        isPasswordMode = !isPasswordMode;
-        const passwordWrapper = document.getElementById('signin-password-wrapper');
-        const passwordInput = document.getElementById('signin-password');
-        const submitBtnText = document.querySelector('#btn-signin-submit span');
-        const toggleBtn = document.getElementById('btn-toggle-password-mode');
-
-        if (isPasswordMode) {
-            passwordWrapper.classList.remove('hidden');
-            passwordInput.setAttribute('required', 'required');
-            submitBtnText.textContent = 'Sign In with Password';
-            toggleBtn.textContent = 'Sign in with OTP code instead';
-        } else {
-            passwordWrapper.classList.add('hidden');
-            passwordInput.removeAttribute('required');
-            submitBtnText.textContent = 'Send Login Code';
-            toggleBtn.textContent = 'Sign in with Password instead';
-        }
-    }
-
     function backFromOtpForm() {
         clearAuthAlert();
         const signupForm = document.getElementById('form-signup');
@@ -488,14 +419,6 @@
         const form = document.getElementById('form-signin');
         const submitBtn = document.getElementById('btn-signin-submit');
         const emailInput = document.getElementById('signin-email');
-        const passwordInput = document.getElementById('signin-password');
-
-        // If in password mode and password filled, standard POST
-        if (isPasswordMode && passwordInput.value) {
-            form.action = '{{ route('customer.login') }}';
-            form.submit();
-            return;
-        }
 
         registeredEmail = emailInput.value.trim().toLowerCase();
         authOtpMode = 'signin';
@@ -716,18 +639,6 @@
                 resendBtn.textContent = `Resend in ${resendSecondsLeft}s`;
             }
         }, 1000);
-    }
-
-    function togglePasswordVisibility(inputId, btn) {
-        const input = document.getElementById(inputId);
-        const icon = btn.querySelector('i');
-        if (input.type === 'password') {
-            input.type = 'text';
-            icon.className = 'fa-regular fa-eye-slash text-xs text-brand-600';
-        } else {
-            input.type = 'password';
-            icon.className = 'fa-regular fa-eye text-xs text-slate-400';
-        }
     }
 
     // Close on Escape key press

@@ -49,8 +49,6 @@ class CustomerEmailOtpTest extends TestCase
         $response = $this->postJson(route('customer.send-otp'), [
             'name' => 'Duplicate User',
             'email' => 'existing@example.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
         ]);
 
         $response->assertStatus(422)
@@ -62,7 +60,6 @@ class CustomerEmailOtpTest extends TestCase
         $otp = CustomerOtp::generateFor(
             email: 'bob@example.com',
             name: 'Bob Bookworm',
-            password: 'secretPassword88',
             mobile: '9123456780'
         );
 
@@ -96,8 +93,7 @@ class CustomerEmailOtpTest extends TestCase
     {
         CustomerOtp::generateFor(
             email: 'charlie@example.com',
-            name: 'Charlie',
-            password: 'secretPassword88'
+            name: 'Charlie'
         );
 
         $response = $this->postJson(route('customer.verify-otp'), [
@@ -121,8 +117,7 @@ class CustomerEmailOtpTest extends TestCase
 
         $otp = CustomerOtp::generateFor(
             email: 'david@example.com',
-            name: 'David',
-            password: 'secretPassword88'
+            name: 'David'
         );
 
         // Immediate resend should trigger 429

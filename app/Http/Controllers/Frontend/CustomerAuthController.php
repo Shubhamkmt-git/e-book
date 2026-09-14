@@ -229,7 +229,6 @@ class CustomerAuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:customers,email'],
             'mobile' => ['nullable', 'string', 'max:20'],
-            'password' => ['nullable', 'string', 'min:8'],
         ]);
 
         $email = strtolower(trim($validated['email']));
@@ -249,7 +248,7 @@ class CustomerAuthController extends Controller
         $otp = CustomerOtp::generateFor(
             email: $email,
             name: $validated['name'],
-            password: $validated['password'] ?? Str::random(24),
+            password: null,
             mobile: $validated['mobile'] ?? null
         );
 

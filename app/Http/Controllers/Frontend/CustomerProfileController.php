@@ -7,7 +7,6 @@ use App\Models\Customer;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class CustomerProfileController extends Controller
 {
@@ -52,16 +51,11 @@ class CustomerProfileController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:customers,email,'.$customer->id],
             'mobile' => ['nullable', 'string', 'max:20', 'unique:customers,mobile,'.$customer->id],
-            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
         $customer->name = $validated['name'];
         $customer->email = $validated['email'];
         $customer->mobile = $validated['mobile'] ?? null;
-
-        if (! empty($validated['password'])) {
-            $customer->password = Hash::make($validated['password']);
-        }
 
         $customer->save();
 

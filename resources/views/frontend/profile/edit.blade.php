@@ -13,7 +13,7 @@
             </a>
             <div>
                 <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 tracking-tight">Edit Profile</h1>
-                <p class="text-slate-500 text-sm mt-1">Update your personal information and password.</p>
+                <p class="text-slate-500 text-sm mt-1">Update your personal account information.</p>
             </div>
         </div>
 
@@ -50,32 +50,6 @@
                         @error('mobile')
                             <p class="mt-1.5 text-xs font-semibold text-rose-500">{{ $message }}</p>
                         @enderror
-                    </div>
-                </div>
-
-                <hr class="border-slate-100 my-6">
-
-                <div class="space-y-6">
-                    <div>
-                        <h3 class="text-lg font-bold text-slate-800">Change Password</h3>
-                        <p class="text-sm text-slate-500">Leave blank if you don't want to change your password.</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- New Password -->
-                        <div>
-                            <label for="password" class="block text-sm font-bold text-slate-700 mb-1.5">New Password</label>
-                            <input type="password" name="password" id="password" class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all">
-                            @error('password')
-                                <p class="mt-1.5 text-xs font-semibold text-rose-500">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Confirm Password -->
-                        <div>
-                            <label for="password_confirmation" class="block text-sm font-bold text-slate-700 mb-1.5">Confirm New Password</label>
-                            <input type="password" name="password_confirmation" id="password_confirmation" class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all">
-                        </div>
                     </div>
                 </div>
 
