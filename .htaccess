@@ -9,8 +9,11 @@
     RewriteRule ^\.(.*)$ - [F,L]
 
     # Block direct access to sensitive framework directories and files
-    RewriteRule ^(app|bootstrap|config|database|resources|routes|storage|tests|vendor)(/.*)?$ - [F,L,NC]
+    RewriteRule ^(app|bootstrap|config|database|resources|routes|tests|vendor)(/.*)?$ - [F,L,NC]
     RewriteRule ^(artisan|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|vite\.config\.js) - [F,L,NC]
+
+    # Block direct access to private storage folders
+    RewriteRule ^storage/(framework|logs)(/.*)?$ - [F,L,NC]
 
     # Send Requests To Public Directory
     RewriteCond %{REQUEST_URI} !^/public/
