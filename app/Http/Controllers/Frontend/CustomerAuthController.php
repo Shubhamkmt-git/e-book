@@ -76,6 +76,151 @@ class CustomerAuthController extends Controller
     }
 
     /**
+     * Send email OTP for customer login.
+     */
+    public function sendLoginOtp(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'email' => ['required', 'string', 'email'],
+        ]);
+
+        $email = strtolower(trim($validated['email']));
+
+        // Rate-limiting: check if OTP was sent within the last 30 seconds
+        $existingOtp = CustomerOtp::where('email', $email)->latest()->first();
+        if ($existingOtp && $existingOtp->created_at && $existingOtp->created_at->diffInSeconds(now()) < 30) {
+            $waitTime = 30 - $existingOtp->created_at->diffInSeconds(now());
+
+            return response()->json([
+                'success' => false,
+                'message' => "Please wait {$waitTime}s before requesting a new code.",
+            ], 429);
+        }
+
+        $customer = Customer::where('email', $email)->first();
+        $customerName = $customer?->name;
+
+        // Generate OTP record
+        $otp = CustomerOtp::generateFor(
+            email: $email,
+            name: $customerName
+        );
+
+        // Send OTP email
+        try {
+            Mail::to($email)->send(
+                new CustomerOtpMail(
+                    otpCode: $otp->otp_code,
+                    customerName: $customerName,
+                    email: $email
+                )
+            );
+        } catch (\Throwable $e) {
+            Log::error('Failed to send login OTP email: '.$e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Unable to dispatch login verification email. Please try again.',
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'A 6-digit login code has been sent to your email.',
+            'email' => $email,
+            'is_existing' => (bool) $customer,
+        ]);
+    }
+
+    /**
+     * Verify login OTP and authenticate customer.
+     */
+    public function verifyLoginOtp(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'email' => ['required', 'string', 'email'],
+            'otp' => ['required', 'string', 'size:6'],
+        ]);
+
+        $email = strtolower(trim($validated['email']));
+        $otpCode = trim($validated['otp']);
+
+        $otpRecord = CustomerOtp::where('email', $email)->latest()->first();
+
+        if (! $otpRecord) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No active verification code found for this email. Please request a new one.',
+            ], 422);
+        }
+
+        if ($otpRecord->isExpired()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your verification code has expired. Please request a new code.',
+            ], 422);
+        }
+
+        if ($otpRecord->attempts >= 5) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Too many incorrect attempts. Please request a new verification code.',
+            ], 429);
+        }
+
+        if (! $otpRecord->isValid($otpCode)) {
+            $otpRecord->increment('attempts');
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid verification code. Please check and try again.',
+            ], 422);
+        }
+
+        // Find existing customer or auto-create account
+        $customer = Customer::where('email', $email)->first();
+        if (! $customer) {
+            $defaultName = $otpRecord->name ?: (explode('@', $email)[0] ?? 'Reader');
+            $customer = Customer::create([
+                'name' => ucwords(str_replace(['.', '_', '-'], ' ', $defaultName)),
+                'email' => $email,
+                'mobile' => $otpRecord->mobile,
+                'password' => $otpRecord->password_hash ?: Hash::make(Str::random(16)),
+                'email_verified_at' => now(),
+            ]);
+        } else {
+            if (! $customer->email_verified_at) {
+                $customer->update(['email_verified_at' => now()]);
+            }
+        }
+
+        // Delete OTP record
+        CustomerOtp::where('email', $email)->delete();
+
+        // Authenticate customer
+        Auth::guard('customer')->login($customer, true);
+        $request->session()->regenerate();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Welcome back, '.$customer->name.'! Logged in successfully.',
+            'customer' => [
+                'name' => $customer->name,
+                'email' => $customer->email,
+            ],
+            'redirect_url' => route('home'),
+        ]);
+    }
+
+    /**
+     * Resend login OTP.
+     */
+    public function resendLoginOtp(Request $request): JsonResponse
+    {
+        return $this->sendLoginOtp($request);
+    }
+
+    /**
      * Send email OTP for customer registration.
      */
     public function sendRegistrationOtp(Request $request): JsonResponse

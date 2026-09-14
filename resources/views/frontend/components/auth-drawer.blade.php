@@ -100,9 +100,9 @@
         </div>
 
         <!-- ==========================================
-             SIGN IN FORM
+             SIGN IN FORM (EMAIL + OTP LOGIN)
              ========================================== -->
-        <form id="form-signin" action="{{ route('customer.login') }}" method="POST" class="space-y-4">
+        <form id="form-signin" onsubmit="handleSendLoginOtp(event)" class="space-y-4">
             @csrf
             <div>
                 <label for="signin-email" class="block text-xs font-semibold text-slate-700 mb-1.5">Email Address</label>
@@ -121,47 +121,62 @@
                 </div>
             </div>
 
-            <div>
-                <div class="flex items-center justify-between mb-1.5">
-                    <label for="signin-password" class="block text-xs font-semibold text-slate-700">Password</label>
-                    <a href="#" class="text-[11px] font-semibold text-brand-600 hover:text-brand-700 hover:underline">Forgot?</a>
-                </div>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <i class="fa-solid fa-lock text-xs"></i>
+            <!-- Optional Password Container (Collapsible) -->
+            <div id="signin-password-wrapper" class="hidden space-y-4">
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label for="signin-password" class="block text-xs font-semibold text-slate-700">Password</label>
                     </div>
-                    <input 
-                        type="password" 
-                        id="signin-password" 
-                        name="password" 
-                        autocomplete="current-password"
-                        placeholder="••••••••"
-                        required
-                        class="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition font-medium"
-                    >
-                    <button 
-                        type="button" 
-                        onclick="togglePasswordVisibility('signin-password', this)"
-                        class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
-                    >
-                        <i class="fa-regular fa-eye text-xs"></i>
-                    </button>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-lock text-xs"></i>
+                        </div>
+                        <input 
+                            type="password" 
+                            id="signin-password" 
+                            name="password" 
+                            autocomplete="current-password"
+                            placeholder="••••••••"
+                            class="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition font-medium"
+                        >
+                        <button 
+                            type="button" 
+                            onclick="togglePasswordVisibility('signin-password', this)"
+                            class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+                        >
+                            <i class="fa-regular fa-eye text-xs"></i>
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <div class="flex items-center pt-1">
-                <label class="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" name="remember" class="w-3.5 h-3.5 rounded text-brand-600 border-slate-300 focus:ring-brand-500">
-                    <span class="text-xs text-slate-500 font-medium">Remember me for 30 days</span>
-                </label>
+                <div class="flex items-center pt-1">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="remember" class="w-3.5 h-3.5 rounded text-brand-600 border-slate-300 focus:ring-brand-500">
+                        <span class="text-xs text-slate-500 font-medium">Remember me for 30 days</span>
+                    </label>
+                </div>
             </div>
 
             <button 
                 type="submit" 
-                class="w-full h-11 inline-flex items-center justify-center px-6 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 shadow-md shadow-brand-600/25 cursor-pointer mt-2"
+                id="btn-signin-submit"
+                class="w-full h-11 inline-flex items-center justify-center gap-2 px-6 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 shadow-md shadow-brand-600/25 cursor-pointer mt-2"
             >
-                <span>Sign In</span>
+                <span>Send Login Code</span>
+                <i class="fa-solid fa-arrow-right text-xs"></i>
             </button>
+
+            <!-- Password Login Toggle Option -->
+            <div class="text-center pt-1">
+                <button 
+                    type="button" 
+                    id="btn-toggle-password-mode"
+                    onclick="togglePasswordLoginMode()" 
+                    class="text-[11px] font-semibold text-slate-500 hover:text-brand-600 hover:underline cursor-pointer"
+                >
+                    Sign in with Password instead
+                </button>
+            </div>
 
             <p class="text-center text-xs text-slate-500 pt-2">
                 Don't have an account? 
@@ -317,11 +332,11 @@
             <div class="flex items-center justify-between pb-1">
                 <button 
                     type="button" 
-                    onclick="backToSignupForm()" 
+                    onclick="backFromOtpForm()" 
                     class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-brand-600 transition cursor-pointer"
                 >
                     <i class="fa-solid fa-arrow-left text-[11px]"></i>
-                    <span>Edit Registration Details</span>
+                    <span id="otp-back-btn-text">Back</span>
                 </button>
             </div>
 
@@ -330,7 +345,7 @@
                 <div class="w-8 h-8 rounded-full bg-purple-100 text-brand-600 flex items-center justify-center mx-auto mb-2 text-xs font-bold shadow-xs">
                     <i class="fa-regular fa-envelope"></i>
                 </div>
-                <h4 class="text-xs font-bold text-slate-900">Check Your Email</h4>
+                <h4 id="otp-header-title" class="text-xs font-bold text-slate-900">Check Your Email</h4>
                 <p class="text-[11px] text-slate-500 mt-0.5">
                     We sent a 6-digit verification code to<br>
                     <strong id="otp-display-email" class="text-slate-800 font-semibold"></strong>
@@ -374,7 +389,7 @@
                 id="btn-verify-submit"
                 class="w-full h-11 inline-flex items-center justify-center gap-2 px-6 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 shadow-md shadow-brand-600/25 cursor-pointer mt-2"
             >
-                <span>Verify &amp; Create Account</span>
+                <span id="btn-verify-text">Verify &amp; Continue</span>
                 <i class="fa-solid fa-check text-xs"></i>
             </button>
         </form>
@@ -394,6 +409,8 @@
      ========================================== -->
 <script>
     let registeredEmail = '';
+    let authOtpMode = 'signin'; // 'signin' or 'signup'
+    let isPasswordMode = false;
     let resendTimerInterval = null;
     let resendSecondsLeft = 0;
 
@@ -440,11 +457,13 @@
         if (otpForm) otpForm.classList.add('hidden');
 
         if (tab === 'signin') {
+            authOtpMode = 'signin';
             signinBtn.className = 'flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 bg-white text-brand-600 shadow-xs cursor-pointer';
             signupBtn.className = 'flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 text-slate-500 hover:text-slate-900 cursor-pointer';
             signinForm.classList.remove('hidden');
             signupForm.classList.add('hidden');
         } else {
+            authOtpMode = 'signup';
             signupBtn.className = 'flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 bg-white text-brand-600 shadow-xs cursor-pointer';
             signinBtn.className = 'flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 text-slate-500 hover:text-slate-900 cursor-pointer';
             signupForm.classList.remove('hidden');
@@ -452,17 +471,45 @@
         }
     }
 
-    function backToSignupForm() {
+    function togglePasswordLoginMode() {
+        isPasswordMode = !isPasswordMode;
+        const passwordWrapper = document.getElementById('signin-password-wrapper');
+        const passwordInput = document.getElementById('signin-password');
+        const submitBtnText = document.querySelector('#btn-signin-submit span');
+        const toggleBtn = document.getElementById('btn-toggle-password-mode');
+
+        if (isPasswordMode) {
+            passwordWrapper.classList.remove('hidden');
+            passwordInput.setAttribute('required', 'required');
+            submitBtnText.textContent = 'Sign In with Password';
+            toggleBtn.textContent = 'Sign in with OTP code instead';
+        } else {
+            passwordWrapper.classList.add('hidden');
+            passwordInput.removeAttribute('required');
+            submitBtnText.textContent = 'Send Login Code';
+            toggleBtn.textContent = 'Sign in with Password instead';
+        }
+    }
+
+    function backFromOtpForm() {
         clearAuthAlert();
         const signupForm = document.getElementById('form-signup');
+        const signinForm = document.getElementById('form-signin');
         const otpForm = document.getElementById('form-otp');
         const tabsSwitcher = document.getElementById('auth-tabs-switcher');
         const socialContainer = document.getElementById('auth-social-container');
 
         if (otpForm) otpForm.classList.add('hidden');
-        if (signupForm) signupForm.classList.remove('hidden');
         if (tabsSwitcher) tabsSwitcher.classList.remove('hidden');
         if (socialContainer) socialContainer.classList.remove('hidden');
+
+        if (authOtpMode === 'signup') {
+            signupForm.classList.remove('hidden');
+            signinForm.classList.add('hidden');
+        } else {
+            signinForm.classList.remove('hidden');
+            signupForm.classList.add('hidden');
+        }
     }
 
     function showAuthAlert(type, message) {
@@ -488,6 +535,70 @@
         }
     }
 
+    async function handleSendLoginOtp(event) {
+        event.preventDefault();
+        clearAuthAlert();
+
+        const form = document.getElementById('form-signin');
+        const submitBtn = document.getElementById('btn-signin-submit');
+        const emailInput = document.getElementById('signin-email');
+        const passwordInput = document.getElementById('signin-password');
+
+        // If in password mode and password filled, standard POST
+        if (isPasswordMode && passwordInput.value) {
+            form.action = '{{ route('customer.login') }}';
+            form.submit();
+            return;
+        }
+
+        registeredEmail = emailInput.value.trim().toLowerCase();
+        authOtpMode = 'signin';
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Sending login code...</span>`;
+
+        try {
+            const response = await fetch('{{ route('customer.send-login-otp') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                },
+                body: JSON.stringify({ email: registeredEmail })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                document.getElementById('form-signin').classList.add('hidden');
+                document.getElementById('auth-tabs-switcher').classList.add('hidden');
+                document.getElementById('auth-social-container').classList.add('hidden');
+
+                const otpForm = document.getElementById('form-otp');
+                otpForm.classList.remove('hidden');
+
+                document.getElementById('otp-back-btn-text').textContent = 'Edit Login Email';
+                document.getElementById('otp-header-title').textContent = 'Check Your Email For Login Code';
+                document.getElementById('btn-verify-text').textContent = 'Verify & Sign In';
+                document.getElementById('otp-display-email').textContent = registeredEmail;
+                document.getElementById('otp-code-input').value = '';
+                document.getElementById('otp-code-input').focus();
+
+                showAuthAlert('success', data.message || 'Login code sent to your email.');
+                startResendCountdown(30);
+            } else {
+                showAuthAlert('error', data.message || 'Unable to send login code. Please check your email.');
+            }
+        } catch (error) {
+            showAuthAlert('error', 'A network error occurred. Please try again.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<span>Send Login Code</span> <i class="fa-solid fa-arrow-right text-xs"></i>`;
+        }
+    }
+
     async function handleSendRegistrationOtp(event) {
         event.preventDefault();
         clearAuthAlert();
@@ -504,6 +615,7 @@
         }
 
         registeredEmail = emailInput.value.trim().toLowerCase();
+        authOtpMode = 'signup';
 
         // Loading state
         submitBtn.disabled = true;
@@ -525,7 +637,6 @@
             const data = await response.json();
 
             if (response.ok && data.success) {
-                // Switch to OTP form
                 document.getElementById('form-signup').classList.add('hidden');
                 document.getElementById('auth-tabs-switcher').classList.add('hidden');
                 document.getElementById('auth-social-container').classList.add('hidden');
@@ -533,6 +644,9 @@
                 const otpForm = document.getElementById('form-otp');
                 otpForm.classList.remove('hidden');
                 
+                document.getElementById('otp-back-btn-text').textContent = 'Edit Registration Details';
+                document.getElementById('otp-header-title').textContent = 'Check Your Email';
+                document.getElementById('btn-verify-text').textContent = 'Verify & Create Account';
                 document.getElementById('otp-display-email').textContent = registeredEmail;
                 document.getElementById('otp-code-input').value = '';
                 document.getElementById('otp-code-input').focus();
@@ -564,10 +678,14 @@
         }
 
         verifyBtn.disabled = true;
-        verifyBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Verifying & creating account...</span>`;
+        verifyBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Verifying code...</span>`;
+
+        const verifyRoute = authOtpMode === 'signin' 
+            ? '{{ route('customer.verify-login-otp') }}' 
+            : '{{ route('customer.verify-otp') }}';
 
         try {
-            const response = await fetch('{{ route('customer.verify-otp') }}', {
+            const response = await fetch(verifyRoute, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -584,19 +702,19 @@
             const data = await response.json();
 
             if (response.ok && data.success) {
-                showAuthAlert('success', 'Email verified successfully! Signing you in...');
+                showAuthAlert('success', data.message || 'Verified successfully! Signing you in...');
                 setTimeout(() => {
                     window.location.reload();
                 }, 800);
             } else {
                 showAuthAlert('error', data.message || 'Invalid verification code. Please try again.');
                 verifyBtn.disabled = false;
-                verifyBtn.innerHTML = `<span>Verify &amp; Create Account</span> <i class="fa-solid fa-check text-xs"></i>`;
+                verifyBtn.innerHTML = `<span>Verify &amp; Continue</span> <i class="fa-solid fa-check text-xs"></i>`;
             }
         } catch (error) {
             showAuthAlert('error', 'Network error. Please try again.');
             verifyBtn.disabled = false;
-            verifyBtn.innerHTML = `<span>Verify &amp; Create Account</span> <i class="fa-solid fa-check text-xs"></i>`;
+            verifyBtn.innerHTML = `<span>Verify &amp; Continue</span> <i class="fa-solid fa-check text-xs"></i>`;
         }
     }
 
@@ -607,8 +725,12 @@
         resendBtn.disabled = true;
         resendBtn.textContent = 'Sending...';
 
+        const resendRoute = authOtpMode === 'signin' 
+            ? '{{ route('customer.resend-login-otp') }}' 
+            : '{{ route('customer.resend-otp') }}';
+
         try {
-            const response = await fetch('{{ route('customer.resend-otp') }}', {
+            const response = await fetch(resendRoute, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -134,4 +134,79 @@ class CustomerEmailOtpTest extends TestCase
 
         $response->assertStatus(429);
     }
+
+    public function test_customer_can_request_login_otp(): void
+    {
+        Mail::fake();
+
+        $customer = Customer::factory()->create([
+            'email' => 'emma@example.com',
+            'name' => 'Emma Watson',
+        ]);
+
+        $response = $this->postJson(route('customer.send-login-otp'), [
+            'email' => 'emma@example.com',
+        ]);
+
+        $response->assertOk()
+            ->assertJson([
+                'success' => true,
+                'email' => 'emma@example.com',
+                'is_existing' => true,
+            ]);
+
+        Mail::assertSent(CustomerOtpMail::class, function ($mail) {
+            return $mail->hasTo('emma@example.com') && strlen($mail->otpCode) === 6;
+        });
+    }
+
+    public function test_customer_can_verify_login_otp_and_sign_in(): void
+    {
+        $customer = Customer::factory()->create([
+            'email' => 'frank@example.com',
+            'name' => 'Frank Miller',
+        ]);
+
+        $otp = CustomerOtp::generateFor(
+            email: 'frank@example.com',
+            name: 'Frank Miller'
+        );
+
+        $response = $this->postJson(route('customer.verify-login-otp'), [
+            'email' => 'frank@example.com',
+            'otp' => $otp->otp_code,
+        ]);
+
+        $response->assertOk()
+            ->assertJson([
+                'success' => true,
+            ]);
+
+        $this->assertTrue(Auth::guard('customer')->check());
+        $this->assertEquals($customer->id, Auth::guard('customer')->id());
+    }
+
+    public function test_new_customer_can_login_with_otp_and_auto_creates_account(): void
+    {
+        $otp = CustomerOtp::generateFor(
+            email: 'grace@example.com',
+            name: 'Grace Hopper'
+        );
+
+        $response = $this->postJson(route('customer.verify-login-otp'), [
+            'email' => 'grace@example.com',
+            'otp' => $otp->otp_code,
+        ]);
+
+        $response->assertOk()
+            ->assertJson([
+                'success' => true,
+            ]);
+
+        $this->assertDatabaseHas('customers', [
+            'email' => 'grace@example.com',
+        ]);
+
+        $this->assertTrue(Auth::guard('customer')->check());
+    }
 }
