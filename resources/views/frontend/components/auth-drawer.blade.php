@@ -77,9 +77,11 @@
 
         <!-- Continue with Google Button -->
         <div id="auth-social-container" class="mt-6">
-            <a 
-                href="{{ route('auth.google') }}" 
-                class="w-full h-11 inline-flex items-center justify-center gap-3 px-4 rounded-full bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold border border-slate-200/90 shadow-xs hover:shadow-sm transition-all duration-150 cursor-pointer"
+            <button 
+                type="button" 
+                id="btn-google-auth"
+                onclick="handleGoogleSignIn(event)" 
+                class="w-full h-11 inline-flex items-center justify-center gap-3 px-4 rounded-full bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200/90 shadow-xs hover:shadow-sm transition-all duration-150 cursor-pointer"
             >
                 <!-- Google Multi-Color SVG Icon -->
                 <svg class="w-4 h-4" viewBox="0 0 24 24">
@@ -88,8 +90,8 @@
                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
                 </svg>
-                <span>Continue with Google</span>
-            </a>
+                <span id="google-auth-text">Continue with Google</span>
+            </button>
 
             <!-- Divider -->
             <div class="relative flex py-5 items-center">
@@ -303,9 +305,34 @@
 </div>
 
 <!-- ==========================================
-     AUTH DRAWER SCRIPT
+     FIREBASE & AUTH DRAWER SCRIPT
      ========================================== -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
 <script>
+    const firebaseConfig = {
+        apiKey: @json(config('services.firebase.api_key')),
+        authDomain: @json(config('services.firebase.auth_domain')),
+        projectId: @json(config('services.firebase.project_id')),
+        storageBucket: @json(config('services.firebase.storage_bucket')),
+        messagingSenderId: @json(config('services.firebase.messaging_sender_id')),
+        appId: @json(config('services.firebase.app_id')),
+        measurementId: @json(config('services.firebase.measurement_id')),
+    };
+
+    let firebaseAuthInstance = null;
+    try {
+        if (typeof firebase !== 'undefined' && firebaseConfig.apiKey && firebaseConfig.projectId) {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            firebaseAuthInstance = firebase.auth();
+        }
+    } catch (e) {
+        console.warn('Firebase initialization warning:', e);
+    }
+
     let registeredEmail = '';
     let authOtpMode = 'signin'; // 'signin' or 'signup'
     let resendTimerInterval = null;
@@ -639,6 +666,68 @@
                 resendBtn.textContent = `Resend in ${resendSecondsLeft}s`;
             }
         }, 1000);
+    }
+
+    async function handleGoogleSignIn(event) {
+        event.preventDefault();
+        clearAuthAlert();
+
+        const btn = document.getElementById('btn-google-auth');
+        const textSpan = document.getElementById('google-auth-text');
+
+        // If Firebase is initialized with live credentials, use Firebase popup sign-in
+        if (firebaseAuthInstance) {
+            btn.disabled = true;
+            if (textSpan) textSpan.textContent = 'Connecting Google account...';
+
+            try {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                provider.addScope('profile');
+                provider.addScope('email');
+
+                const result = await firebaseAuthInstance.signInWithPopup(provider);
+                const idToken = await result.user.getIdToken();
+
+                showAuthAlert('success', 'Verifying secure Firebase credentials...');
+
+                const response = await fetch('{{ route('customer.firebase-auth') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    },
+                    body: JSON.stringify({
+                        id_token: idToken,
+                        name: result.user.displayName || '',
+                        mobile: result.user.phoneNumber || ''
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showAuthAlert('success', data.message || 'Signed in successfully!');
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url || window.location.href;
+                    }, 600);
+                } else {
+                    showAuthAlert('error', data.message || 'Firebase sign-in verification failed.');
+                }
+            } catch (err) {
+                if (err.code !== 'auth/popup-closed-by-user') {
+                    showAuthAlert('error', err.message || 'Google sign-in encountered an error.');
+                }
+            } finally {
+                btn.disabled = false;
+                if (textSpan) textSpan.textContent = 'Continue with Google';
+            }
+            return;
+        }
+
+        // Fallback: standard Socialite OAuth redirect
+        window.location.href = '{{ route('auth.google') }}';
     }
 
     // Close on Escape key press

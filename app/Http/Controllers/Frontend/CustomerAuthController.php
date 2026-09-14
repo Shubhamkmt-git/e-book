@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\CustomerOtpMail;
 use App\Models\Customer;
 use App\Models\CustomerOtp;
+use App\Services\FirebaseAuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,6 +20,74 @@ use Laravel\Socialite\Two\User;
 
 class CustomerAuthController extends Controller
 {
+    /**
+     * Authenticate or register customer using verified Firebase ID Token.
+     */
+    public function firebaseAuth(Request $request, FirebaseAuthService $firebaseAuthService): JsonResponse
+    {
+        $validated = $request->validate([
+            'id_token' => ['required', 'string'],
+            'name' => ['nullable', 'string', 'max:255'],
+            'mobile' => ['nullable', 'string', 'max:20'],
+        ]);
+
+        try {
+            $firebaseUser = $firebaseAuthService->verifyIdToken($validated['id_token']);
+        } catch (\Throwable $e) {
+            Log::warning('Firebase ID token verification failed: '.$e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Firebase authentication verification failed: '.$e->getMessage(),
+            ], 401);
+        }
+
+        $email = $firebaseUser['email'] ? strtolower(trim($firebaseUser['email'])) : null;
+        if (! $email) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Firebase account does not have an associated email address.',
+            ], 422);
+        }
+
+        $customer = Customer::where('email', $email)->first();
+
+        if (! $customer) {
+            $name = $validated['name']
+                ?: $firebaseUser['name']
+                ?: (explode('@', $email)[0] ?? 'Reader');
+
+            $customer = Customer::create([
+                'name' => ucwords(str_replace(['.', '_', '-'], ' ', $name)),
+                'email' => $email,
+                'mobile' => $validated['mobile'] ?? $firebaseUser['phone_number'] ?? null,
+                'password' => Hash::make(Str::random(24)),
+                'email_verified_at' => $firebaseUser['email_verified'] ? now() : null,
+            ]);
+        } else {
+            if ($firebaseUser['email_verified'] && ! $customer->email_verified_at) {
+                $customer->update(['email_verified_at' => now()]);
+            }
+            if (! empty($validated['name']) && $customer->name === 'Reader') {
+                $customer->update(['name' => $validated['name']]);
+            }
+        }
+
+        Auth::guard('customer')->login($customer, true);
+        $request->session()->regenerate();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Welcome, '.$customer->name.'! Signed in successfully.',
+            'customer' => [
+                'id' => $customer->id,
+                'name' => $customer->name,
+                'email' => $customer->email,
+            ],
+            'redirect_url' => route('home'),
+        ]);
+    }
+
     /**
      * Redirect the user to the Google authentication page.
      */
