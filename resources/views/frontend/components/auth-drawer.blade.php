@@ -86,7 +86,7 @@
             </div>
 
             <!-- ==========================================
-                 STEP 1: PHONE NUMBER INPUT
+                 STEP 1: PHONE NUMBER & DETAILS
                  ========================================== -->
             <div id="auth-phone-step" class="space-y-3.5">
                 <div>
@@ -96,6 +96,17 @@
                         id="customer-name" 
                         name="name" 
                         placeholder="John Doe"
+                        class="w-full h-10 px-3.5 rounded-xl bg-slate-50/50 text-slate-900 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 focus:outline-none transition font-medium"
+                    >
+                </div>
+
+                <div>
+                    <label for="customer-email" class="block text-xs font-medium text-slate-700 mb-1">Email Address <span class="text-slate-400 font-normal">(optional)</span></label>
+                    <input 
+                        type="email" 
+                        id="customer-email" 
+                        name="email" 
+                        placeholder="you@example.com"
                         class="w-full h-10 px-3.5 rounded-xl bg-slate-50/50 text-slate-900 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 focus:outline-none transition font-medium"
                     >
                 </div>
@@ -128,7 +139,7 @@
                     onclick="handleSendPhoneOtp(event)"
                     class="w-full h-10 inline-flex items-center justify-center gap-2 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-semibold text-xs transition cursor-pointer shadow-xs"
                 >
-                    <span id="send-otp-text">Get Firebase OTP</span>
+                    <span id="send-otp-text">Send OTP</span>
                     <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </button>
             </div>
@@ -429,7 +440,7 @@
             showAuthAlert('error', error.message || 'Failed to send OTP. Please verify phone number and Firebase setup.');
         } finally {
             btn.disabled = false;
-            if (textSpan) textSpan.textContent = 'Get Firebase OTP';
+            if (textSpan) textSpan.textContent = 'Send OTP';
         }
     }
 
@@ -442,6 +453,7 @@
         const btn = document.getElementById('btn-verify-otp');
         const textSpan = document.getElementById('verify-otp-text');
         const nameInput = document.getElementById('customer-name');
+        const emailInput = document.getElementById('customer-email');
 
         const otpCode = otpInput.value.trim();
         if (!otpCode || otpCode.length < 6) {
@@ -473,6 +485,7 @@
                 body: JSON.stringify({
                     id_token: idToken,
                     name: nameInput ? nameInput.value.trim() : '',
+                    email: emailInput ? emailInput.value.trim() : '',
                     mobile: userCredential.user.phoneNumber || ''
                 })
             });

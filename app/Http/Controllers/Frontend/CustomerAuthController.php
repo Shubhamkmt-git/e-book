@@ -25,6 +25,7 @@ class CustomerAuthController extends Controller
         $validated = $request->validate([
             'id_token' => ['required', 'string'],
             'name' => ['nullable', 'string', 'max:255'],
+            'email' => ['nullable', 'string', 'email', 'max:255'],
             'mobile' => ['nullable', 'string', 'max:20'],
         ]);
 
@@ -39,7 +40,9 @@ class CustomerAuthController extends Controller
             ], 401);
         }
 
-        $email = $firebaseUser['email'] ? strtolower(trim($firebaseUser['email'])) : null;
+        $email = $firebaseUser['email']
+            ? strtolower(trim($firebaseUser['email']))
+            : (! empty($validated['email']) ? strtolower(trim($validated['email'])) : null);
         $phone = $firebaseUser['phone_number'] ?: ($validated['mobile'] ?? null);
         $uid = $firebaseUser['uid'] ?? null;
 

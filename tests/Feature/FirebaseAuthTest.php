@@ -161,4 +161,46 @@ class FirebaseAuthTest extends TestCase
 
         $this->assertTrue(Auth::guard('customer')->check());
     }
+
+    public function test_firebase_auth_phone_with_provided_email_saves_both(): void
+    {
+        $mockService = Mockery::mock(FirebaseAuthService::class);
+        $mockService->shouldReceive('verifyIdToken')
+            ->once()
+            ->with('phone-otp-jwt-2')
+            ->andReturn([
+                'uid' => 'firebase_phone_uid_888',
+                'email' => null,
+                'name' => null,
+                'picture' => null,
+                'email_verified' => false,
+                'phone_number' => '+919999988888',
+                'claims' => [],
+            ]);
+
+        $this->app->instance(FirebaseAuthService::class, $mockService);
+
+        $response = $this->postJson(route('customer.firebase-auth'), [
+            'id_token' => 'phone-otp-jwt-2',
+            'name' => 'Full Profile User',
+            'email' => 'fulluser@example.com',
+        ]);
+
+        $response->assertOk()
+            ->assertJson([
+                'success' => true,
+                'customer' => [
+                    'name' => 'Full Profile User',
+                    'email' => 'fulluser@example.com',
+                    'mobile' => '+919999988888',
+                ],
+            ]);
+
+        $this->assertDatabaseHas('customers', [
+            'name' => 'Full Profile User',
+            'email' => 'fulluser@example.com',
+            'mobile' => '+919999988888',
+            'firebase_uid' => 'firebase_phone_uid_888',
+        ]);
+    }
 }
