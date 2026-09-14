@@ -1,5 +1,5 @@
 <!-- ==========================================
-     FIREBASE AUTHENTICATION SIDE DRAWER
+     FIREBASE PHONE OTP AUTHENTICATION SIDE DRAWER
      ========================================== -->
 <div 
     id="auth-drawer-backdrop" 
@@ -60,7 +60,7 @@
                 </div>
             @endif
 
-            <!-- Firebase Google Sign-In -->
+            <!-- Firebase Google Quick Sign-In -->
             <div class="mt-5">
                 <button 
                     type="button" 
@@ -80,43 +80,119 @@
                 <!-- Minimal Divider -->
                 <div class="relative flex py-4 items-center">
                     <div class="flex-grow border-t border-slate-200"></div>
-                    <span class="flex-shrink mx-3 text-[10px] font-medium uppercase tracking-wider text-slate-400">or</span>
+                    <span class="flex-shrink mx-3 text-[10px] font-medium uppercase tracking-wider text-slate-400">or sign in with OTP</span>
                     <div class="flex-grow border-t border-slate-200"></div>
                 </div>
             </div>
 
             <!-- ==========================================
-                 FIREBASE EMAIL AUTHENTICATION FORM
+                 STEP 1: PHONE NUMBER INPUT
                  ========================================== -->
-            <form id="form-firebase-auth" onsubmit="handleFirebaseEmailAuth(event)" class="space-y-3.5">
-                @csrf
+            <div id="auth-phone-step" class="space-y-3.5">
                 <div>
-                    <label for="firebase-email" class="block text-xs font-medium text-slate-700 mb-1">Email address</label>
+                    <label for="customer-name" class="block text-xs font-medium text-slate-700 mb-1">Full Name <span class="text-slate-400 font-normal">(optional)</span></label>
                     <input 
-                        type="email" 
-                        id="firebase-email" 
-                        name="email" 
-                        placeholder="you@example.com"
-                        required
+                        type="text" 
+                        id="customer-name" 
+                        name="name" 
+                        placeholder="John Doe"
                         class="w-full h-10 px-3.5 rounded-xl bg-slate-50/50 text-slate-900 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 focus:outline-none transition font-medium"
                     >
                 </div>
 
+                <div>
+                    <label for="customer-phone" class="block text-xs font-medium text-slate-700 mb-1">Mobile Number</label>
+                    <div class="flex items-center gap-2">
+                        <div class="h-10 px-3 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center border border-slate-200 select-none">
+                            <span id="country-code">+91</span>
+                        </div>
+                        <input 
+                            type="tel" 
+                            id="customer-phone" 
+                            name="phone" 
+                            placeholder="98765 43210"
+                            required
+                            maxlength="15"
+                            class="flex-1 h-10 px-3.5 rounded-xl bg-slate-50/50 text-slate-900 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 focus:outline-none transition font-medium"
+                        >
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-1">We will send a 6-digit verification code via SMS</p>
+                </div>
+
+                <!-- Invisible Recaptcha Container for Firebase -->
+                <div id="recaptcha-container" class="my-1"></div>
+
                 <button 
-                    type="submit" 
-                    id="btn-firebase-email-submit"
+                    type="button" 
+                    id="btn-send-phone-otp"
+                    onclick="handleSendPhoneOtp(event)"
                     class="w-full h-10 inline-flex items-center justify-center gap-2 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-semibold text-xs transition cursor-pointer shadow-xs"
                 >
-                    <span>Send Firebase Sign-in Link</span>
+                    <span id="send-otp-text">Get Firebase OTP</span>
                     <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </button>
-            </form>
+            </div>
+
+            <!-- ==========================================
+                 STEP 2: OTP VERIFICATION
+                 ========================================== -->
+            <div id="auth-otp-step" class="hidden space-y-4">
+                <div class="rounded-xl bg-slate-50 p-3.5 border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] text-slate-400 block uppercase font-medium">OTP Sent to</span>
+                        <span id="otp-sent-number" class="text-xs font-semibold text-slate-800 tracking-wide"></span>
+                    </div>
+                    <button 
+                        type="button" 
+                        onclick="resetToPhoneStep()" 
+                        class="text-xs font-semibold text-brand-600 hover:text-brand-700 cursor-pointer underline"
+                    >
+                        Change
+                    </button>
+                </div>
+
+                <div>
+                    <label for="otp-code-input" class="block text-xs font-medium text-slate-700 mb-1">Enter 6-digit OTP Code</label>
+                    <input 
+                        type="text" 
+                        id="otp-code-input" 
+                        name="otp_code" 
+                        placeholder="&bull;&bull;&bull;&bull;&bull;&bull;"
+                        maxlength="6"
+                        inputmode="numeric"
+                        autocomplete="one-time-code"
+                        class="w-full h-12 text-center text-xl font-bold tracking-[0.4em] rounded-xl bg-slate-50/50 text-slate-900 placeholder-slate-300 border border-slate-200 focus:bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-600/10 focus:outline-none transition"
+                    >
+                </div>
+
+                <button 
+                    type="button" 
+                    id="btn-verify-otp"
+                    onclick="handleVerifyPhoneOtp(event)"
+                    class="w-full h-10 inline-flex items-center justify-center gap-2 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-semibold text-xs transition cursor-pointer shadow-xs"
+                >
+                    <span id="verify-otp-text">Verify & Sign In</span>
+                    <i class="fa-solid fa-check text-[10px]"></i>
+                </button>
+
+                <div class="text-center pt-1">
+                    <button 
+                        type="button" 
+                        id="btn-resend-otp"
+                        onclick="handleSendPhoneOtp(event)"
+                        disabled
+                        class="text-xs text-slate-400 hover:text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    >
+                        Resend OTP in <span id="resend-timer">30</span>s
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Minimal Footer -->
         <div class="pt-4 border-t border-slate-100 text-center">
             <p class="text-[11px] text-slate-400">
-                Powered by Firebase Auth &bull; 256-bit Encrypted
+                Secured by Firebase Phone Auth &bull; 256-bit Encrypted
             </p>
         </div>
     </div>
@@ -140,6 +216,9 @@
     };
 
     let firebaseAuthInstance = null;
+    let confirmationResult = null;
+    let resendInterval = null;
+
     try {
         if (typeof firebase !== 'undefined' && firebaseConfig.apiKey && firebaseConfig.projectId) {
             if (!firebase.apps.length) {
@@ -149,6 +228,21 @@
         }
     } catch (e) {
         console.warn('Firebase initialization notice:', e);
+    }
+
+    function initRecaptcha() {
+        if (!firebaseAuthInstance) return;
+        if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                'size': 'invisible',
+                'callback': function(response) {
+                    // reCAPTCHA solved
+                },
+                'expired-callback': function() {
+                    // Response expired
+                }
+            });
+        }
     }
 
     function openAuthDrawer() {
@@ -201,6 +295,32 @@
             alertBox.classList.add('hidden');
             alertBox.innerHTML = '';
         }
+    }
+
+    function resetToPhoneStep() {
+        clearAuthAlert();
+        document.getElementById('auth-phone-step').classList.remove('hidden');
+        document.getElementById('auth-otp-step').classList.add('hidden');
+        if (resendInterval) clearInterval(resendInterval);
+    }
+
+    function startResendTimer() {
+        const resendBtn = document.getElementById('btn-resend-otp');
+        const timerSpan = document.getElementById('resend-timer');
+        let timeLeft = 30;
+
+        resendBtn.disabled = true;
+        if (resendInterval) clearInterval(resendInterval);
+
+        resendInterval = setInterval(() => {
+            timeLeft--;
+            if (timerSpan) timerSpan.textContent = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(resendInterval);
+                resendBtn.disabled = false;
+                resendBtn.textContent = 'Resend OTP';
+            }
+        }, 1000);
     }
 
     // Google Sign-In with Firebase
@@ -262,75 +382,119 @@
         }
     }
 
-    // Firebase Passwordless Email Link Auth
-    async function handleFirebaseEmailAuth(event) {
-        event.preventDefault();
+    // Send Firebase Phone SMS OTP
+    async function handleSendPhoneOtp(event) {
+        if (event) event.preventDefault();
         clearAuthAlert();
 
-        const emailInput = document.getElementById('firebase-email');
-        const submitBtn = document.getElementById('btn-firebase-email-submit');
-        const email = emailInput.value.trim().toLowerCase();
+        const phoneInput = document.getElementById('customer-phone');
+        const btn = document.getElementById('btn-send-phone-otp');
+        const textSpan = document.getElementById('send-otp-text');
+
+        const rawPhone = phoneInput.value.trim().replace(/[^0-9+]/g, '');
+        if (!rawPhone || rawPhone.length < 8) {
+            showAuthAlert('error', 'Please enter a valid mobile number.');
+            return;
+        }
+
+        const countryCode = document.getElementById('country-code').textContent.trim() || '+91';
+        const formattedPhone = rawPhone.startsWith('+') ? rawPhone : (countryCode + rawPhone.replace(/^0+/, ''));
 
         if (!firebaseAuthInstance) {
             showAuthAlert('warning', 'Firebase credentials not attached yet. Please set FIREBASE_API_KEY and FIREBASE_PROJECT_ID in .env');
             return;
         }
 
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Sending link...</span>`;
-
-        const actionCodeSettings = {
-            url: window.location.origin + window.location.pathname,
-            handleCodeInApp: true,
-        };
+        btn.disabled = true;
+        if (textSpan) textSpan.textContent = 'Sending OTP...';
 
         try {
-            await firebaseAuthInstance.sendSignInLinkToEmail(email, actionCodeSettings);
-            window.localStorage.setItem('emailForSignIn', email);
-            showAuthAlert('success', 'Sign-in link sent via Firebase! Check your email to sign in.');
-            emailInput.value = '';
+            initRecaptcha();
+            confirmationResult = await firebaseAuthInstance.signInWithPhoneNumber(formattedPhone, window.recaptchaVerifier);
+
+            // Switch to OTP entry step
+            document.getElementById('otp-sent-number').textContent = formattedPhone;
+            document.getElementById('auth-phone-step').classList.add('hidden');
+            document.getElementById('auth-otp-step').classList.remove('hidden');
+            document.getElementById('otp-code-input').focus();
+            startResendTimer();
+            showAuthAlert('success', '6-digit OTP code sent via SMS to ' + formattedPhone);
         } catch (error) {
-            showAuthAlert('error', error.message || 'Failed to send Firebase sign-in link.');
+            console.error('Firebase Phone Auth error:', error);
+            if (window.recaptchaVerifier) {
+                window.recaptchaVerifier.render().then(widgetId => {
+                    if (typeof grecaptcha !== 'undefined') grecaptcha.reset(widgetId);
+                });
+            }
+            showAuthAlert('error', error.message || 'Failed to send OTP. Please verify phone number and Firebase setup.');
         } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = `<span>Send Firebase Sign-in Link</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>`;
+            btn.disabled = false;
+            if (textSpan) textSpan.textContent = 'Get Firebase OTP';
         }
     }
 
-    // Check if returning from a Firebase Email Link
-    document.addEventListener('DOMContentLoaded', async () => {
-        if (firebaseAuthInstance && firebaseAuthInstance.isSignInWithEmailLink(window.location.href)) {
-            let email = window.localStorage.getItem('emailForSignIn');
-            if (!email) {
-                email = window.prompt('Please provide your email for confirmation:');
-            }
-            if (email) {
-                try {
-                    const result = await firebaseAuthInstance.signInWithEmailLink(email, window.location.href);
-                    window.localStorage.removeItem('emailForSignIn');
-                    const idToken = await result.user.getIdToken();
+    // Verify Firebase Phone SMS OTP
+    async function handleVerifyPhoneOtp(event) {
+        if (event) event.preventDefault();
+        clearAuthAlert();
 
-                    const response = await fetch('{{ route('customer.firebase-auth') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-                        },
-                        body: JSON.stringify({ id_token: idToken })
-                    });
+        const otpInput = document.getElementById('otp-code-input');
+        const btn = document.getElementById('btn-verify-otp');
+        const textSpan = document.getElementById('verify-otp-text');
+        const nameInput = document.getElementById('customer-name');
 
-                    const data = await response.json();
-                    if (response.ok && data.success) {
-                        window.location.href = data.redirect_url || window.location.origin;
-                    }
-                } catch (e) {
-                    console.error('Firebase email link sign-in error:', e);
-                }
-            }
+        const otpCode = otpInput.value.trim();
+        if (!otpCode || otpCode.length < 6) {
+            showAuthAlert('error', 'Please enter the 6-digit OTP code received on your phone.');
+            return;
         }
-    });
+
+        if (!confirmationResult) {
+            showAuthAlert('error', 'OTP session expired. Please request a new OTP code.');
+            resetToPhoneStep();
+            return;
+        }
+
+        btn.disabled = true;
+        if (textSpan) textSpan.textContent = 'Verifying OTP...';
+
+        try {
+            const userCredential = await confirmationResult.confirm(otpCode);
+            const idToken = await userCredential.user.getIdToken();
+
+            const response = await fetch('{{ route('customer.firebase-auth') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                },
+                body: JSON.stringify({
+                    id_token: idToken,
+                    name: nameInput ? nameInput.value.trim() : '',
+                    mobile: userCredential.user.phoneNumber || ''
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                showAuthAlert('success', data.message || 'Signed in successfully!');
+                setTimeout(() => {
+                    window.location.href = data.redirect_url || window.location.href;
+                }, 500);
+            } else {
+                showAuthAlert('error', data.message || 'OTP verification failed on server.');
+            }
+        } catch (error) {
+            console.error('OTP confirmation error:', error);
+            showAuthAlert('error', error.message || 'Invalid or expired OTP code.');
+        } finally {
+            btn.disabled = false;
+            if (textSpan) textSpan.textContent = 'Verify & Sign In';
+        }
+    }
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {

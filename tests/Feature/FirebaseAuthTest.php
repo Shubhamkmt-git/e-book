@@ -121,34 +121,44 @@ class FirebaseAuthTest extends TestCase
         $this->assertTrue(Auth::guard('customer')->check());
     }
 
-    public function test_firebase_auth_rejects_token_without_email(): void
+    public function test_firebase_auth_authenticates_phone_number_customer(): void
     {
         $mockService = Mockery::mock(FirebaseAuthService::class);
         $mockService->shouldReceive('verifyIdToken')
             ->once()
-            ->with('no-email-jwt')
+            ->with('phone-otp-jwt')
             ->andReturn([
-                'uid' => 'firebase_uid_anonymous',
+                'uid' => 'firebase_phone_uid_777',
                 'email' => null,
-                'name' => 'Anonymous User',
+                'name' => null,
                 'picture' => null,
                 'email_verified' => false,
-                'phone_number' => null,
+                'phone_number' => '+919876543210',
                 'claims' => [],
             ]);
 
         $this->app->instance(FirebaseAuthService::class, $mockService);
 
         $response = $this->postJson(route('customer.firebase-auth'), [
-            'id_token' => 'no-email-jwt',
+            'id_token' => 'phone-otp-jwt',
+            'name' => 'Mobile Reader',
         ]);
 
-        $response->assertStatus(422)
+        $response->assertOk()
             ->assertJson([
-                'success' => false,
-                'message' => 'Firebase account does not have an associated email address.',
+                'success' => true,
+                'customer' => [
+                    'name' => 'Mobile Reader',
+                    'mobile' => '+919876543210',
+                ],
             ]);
 
-        $this->assertFalse(Auth::guard('customer')->check());
+        $this->assertDatabaseHas('customers', [
+            'mobile' => '+919876543210',
+            'firebase_uid' => 'firebase_phone_uid_777',
+            'name' => 'Mobile Reader',
+        ]);
+
+        $this->assertTrue(Auth::guard('customer')->check());
     }
 }

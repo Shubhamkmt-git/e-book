@@ -40,33 +40,57 @@ class CustomerAuthController extends Controller
         }
 
         $email = $firebaseUser['email'] ? strtolower(trim($firebaseUser['email'])) : null;
-        if (! $email) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Firebase account does not have an associated email address.',
-            ], 422);
+        $phone = $firebaseUser['phone_number'] ?: ($validated['mobile'] ?? null);
+        $uid = $firebaseUser['uid'] ?? null;
+
+        $customer = null;
+
+        if ($uid) {
+            $customer = Customer::where('firebase_uid', $uid)->first();
         }
 
-        $customer = Customer::where('email', $email)->first();
+        if (! $customer && $phone) {
+            $customer = Customer::where('mobile', $phone)->first();
+        }
+
+        if (! $customer && $email) {
+            $customer = Customer::where('email', $email)->first();
+        }
 
         if (! $customer) {
             $name = $validated['name']
                 ?: $firebaseUser['name']
-                ?: (explode('@', $email)[0] ?? 'Reader');
+                ?: ($phone ? ('Reader '.substr($phone, -4)) : ($email ? (explode('@', $email)[0] ?? 'Reader') : 'Reader'));
 
             $customer = Customer::create([
                 'name' => ucwords(str_replace(['.', '_', '-'], ' ', $name)),
                 'email' => $email,
-                'mobile' => $validated['mobile'] ?? $firebaseUser['phone_number'] ?? null,
+                'mobile' => $phone,
+                'firebase_uid' => $uid,
+                'avatar' => $firebaseUser['picture'] ?? null,
                 'password' => Hash::make(Str::random(24)),
                 'email_verified_at' => $firebaseUser['email_verified'] ? now() : null,
             ]);
         } else {
-            if ($firebaseUser['email_verified'] && ! $customer->email_verified_at) {
-                $customer->update(['email_verified_at' => now()]);
+            $updates = [];
+            if ($uid && ! $customer->firebase_uid) {
+                $updates['firebase_uid'] = $uid;
             }
-            if (! empty($validated['name']) && $customer->name === 'Reader') {
-                $customer->update(['name' => $validated['name']]);
+            if ($phone && ! $customer->mobile) {
+                $updates['mobile'] = $phone;
+            }
+            if ($email && ! $customer->email) {
+                $updates['email'] = $email;
+            }
+            if ($firebaseUser['email_verified'] && ! $customer->email_verified_at) {
+                $updates['email_verified_at'] = now();
+            }
+            if (! empty($validated['name']) && in_array($customer->name, ['Reader', 'Customer'], true)) {
+                $updates['name'] = $validated['name'];
+            }
+
+            if (! empty($updates)) {
+                $customer->update($updates);
             }
         }
 
@@ -80,6 +104,7 @@ class CustomerAuthController extends Controller
                 'id' => $customer->id,
                 'name' => $customer->name,
                 'email' => $customer->email,
+                'mobile' => $customer->mobile,
             ],
             'redirect_url' => route('home'),
         ]);

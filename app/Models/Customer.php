@@ -20,6 +20,7 @@ class Customer extends Authenticatable
         'name',
         'email',
         'google_id',
+        'firebase_uid',
         'avatar',
         'mobile',
         'password',
