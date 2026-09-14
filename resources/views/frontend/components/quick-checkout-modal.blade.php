@@ -345,11 +345,14 @@
                 if (cf) {
                     cf.checkout({
                         paymentSessionId: data.payment_session_id,
-                        redirectTarget: "_self"
+                        redirectTarget: "_modal"
                     }).then(function(result) {
                         if (result.error) {
-                            showCheckoutError(result.error.message || 'Payment failed.');
+                            showCheckoutError(result.error.message || 'Payment cancelled or failed.');
                             resetSubmitButton();
+                        } else {
+                            setSubmitLoading('Verifying payment...');
+                            window.location.href = data.return_url;
                         }
                     });
                     return;
