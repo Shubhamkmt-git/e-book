@@ -47,8 +47,12 @@ return [
 
     'firebase' => [
         'api_key' => env('FIREBASE_API_KEY'),
-        'project_id' => env('FIREBASE_PROJECT_ID'),
         'auth_domain' => env('FIREBASE_AUTH_DOMAIN', env('FIREBASE_PROJECT_ID') ? env('FIREBASE_PROJECT_ID').'.firebaseapp.com' : null),
+        'project_id' => env('FIREBASE_PROJECT_ID'),
+        'storage_bucket' => env('FIREBASE_STORAGE_BUCKET', env('FIREBASE_PROJECT_ID') ? env('FIREBASE_PROJECT_ID').'.appspot.com' : null),
+        'messaging_sender_id' => env('FIREBASE_MESSAGING_SENDER_ID'),
+        'app_id' => env('FIREBASE_APP_ID'),
+        'measurement_id' => env('FIREBASE_MEASUREMENT_ID'),
     ],
 
     'cashfree' => [
