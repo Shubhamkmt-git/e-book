@@ -46,6 +46,9 @@
             </button>
         </div>
 
+        <!-- Dynamic Alert Container -->
+        <div id="auth-drawer-alert" class="hidden mt-4 rounded-xl px-4 py-3 text-xs" role="alert"></div>
+
         @if ($errors->any())
             <div class="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs text-rose-700" role="alert">
                 {{ $errors->first() }}
@@ -53,7 +56,7 @@
         @endif
 
         <!-- Auth Tabs Switcher (Sign In vs Sign Up) -->
-        <div class="mt-6 p-1 bg-slate-100 rounded-full flex items-center">
+        <div id="auth-tabs-switcher" class="mt-6 p-1 bg-slate-100 rounded-full flex items-center">
             <button 
                 id="tab-btn-signin"
                 type="button" 
@@ -73,7 +76,7 @@
         </div>
 
         <!-- Continue with Google Button -->
-        <div class="mt-6">
+        <div id="auth-social-container" class="mt-6">
             <a 
                 href="{{ route('auth.google') }}" 
                 class="w-full h-11 inline-flex items-center justify-center gap-3 px-4 rounded-full bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold border border-slate-200/90 shadow-xs hover:shadow-sm transition-all duration-150 cursor-pointer"
@@ -169,9 +172,9 @@
         </form>
 
         <!-- ==========================================
-             SIGN UP FORM
+             SIGN UP FORM (STEP 1: DETAILS)
              ========================================== -->
-        <form id="form-signup" action="{{ route('customer.register') }}" method="POST" class="hidden space-y-3.5">
+        <form id="form-signup" onsubmit="handleSendRegistrationOtp(event)" class="hidden space-y-3.5">
             @csrf
             <!-- Full Name -->
             <div>
@@ -211,7 +214,7 @@
 
             <!-- Mobile Number -->
             <div>
-                <label for="signup-phone" class="block text-xs font-semibold text-slate-700 mb-1">Mobile Number</label>
+                <label for="signup-phone" class="block text-xs font-semibold text-slate-700 mb-1">Mobile Number <span class="text-slate-400 font-normal">(Optional)</span></label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                         <i class="fa-solid fa-phone text-xs"></i>
@@ -221,7 +224,6 @@
                         id="signup-phone" 
                         name="mobile"
                         placeholder="+91 98765 43210"
-                        required
                         class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition font-medium"
                     >
                 </div>
@@ -241,6 +243,7 @@
                         autocomplete="new-password"
                         placeholder="At least 8 characters"
                         required
+                        minlength="8"
                         class="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition font-medium"
                     >
                     <button 
@@ -267,6 +270,7 @@
                         autocomplete="new-password"
                         placeholder="Re-enter password"
                         required
+                        minlength="8"
                         class="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition font-medium"
                     >
                     <button 
@@ -289,9 +293,11 @@
 
             <button 
                 type="submit" 
-                class="w-full h-11 inline-flex items-center justify-center px-6 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 shadow-md shadow-brand-600/25 cursor-pointer mt-2"
+                id="btn-signup-submit"
+                class="w-full h-11 inline-flex items-center justify-center gap-2 px-6 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 shadow-md shadow-brand-600/25 cursor-pointer mt-2"
             >
-                <span>Create Account</span>
+                <span>Send Verification Code</span>
+                <i class="fa-solid fa-arrow-right text-xs"></i>
             </button>
 
             <p class="text-center text-xs text-slate-500 pt-1">
@@ -300,6 +306,77 @@
                     Sign In
                 </button>
             </p>
+        </form>
+
+        <!-- ==========================================
+             OTP VERIFICATION FORM (STEP 2: OTP)
+             ========================================== -->
+        <form id="form-otp" onsubmit="handleVerifyOtp(event)" class="hidden space-y-4">
+            @csrf
+            
+            <div class="flex items-center justify-between pb-1">
+                <button 
+                    type="button" 
+                    onclick="backToSignupForm()" 
+                    class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-brand-600 transition cursor-pointer"
+                >
+                    <i class="fa-solid fa-arrow-left text-[11px]"></i>
+                    <span>Edit Registration Details</span>
+                </button>
+            </div>
+
+            <!-- OTP Notice Box -->
+            <div class="p-3.5 rounded-2xl bg-purple-50/80 border border-purple-100 text-center">
+                <div class="w-8 h-8 rounded-full bg-purple-100 text-brand-600 flex items-center justify-center mx-auto mb-2 text-xs font-bold shadow-xs">
+                    <i class="fa-regular fa-envelope"></i>
+                </div>
+                <h4 class="text-xs font-bold text-slate-900">Check Your Email</h4>
+                <p class="text-[11px] text-slate-500 mt-0.5">
+                    We sent a 6-digit verification code to<br>
+                    <strong id="otp-display-email" class="text-slate-800 font-semibold"></strong>
+                </p>
+            </div>
+
+            <!-- 6-Digit OTP Input -->
+            <div>
+                <label for="otp-code-input" class="block text-xs font-semibold text-slate-700 mb-1.5 text-center">
+                    Enter 6-Digit Code
+                </label>
+                <input 
+                    type="text" 
+                    id="otp-code-input" 
+                    name="otp" 
+                    maxlength="6" 
+                    inputmode="numeric" 
+                    pattern="[0-9]*"
+                    autocomplete="one-time-code"
+                    placeholder="••••••"
+                    required
+                    class="w-full text-center text-2xl tracking-[0.5em] font-mono py-3 font-bold rounded-2xl bg-slate-50 text-slate-900 placeholder-slate-300 border border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition"
+                >
+            </div>
+
+            <!-- Resend OTP Option -->
+            <div class="flex items-center justify-between text-xs px-1">
+                <span class="text-slate-500">Didn't receive code?</span>
+                <button 
+                    type="button" 
+                    id="btn-resend-otp" 
+                    onclick="handleResendOtp()" 
+                    class="font-bold text-brand-600 hover:underline disabled:text-slate-400 disabled:no-underline disabled:cursor-not-allowed cursor-pointer transition"
+                >
+                    Resend Code
+                </button>
+            </div>
+
+            <button 
+                type="submit" 
+                id="btn-verify-submit"
+                class="w-full h-11 inline-flex items-center justify-center gap-2 px-6 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 shadow-md shadow-brand-600/25 cursor-pointer mt-2"
+            >
+                <span>Verify &amp; Create Account</span>
+                <i class="fa-solid fa-check text-xs"></i>
+            </button>
         </form>
 
     </div>
@@ -316,6 +393,10 @@
      AUTH DRAWER SCRIPT
      ========================================== -->
 <script>
+    let registeredEmail = '';
+    let resendTimerInterval = null;
+    let resendSecondsLeft = 0;
+
     function openAuthDrawer(tab = 'signin') {
         const backdrop = document.getElementById('auth-drawer-backdrop');
         const drawer = document.getElementById('auth-drawer');
@@ -345,10 +426,18 @@
     }
 
     function switchAuthTab(tab) {
+        clearAuthAlert();
         const signinBtn = document.getElementById('tab-btn-signin');
         const signupBtn = document.getElementById('tab-btn-signup');
         const signinForm = document.getElementById('form-signin');
         const signupForm = document.getElementById('form-signup');
+        const otpForm = document.getElementById('form-otp');
+        const tabsSwitcher = document.getElementById('auth-tabs-switcher');
+        const socialContainer = document.getElementById('auth-social-container');
+
+        if (tabsSwitcher) tabsSwitcher.classList.remove('hidden');
+        if (socialContainer) socialContainer.classList.remove('hidden');
+        if (otpForm) otpForm.classList.add('hidden');
 
         if (tab === 'signin') {
             signinBtn.className = 'flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 bg-white text-brand-600 shadow-xs cursor-pointer';
@@ -361,6 +450,211 @@
             signupForm.classList.remove('hidden');
             signinForm.classList.add('hidden');
         }
+    }
+
+    function backToSignupForm() {
+        clearAuthAlert();
+        const signupForm = document.getElementById('form-signup');
+        const otpForm = document.getElementById('form-otp');
+        const tabsSwitcher = document.getElementById('auth-tabs-switcher');
+        const socialContainer = document.getElementById('auth-social-container');
+
+        if (otpForm) otpForm.classList.add('hidden');
+        if (signupForm) signupForm.classList.remove('hidden');
+        if (tabsSwitcher) tabsSwitcher.classList.remove('hidden');
+        if (socialContainer) socialContainer.classList.remove('hidden');
+    }
+
+    function showAuthAlert(type, message) {
+        const alertBox = document.getElementById('auth-drawer-alert');
+        if (!alertBox) return;
+
+        alertBox.classList.remove('hidden', 'bg-rose-50', 'border-rose-200', 'text-rose-700', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-700');
+        
+        if (type === 'success') {
+            alertBox.classList.add('bg-emerald-50', 'border', 'border-emerald-200', 'text-emerald-700');
+        } else {
+            alertBox.classList.add('bg-rose-50', 'border', 'border-rose-200', 'text-rose-700');
+        }
+
+        alertBox.innerHTML = message;
+    }
+
+    function clearAuthAlert() {
+        const alertBox = document.getElementById('auth-drawer-alert');
+        if (alertBox) {
+            alertBox.classList.add('hidden');
+            alertBox.innerHTML = '';
+        }
+    }
+
+    async function handleSendRegistrationOtp(event) {
+        event.preventDefault();
+        clearAuthAlert();
+
+        const form = document.getElementById('form-signup');
+        const submitBtn = document.getElementById('btn-signup-submit');
+        const emailInput = document.getElementById('signup-email');
+        const passwordInput = document.getElementById('signup-password');
+        const confirmPasswordInput = document.getElementById('signup-confirm-password');
+
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            showAuthAlert('error', 'The password confirmation does not match.');
+            return;
+        }
+
+        registeredEmail = emailInput.value.trim().toLowerCase();
+
+        // Loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Sending code...</span>`;
+
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch('{{ route('customer.send-otp') }}', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // Switch to OTP form
+                document.getElementById('form-signup').classList.add('hidden');
+                document.getElementById('auth-tabs-switcher').classList.add('hidden');
+                document.getElementById('auth-social-container').classList.add('hidden');
+                
+                const otpForm = document.getElementById('form-otp');
+                otpForm.classList.remove('hidden');
+                
+                document.getElementById('otp-display-email').textContent = registeredEmail;
+                document.getElementById('otp-code-input').value = '';
+                document.getElementById('otp-code-input').focus();
+
+                showAuthAlert('success', data.message || 'Verification code sent to your email.');
+                startResendCountdown(30);
+            } else {
+                showAuthAlert('error', data.message || 'Unable to send verification code. Please check your details.');
+            }
+        } catch (error) {
+            showAuthAlert('error', 'A network error occurred. Please try again.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<span>Send Verification Code</span> <i class="fa-solid fa-arrow-right text-xs"></i>`;
+        }
+    }
+
+    async function handleVerifyOtp(event) {
+        event.preventDefault();
+        clearAuthAlert();
+
+        const otpInput = document.getElementById('otp-code-input');
+        const verifyBtn = document.getElementById('btn-verify-submit');
+        const otpCode = otpInput.value.trim();
+
+        if (otpCode.length !== 6) {
+            showAuthAlert('error', 'Please enter a valid 6-digit verification code.');
+            return;
+        }
+
+        verifyBtn.disabled = true;
+        verifyBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-xs"></i> <span>Verifying & creating account...</span>`;
+
+        try {
+            const response = await fetch('{{ route('customer.verify-otp') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                },
+                body: JSON.stringify({
+                    email: registeredEmail,
+                    otp: otpCode
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                showAuthAlert('success', 'Email verified successfully! Signing you in...');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 800);
+            } else {
+                showAuthAlert('error', data.message || 'Invalid verification code. Please try again.');
+                verifyBtn.disabled = false;
+                verifyBtn.innerHTML = `<span>Verify &amp; Create Account</span> <i class="fa-solid fa-check text-xs"></i>`;
+            }
+        } catch (error) {
+            showAuthAlert('error', 'Network error. Please try again.');
+            verifyBtn.disabled = false;
+            verifyBtn.innerHTML = `<span>Verify &amp; Create Account</span> <i class="fa-solid fa-check text-xs"></i>`;
+        }
+    }
+
+    async function handleResendOtp() {
+        if (resendSecondsLeft > 0 || !registeredEmail) return;
+
+        const resendBtn = document.getElementById('btn-resend-otp');
+        resendBtn.disabled = true;
+        resendBtn.textContent = 'Sending...';
+
+        try {
+            const response = await fetch('{{ route('customer.resend-otp') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                },
+                body: JSON.stringify({ email: registeredEmail })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                showAuthAlert('success', data.message || 'New verification code sent!');
+                startResendCountdown(30);
+            } else {
+                showAuthAlert('error', data.message || 'Unable to resend code right now.');
+                resendBtn.disabled = false;
+                resendBtn.textContent = 'Resend Code';
+            }
+        } catch (err) {
+            showAuthAlert('error', 'Network error. Please try again.');
+            resendBtn.disabled = false;
+            resendBtn.textContent = 'Resend Code';
+        }
+    }
+
+    function startResendCountdown(seconds) {
+        const resendBtn = document.getElementById('btn-resend-otp');
+        if (!resendBtn) return;
+
+        clearInterval(resendTimerInterval);
+        resendSecondsLeft = seconds;
+        resendBtn.disabled = true;
+        resendBtn.textContent = `Resend in ${resendSecondsLeft}s`;
+
+        resendTimerInterval = setInterval(() => {
+            resendSecondsLeft--;
+            if (resendSecondsLeft <= 0) {
+                clearInterval(resendTimerInterval);
+                resendBtn.disabled = false;
+                resendBtn.textContent = 'Resend Code';
+            } else {
+                resendBtn.textContent = `Resend in ${resendSecondsLeft}s`;
+            }
+        }, 1000);
     }
 
     function togglePasswordVisibility(inputId, btn) {

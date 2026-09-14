@@ -23,6 +23,7 @@ class Customer extends Authenticatable
         'avatar',
         'mobile',
         'password',
+        'email_verified_at',
     ];
 
     /**
