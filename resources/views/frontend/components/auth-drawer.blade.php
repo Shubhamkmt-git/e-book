@@ -1,306 +1,333 @@
 <!-- ==========================================
-     AUTHENTICATION SIDE DRAWER (SIGN IN / SIGN UP)
+     PREMIUM AUTHENTICATION SIDE DRAWER
      ========================================== -->
-<div id="auth-drawer-backdrop" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 transition-opacity duration-300 opacity-0 pointer-events-none" onclick="closeAuthDrawer()"></div>
+<div 
+    id="auth-drawer-backdrop" 
+    class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-[100] transition-opacity duration-300 opacity-0 pointer-events-none" 
+    onclick="closeAuthDrawer()"
+    aria-hidden="true"
+></div>
 
 <div 
     id="auth-drawer" 
-    class="fixed inset-y-0 right-0 w-full max-w-md bg-white z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-out flex flex-col justify-between overflow-y-auto"
+    class="fixed inset-y-0 right-0 w-full max-w-[440px] bg-white z-[101] shadow-2xl transform translate-x-full transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col justify-between overflow-y-auto border-l border-slate-100"
     role="dialog" 
     aria-modal="true" 
     aria-labelledby="auth-drawer-title"
 >
-    <!-- Drawer Content -->
-    <div class="p-6 sm:p-8">
-        
-        <!-- Drawer Header -->
-        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-            <div class="flex items-center">
-                @if (!empty($appSetting?->logo_light_url) || !empty($appSetting?->logo_dark_url))
-                    <img 
-                        id="auth-drawer-title"
-                        src="{{ $appSetting->logo_light_url ?? $appSetting->logo_dark_url }}" 
-                        alt="{{ $appSetting->app_name ?? 'Logo' }}" 
-                        class="max-w-[160px] max-h-10 object-contain"
-                    >
-                @else
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-9 h-9 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold text-sm shadow-sm shadow-brand-600/25">
-                            <i class="fa-solid fa-book-open"></i>
+    <!-- Drawer Scrollable Body -->
+    <div class="p-6 sm:p-8 flex-1 flex flex-col justify-between">
+        <div>
+            <!-- Top Header Section -->
+            <div class="flex items-center justify-between pb-5 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    @if (!empty($appSetting?->logo_light_url) || !empty($appSetting?->logo_dark_url))
+                        <img 
+                            id="auth-drawer-title"
+                            src="{{ $appSetting->logo_light_url ?? $appSetting->logo_dark_url }}" 
+                            alt="{{ $appSetting->app_name ?? 'Logo' }}" 
+                            class="max-w-[150px] max-h-10 object-contain"
+                        >
+                    @else
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-brand-500/25">
+                                <i class="fa-solid fa-book-open"></i>
+                            </div>
+                            <div>
+                                <h3 id="auth-drawer-title" class="font-brand text-2xl text-slate-900 uppercase tracking-wide leading-none">
+                                    {{ $appSetting->app_name ?? 'E-Book' }}<span class="text-brand-600">.</span>
+                                </h3>
+                            </div>
                         </div>
-                        <h3 id="auth-drawer-title" class="font-brand text-2xl text-slate-900 uppercase tracking-wide leading-none">
-                            {{ $appSetting->app_name ?? 'E-Book' }}<span class="text-brand-600">.</span>
-                        </h3>
-                    </div>
-                @endif
-            </div>
-
-            <!-- Close Button -->
-            <button 
-                type="button" 
-                onclick="closeAuthDrawer()" 
-                class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center transition cursor-pointer"
-                aria-label="Close Authentication Drawer"
-            >
-                <i class="fa-solid fa-xmark text-sm"></i>
-            </button>
-        </div>
-
-        <!-- Dynamic Alert Container -->
-        <div id="auth-drawer-alert" class="hidden mt-4 rounded-xl px-4 py-3 text-xs" role="alert"></div>
-
-        @if ($errors->any())
-            <div class="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs text-rose-700" role="alert">
-                {{ $errors->first() }}
-            </div>
-        @endif
-
-        <!-- Auth Tabs Switcher (Sign In vs Sign Up) -->
-        <div id="auth-tabs-switcher" class="mt-6 p-1 bg-slate-100 rounded-full flex items-center">
-            <button 
-                id="tab-btn-signin"
-                type="button" 
-                onclick="switchAuthTab('signin')" 
-                class="flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 bg-white text-brand-600 shadow-xs cursor-pointer"
-            >
-                Sign In
-            </button>
-            <button 
-                id="tab-btn-signup"
-                type="button" 
-                onclick="switchAuthTab('signup')" 
-                class="flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 text-slate-500 hover:text-slate-900 cursor-pointer"
-            >
-                Sign Up
-            </button>
-        </div>
-
-        <!-- Continue with Google Button -->
-        <div id="auth-social-container" class="mt-6">
-            <button 
-                type="button" 
-                id="btn-google-auth"
-                onclick="handleGoogleSignIn(event)" 
-                class="w-full h-11 inline-flex items-center justify-center gap-3 px-4 rounded-full bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200/90 shadow-xs hover:shadow-sm transition-all duration-150 cursor-pointer"
-            >
-                <!-- Google Multi-Color SVG Icon -->
-                <svg class="w-4 h-4" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-                </svg>
-                <span id="google-auth-text">Continue with Google</span>
-            </button>
-
-            <!-- Divider -->
-            <div class="relative flex py-5 items-center">
-                <div class="flex-grow border-t border-slate-200"></div>
-                <span class="flex-shrink mx-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">or continue with email</span>
-                <div class="flex-grow border-t border-slate-200"></div>
-            </div>
-        </div>
-
-        <!-- ==========================================
-             SIGN IN FORM (EMAIL + OTP LOGIN)
-             ========================================== -->
-        <form id="form-signin" onsubmit="handleSendLoginOtp(event)" class="space-y-4">
-            @csrf
-            <div>
-                <label for="signin-email" class="block text-xs font-semibold text-slate-700 mb-1.5">Email Address</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <i class="fa-regular fa-envelope text-xs"></i>
-                    </div>
-                    <input 
-                        type="email" 
-                        id="signin-email" 
-                        name="email" 
-                        placeholder="you@example.com"
-                        required
-                        class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition font-medium"
-                    >
+                    @endif
                 </div>
-            </div>
 
-            <button 
-                type="submit" 
-                id="btn-signin-submit"
-                class="w-full h-11 inline-flex items-center justify-center gap-2 px-6 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 shadow-md shadow-brand-600/25 cursor-pointer mt-2"
-            >
-                <span>Send Login Code</span>
-                <i class="fa-solid fa-arrow-right text-xs"></i>
-            </button>
-
-            <p class="text-center text-xs text-slate-500 pt-2">
-                Don't have an account? 
-                <button type="button" onclick="switchAuthTab('signup')" class="text-brand-600 font-bold hover:underline cursor-pointer">
-                    Sign Up
-                </button>
-            </p>
-        </form>
-
-        <!-- ==========================================
-             SIGN UP FORM (EMAIL + OTP REGISTRATION)
-             ========================================== -->
-        <form id="form-signup" onsubmit="handleSendRegistrationOtp(event)" class="hidden space-y-3.5">
-            @csrf
-            <!-- Full Name -->
-            <div>
-                <label for="signup-name" class="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <i class="fa-regular fa-user text-xs"></i>
-                    </div>
-                    <input 
-                        type="text" 
-                        id="signup-name" 
-                        name="name" 
-                        placeholder="John Doe"
-                        required
-                        class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition font-medium"
-                    >
-                </div>
-            </div>
-
-            <!-- Email Address -->
-            <div>
-                <label for="signup-email" class="block text-xs font-semibold text-slate-700 mb-1">Email Address</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <i class="fa-regular fa-envelope text-xs"></i>
-                    </div>
-                    <input 
-                        type="email" 
-                        id="signup-email" 
-                        name="email" 
-                        placeholder="you@example.com"
-                        required
-                        class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition font-medium"
-                    >
-                </div>
-            </div>
-
-            <!-- Mobile Number -->
-            <div>
-                <label for="signup-phone" class="block text-xs font-semibold text-slate-700 mb-1">Mobile Number <span class="text-slate-400 font-normal">(Optional)</span></label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <i class="fa-solid fa-phone text-xs"></i>
-                    </div>
-                    <input 
-                        type="tel" 
-                        id="signup-phone" 
-                        name="mobile"
-                        placeholder="+91 98765 43210"
-                        class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 text-slate-800 placeholder-slate-400 text-xs border border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 focus:outline-none transition font-medium"
-                    >
-                </div>
-            </div>
-
-            <!-- Agree to Terms Checkbox -->
-            <div class="flex items-start gap-2 pt-1">
-                <input type="checkbox" id="terms" required class="mt-0.5 w-3.5 h-3.5 rounded text-brand-600 border-slate-300 focus:ring-brand-500">
-                <label for="terms" class="text-[11px] text-slate-500 leading-tight">
-                    I agree to the <a href="{{ route('terms') }}" target="_blank" class="text-brand-600 hover:underline">Terms of Service</a> &amp; <a href="{{ route('privacy-policy') }}" target="_blank" class="text-brand-600 hover:underline">Privacy Policy</a>
-                </label>
-            </div>
-
-            <button 
-                type="submit" 
-                id="btn-signup-submit"
-                class="w-full h-11 inline-flex items-center justify-center gap-2 px-6 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 shadow-md shadow-brand-600/25 cursor-pointer mt-2"
-            >
-                <span>Send Verification Code</span>
-                <i class="fa-solid fa-arrow-right text-xs"></i>
-            </button>
-
-            <p class="text-center text-xs text-slate-500 pt-1">
-                Already have an account? 
-                <button type="button" onclick="switchAuthTab('signin')" class="text-brand-600 font-bold hover:underline cursor-pointer">
-                    Sign In
-                </button>
-            </p>
-        </form>
-
-        <!-- ==========================================
-             OTP VERIFICATION FORM (STEP 2: OTP)
-             ========================================== -->
-        <form id="form-otp" onsubmit="handleVerifyOtp(event)" class="hidden space-y-4">
-            @csrf
-            
-            <div class="flex items-center justify-between pb-1">
+                <!-- Close Button -->
                 <button 
                     type="button" 
-                    onclick="backFromOtpForm()" 
-                    class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-brand-600 transition cursor-pointer"
+                    onclick="closeAuthDrawer()" 
+                    class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-all duration-200 hover:rotate-90 cursor-pointer shadow-2xs"
+                    aria-label="Close Authentication Drawer"
                 >
-                    <i class="fa-solid fa-arrow-left text-[11px]"></i>
-                    <span id="otp-back-btn-text">Back</span>
+                    <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
             </div>
 
-            <!-- OTP Notice Box -->
-            <div class="p-3.5 rounded-2xl bg-purple-50/80 border border-purple-100 text-center">
-                <div class="w-8 h-8 rounded-full bg-purple-100 text-brand-600 flex items-center justify-center mx-auto mb-2 text-xs font-bold shadow-xs">
-                    <i class="fa-regular fa-envelope"></i>
+            <!-- Header Badge & Intro Text -->
+            <div class="mt-5 text-center sm:text-left">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 border border-brand-100/60 text-brand-700 text-[11px] font-semibold tracking-wide mb-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
+                    <span id="auth-subheading-badge">Instant &amp; Passwordless Access</span>
                 </div>
-                <h4 id="otp-header-title" class="text-xs font-bold text-slate-900">Check Your Email</h4>
-                <p class="text-[11px] text-slate-500 mt-0.5">
-                    We sent a 6-digit verification code to<br>
-                    <strong id="otp-display-email" class="text-slate-800 font-semibold"></strong>
+                <h2 id="auth-heading-title" class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-display">
+                    Welcome to {{ $appSetting->app_name ?? 'our digital library' }}
+                </h2>
+                <p id="auth-heading-desc" class="text-xs text-slate-500 mt-1">
+                    Sign in or register effortlessly with a 6-digit email code.
                 </p>
             </div>
 
-            <!-- 6-Digit OTP Input -->
-            <div>
-                <label for="otp-code-input" class="block text-xs font-semibold text-slate-700 mb-1.5 text-center">
-                    Enter 6-Digit Code
-                </label>
-                <input 
-                    type="text" 
-                    id="otp-code-input" 
-                    name="otp" 
-                    maxlength="6" 
-                    inputmode="numeric" 
-                    pattern="[0-9]*"
-                    autocomplete="one-time-code"
-                    placeholder="••••••"
-                    required
-                    class="w-full text-center text-2xl tracking-[0.5em] font-mono py-3 font-bold rounded-2xl bg-slate-50 text-slate-900 placeholder-slate-300 border border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition"
-                >
-            </div>
+            <!-- Dynamic Alert Container -->
+            <div id="auth-drawer-alert" class="hidden mt-4 rounded-2xl px-4 py-3 text-xs font-medium flex items-start gap-2.5 transition-all duration-200" role="alert"></div>
 
-            <!-- Resend OTP Option -->
-            <div class="flex items-center justify-between text-xs px-1">
-                <span class="text-slate-500">Didn't receive code?</span>
+            @if ($errors->any())
+                <div class="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs text-rose-700 flex items-start gap-2" role="alert">
+                    <i class="fa-solid fa-circle-exclamation text-rose-500 mt-0.5"></i>
+                    <span>{{ $errors->first() }}</span>
+                </div>
+            @endif
+
+            <!-- Auth Tabs Switcher (Sign In vs Sign Up) -->
+            <div id="auth-tabs-switcher" class="mt-5 p-1 bg-slate-100/90 rounded-2xl border border-slate-200/60 flex items-center shadow-inner">
                 <button 
+                    id="tab-btn-signin"
                     type="button" 
-                    id="btn-resend-otp" 
-                    onclick="handleResendOtp()" 
-                    class="font-bold text-brand-600 hover:underline disabled:text-slate-400 disabled:no-underline disabled:cursor-not-allowed cursor-pointer transition"
+                    onclick="switchAuthTab('signin')" 
+                    class="flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 bg-white text-brand-600 shadow-sm cursor-pointer text-center"
                 >
-                    Resend Code
+                    Sign In
+                </button>
+                <button 
+                    id="tab-btn-signup"
+                    type="button" 
+                    onclick="switchAuthTab('signup')" 
+                    class="flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 text-slate-500 hover:text-slate-900 cursor-pointer text-center"
+                >
+                    Sign Up
                 </button>
             </div>
 
-            <button 
-                type="submit" 
-                id="btn-verify-submit"
-                class="w-full h-11 inline-flex items-center justify-center gap-2 px-6 rounded-full bg-brand-600 hover:bg-brand-500 active:bg-brand-700 text-white font-brand text-xl tracking-wider uppercase transition-all duration-200 shadow-md shadow-brand-600/25 cursor-pointer mt-2"
-            >
-                <span id="btn-verify-text">Verify &amp; Continue</span>
-                <i class="fa-solid fa-check text-xs"></i>
-            </button>
-        </form>
+            <!-- Continue with Google Button -->
+            <div id="auth-social-container" class="mt-5">
+                <button 
+                    type="button" 
+                    id="btn-google-auth"
+                    onclick="handleGoogleSignIn(event)" 
+                    class="w-full h-12 inline-flex items-center justify-center gap-3 px-4 rounded-2xl bg-white hover:bg-slate-50 active:scale-[0.99] text-slate-700 text-sm font-semibold border border-slate-200 shadow-xs hover:shadow-sm hover:border-slate-300 transition-all duration-150 cursor-pointer"
+                >
+                    <!-- Google Multi-Color SVG Icon -->
+                    <svg class="w-4 h-4" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                    </svg>
+                    <span id="google-auth-text">Continue with Google</span>
+                </button>
 
-    </div>
+                <!-- Divider -->
+                <div class="relative flex py-5 items-center">
+                    <div class="flex-grow border-t border-slate-200"></div>
+                    <span class="flex-shrink mx-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 bg-white px-2">or email code</span>
+                    <div class="flex-grow border-t border-slate-200"></div>
+                </div>
+            </div>
 
-    <!-- Drawer Footer -->
-    <div class="p-6 bg-slate-50/80 border-t border-slate-100 text-center">
-        <p class="text-[11px] text-slate-400">
-            Protected with 256-bit encryption • Instant access to your digital library
-        </p>
+            <!-- ==========================================
+                 SIGN IN FORM (EMAIL + OTP LOGIN)
+                 ========================================== -->
+            <form id="form-signin" onsubmit="handleSendLoginOtp(event)" class="space-y-4">
+                @csrf
+                <div>
+                    <label for="signin-email" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Email Address</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-regular fa-envelope text-sm"></i>
+                        </div>
+                        <input 
+                            type="email" 
+                            id="signin-email" 
+                            name="email" 
+                            placeholder="name@example.com"
+                            required
+                            class="w-full h-12 pl-11 pr-4 rounded-2xl bg-slate-50/80 text-slate-900 placeholder-slate-400 text-sm border border-slate-200/90 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 focus:outline-none transition-all duration-200 font-medium"
+                        >
+                    </div>
+                </div>
+
+                <button 
+                    type="submit" 
+                    id="btn-signin-submit"
+                    class="w-full h-12 inline-flex items-center justify-center gap-2.5 px-6 rounded-2xl bg-brand-600 hover:bg-brand-500 active:scale-[0.99] text-white font-bold text-sm tracking-wide shadow-lg shadow-brand-600/25 hover:shadow-brand-600/35 transition-all duration-200 cursor-pointer"
+                >
+                    <span>Send Login Code</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+
+                <p class="text-center text-xs text-slate-500 pt-1">
+                    Don't have an account? 
+                    <button type="button" onclick="switchAuthTab('signup')" class="text-brand-600 font-bold hover:underline cursor-pointer">
+                        Sign Up
+                    </button>
+                </p>
+            </form>
+
+            <!-- ==========================================
+                 SIGN UP FORM (EMAIL + OTP REGISTRATION)
+                 ========================================== -->
+            <form id="form-signup" onsubmit="handleSendRegistrationOtp(event)" class="hidden space-y-4">
+                @csrf
+                <!-- Full Name -->
+                <div>
+                    <label for="signup-name" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Full Name</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-regular fa-user text-sm"></i>
+                        </div>
+                        <input 
+                            type="text" 
+                            id="signup-name" 
+                            name="name" 
+                            placeholder="John Doe"
+                            required
+                            class="w-full h-12 pl-11 pr-4 rounded-2xl bg-slate-50/80 text-slate-900 placeholder-slate-400 text-sm border border-slate-200/90 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 focus:outline-none transition-all duration-200 font-medium"
+                        >
+                    </div>
+                </div>
+
+                <!-- Email Address -->
+                <div>
+                    <label for="signup-email" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Email Address</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-regular fa-envelope text-sm"></i>
+                        </div>
+                        <input 
+                            type="email" 
+                            id="signup-email" 
+                            name="email" 
+                            placeholder="name@example.com"
+                            required
+                            class="w-full h-12 pl-11 pr-4 rounded-2xl bg-slate-50/80 text-slate-900 placeholder-slate-400 text-sm border border-slate-200/90 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 focus:outline-none transition-all duration-200 font-medium"
+                        >
+                    </div>
+                </div>
+
+                <!-- Mobile Number -->
+                <div>
+                    <label for="signup-phone" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Mobile Number <span class="text-slate-400 font-normal lowercase">(optional)</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-phone text-sm"></i>
+                        </div>
+                        <input 
+                            type="tel" 
+                            id="signup-phone" 
+                            name="mobile"
+                            placeholder="+91 98765 43210"
+                            class="w-full h-12 pl-11 pr-4 rounded-2xl bg-slate-50/80 text-slate-900 placeholder-slate-400 text-sm border border-slate-200/90 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 focus:outline-none transition-all duration-200 font-medium"
+                        >
+                    </div>
+                </div>
+
+                <!-- Agree to Terms Checkbox -->
+                <div class="flex items-start gap-2.5 pt-1">
+                    <input type="checkbox" id="terms" required class="mt-1 w-4 h-4 rounded text-brand-600 border-slate-300 focus:ring-brand-500 cursor-pointer">
+                    <label for="terms" class="text-xs text-slate-500 leading-relaxed">
+                        I agree to the <a href="{{ route('terms') }}" target="_blank" class="text-brand-600 font-semibold hover:underline">Terms of Service</a> &amp; <a href="{{ route('privacy-policy') }}" target="_blank" class="text-brand-600 font-semibold hover:underline">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button 
+                    type="submit" 
+                    id="btn-signup-submit"
+                    class="w-full h-12 inline-flex items-center justify-center gap-2.5 px-6 rounded-2xl bg-brand-600 hover:bg-brand-500 active:scale-[0.99] text-white font-bold text-sm tracking-wide shadow-lg shadow-brand-600/25 hover:shadow-brand-600/35 transition-all duration-200 cursor-pointer"
+                >
+                    <span>Send Verification Code</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+
+                <p class="text-center text-xs text-slate-500 pt-1">
+                    Already have an account? 
+                    <button type="button" onclick="switchAuthTab('signin')" class="text-brand-600 font-bold hover:underline cursor-pointer">
+                        Sign In
+                    </button>
+                </p>
+            </form>
+
+            <!-- ==========================================
+                 OTP VERIFICATION FORM (STEP 2: OTP)
+                 ========================================== -->
+            <form id="form-otp" onsubmit="handleVerifyOtp(event)" class="hidden space-y-4">
+                @csrf
+                
+                <div class="flex items-center justify-between pb-1">
+                    <button 
+                        type="button" 
+                        onclick="backFromOtpForm()" 
+                        class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-brand-600 transition cursor-pointer"
+                    >
+                        <i class="fa-solid fa-arrow-left text-[11px]"></i>
+                        <span id="otp-back-btn-text">Edit Email</span>
+                    </button>
+                </div>
+
+                <!-- OTP Notice Box -->
+                <div class="p-4 rounded-2xl bg-gradient-to-br from-brand-50/80 via-purple-50/50 to-brand-50/80 border border-brand-100/80 text-center">
+                    <div class="w-10 h-10 rounded-2xl bg-brand-100 text-brand-600 flex items-center justify-center mx-auto mb-2 text-sm font-bold shadow-xs">
+                        <i class="fa-regular fa-envelope-open"></i>
+                    </div>
+                    <h4 id="otp-header-title" class="text-sm font-bold text-slate-900">Check Your Email</h4>
+                    <p class="text-xs text-slate-500 mt-1">
+                        We sent a 6-digit verification code to<br>
+                        <span id="otp-display-email" class="inline-block mt-1 font-semibold text-brand-700 bg-white/80 border border-brand-200/60 rounded-lg px-2.5 py-0.5 font-mono text-xs"></span>
+                    </p>
+                </div>
+
+                <!-- 6-Digit OTP Input -->
+                <div>
+                    <label for="otp-code-input" class="block text-xs font-bold text-slate-700 mb-2 text-center uppercase tracking-wider">
+                        Enter 6-Digit Code
+                    </label>
+                    <input 
+                        type="text" 
+                        id="otp-code-input" 
+                        name="otp" 
+                        maxlength="6" 
+                        inputmode="numeric" 
+                        pattern="[0-9]*"
+                        autocomplete="one-time-code"
+                        placeholder="••••••"
+                        required
+                        class="w-full text-center text-3xl tracking-[0.4em] font-mono py-3.5 font-black rounded-2xl bg-slate-50/90 text-slate-900 placeholder-slate-300 border-2 border-slate-200 focus:bg-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 outline-none transition-all duration-200 shadow-inner"
+                    >
+                </div>
+
+                <!-- Resend OTP Option -->
+                <div class="flex items-center justify-between text-xs px-1 pt-1">
+                    <span class="text-slate-500">Didn't receive code?</span>
+                    <button 
+                        type="button" 
+                        id="btn-resend-otp" 
+                        onclick="handleResendOtp()" 
+                        class="font-bold text-brand-600 hover:text-brand-700 hover:underline disabled:text-slate-400 disabled:no-underline disabled:cursor-not-allowed cursor-pointer transition flex items-center gap-1.5"
+                    >
+                        <i class="fa-solid fa-rotate-right text-[10px]"></i>
+                        <span>Resend Code</span>
+                    </button>
+                </div>
+
+                <button 
+                    type="submit" 
+                    id="btn-verify-submit"
+                    class="w-full h-12 inline-flex items-center justify-center gap-2.5 px-6 rounded-2xl bg-brand-600 hover:bg-brand-500 active:scale-[0.99] text-white font-bold text-sm tracking-wide shadow-lg shadow-brand-600/25 hover:shadow-brand-600/35 transition-all duration-200 cursor-pointer"
+                >
+                    <span id="btn-verify-text">Verify &amp; Sign In</span>
+                    <i class="fa-solid fa-check text-xs"></i>
+                </button>
+            </form>
+
+        </div>
+
+        <!-- Drawer Footer Trust Elements -->
+        <div class="pt-6 mt-6 border-t border-slate-100 text-center">
+            <div class="inline-flex items-center gap-2 text-[11px] text-slate-400 font-medium">
+                <i class="fa-solid fa-shield-halved text-brand-500"></i>
+                <span>256-bit TLS Encrypted &bull; Instant access to purchased e-books</span>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -375,6 +402,9 @@
         const otpForm = document.getElementById('form-otp');
         const tabsSwitcher = document.getElementById('auth-tabs-switcher');
         const socialContainer = document.getElementById('auth-social-container');
+        const headingTitle = document.getElementById('auth-heading-title');
+        const headingDesc = document.getElementById('auth-heading-desc');
+        const badgeText = document.getElementById('auth-subheading-badge');
 
         if (tabsSwitcher) tabsSwitcher.classList.remove('hidden');
         if (socialContainer) socialContainer.classList.remove('hidden');
@@ -382,16 +412,22 @@
 
         if (tab === 'signin') {
             authOtpMode = 'signin';
-            signinBtn.className = 'flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 bg-white text-brand-600 shadow-xs cursor-pointer';
-            signupBtn.className = 'flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 text-slate-500 hover:text-slate-900 cursor-pointer';
+            signinBtn.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 bg-white text-brand-600 shadow-sm cursor-pointer text-center';
+            signupBtn.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 text-slate-500 hover:text-slate-900 cursor-pointer text-center';
             signinForm.classList.remove('hidden');
             signupForm.classList.add('hidden');
+            if (headingTitle) headingTitle.textContent = 'Welcome Back';
+            if (headingDesc) headingDesc.textContent = 'Sign in to access all your purchased books & downloads.';
+            if (badgeText) badgeText.textContent = 'Quick & Passwordless Login';
         } else {
             authOtpMode = 'signup';
-            signupBtn.className = 'flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 bg-white text-brand-600 shadow-xs cursor-pointer';
-            signinBtn.className = 'flex-1 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-200 text-slate-500 hover:text-slate-900 cursor-pointer';
+            signupBtn.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 bg-white text-brand-600 shadow-sm cursor-pointer text-center';
+            signinBtn.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-200 text-slate-500 hover:text-slate-900 cursor-pointer text-center';
             signupForm.classList.remove('hidden');
             signinForm.classList.add('hidden');
+            if (headingTitle) headingTitle.textContent = 'Create an Account';
+            if (headingDesc) headingDesc.textContent = 'Join in seconds. No complex passwords to remember.';
+            if (badgeText) badgeText.textContent = 'Fast 6-Digit Email Verification';
         }
     }
 
@@ -420,15 +456,15 @@
         const alertBox = document.getElementById('auth-drawer-alert');
         if (!alertBox) return;
 
-        alertBox.classList.remove('hidden', 'bg-rose-50', 'border-rose-200', 'text-rose-700', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-700');
+        alertBox.classList.remove('hidden', 'bg-rose-50', 'border', 'border-rose-200', 'text-rose-700', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-700');
         
         if (type === 'success') {
             alertBox.classList.add('bg-emerald-50', 'border', 'border-emerald-200', 'text-emerald-700');
+            alertBox.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500 mt-0.5"></i> <span>${message}</span>`;
         } else {
             alertBox.classList.add('bg-rose-50', 'border', 'border-rose-200', 'text-rose-700');
+            alertBox.innerHTML = `<i class="fa-solid fa-circle-exclamation text-rose-500 mt-0.5"></i> <span>${message}</span>`;
         }
-
-        alertBox.innerHTML = message;
     }
 
     function clearAuthAlert() {
@@ -533,7 +569,7 @@
                 const otpForm = document.getElementById('form-otp');
                 otpForm.classList.remove('hidden');
                 
-                document.getElementById('otp-back-btn-text').textContent = 'Edit Registration Details';
+                document.getElementById('otp-back-btn-text').textContent = 'Edit Details';
                 document.getElementById('otp-header-title').textContent = 'Check Your Email';
                 document.getElementById('btn-verify-text').textContent = 'Verify & Create Account';
                 document.getElementById('otp-display-email').textContent = registeredEmail;
@@ -598,7 +634,7 @@
             } else {
                 showAuthAlert('error', data.message || 'Invalid verification code. Please try again.');
                 verifyBtn.disabled = false;
-                verifyBtn.innerHTML = `<span>Verify &amp; Continue</span> <i class="fa-solid fa-check text-xs"></i>`;
+                verifyBtn.innerHTML = `<span>${authOtpMode === 'signin' ? 'Verify & Sign In' : 'Verify & Create Account'}</span> <i class="fa-solid fa-check text-xs"></i>`;
             }
         } catch (error) {
             showAuthAlert('error', 'Network error. Please try again.');
@@ -612,7 +648,7 @@
 
         const resendBtn = document.getElementById('btn-resend-otp');
         resendBtn.disabled = true;
-        resendBtn.textContent = 'Sending...';
+        resendBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-[10px]"></i> <span>Sending...</span>`;
 
         const resendRoute = authOtpMode === 'signin' 
             ? '{{ route('customer.resend-login-otp') }}' 
@@ -638,12 +674,12 @@
             } else {
                 showAuthAlert('error', data.message || 'Unable to resend code right now.');
                 resendBtn.disabled = false;
-                resendBtn.textContent = 'Resend Code';
+                resendBtn.innerHTML = `<i class="fa-solid fa-rotate-right text-[10px]"></i> <span>Resend Code</span>`;
             }
         } catch (err) {
             showAuthAlert('error', 'Network error. Please try again.');
             resendBtn.disabled = false;
-            resendBtn.textContent = 'Resend Code';
+            resendBtn.innerHTML = `<i class="fa-solid fa-rotate-right text-[10px]"></i> <span>Resend Code</span>`;
         }
     }
 
@@ -654,16 +690,16 @@
         clearInterval(resendTimerInterval);
         resendSecondsLeft = seconds;
         resendBtn.disabled = true;
-        resendBtn.textContent = `Resend in ${resendSecondsLeft}s`;
+        resendBtn.innerHTML = `<i class="fa-solid fa-clock text-[10px]"></i> <span>Resend in ${resendSecondsLeft}s</span>`;
 
         resendTimerInterval = setInterval(() => {
             resendSecondsLeft--;
             if (resendSecondsLeft <= 0) {
                 clearInterval(resendTimerInterval);
                 resendBtn.disabled = false;
-                resendBtn.textContent = 'Resend Code';
+                resendBtn.innerHTML = `<i class="fa-solid fa-rotate-right text-[10px]"></i> <span>Resend Code</span>`;
             } else {
-                resendBtn.textContent = `Resend in ${resendSecondsLeft}s`;
+                resendBtn.innerHTML = `<i class="fa-solid fa-clock text-[10px]"></i> <span>Resend in ${resendSecondsLeft}s</span>`;
             }
         }, 1000);
     }
