@@ -2,6 +2,62 @@
 
 @section('title', 'E-Book Details: ' . $book->title)
 
+@push('styles')
+<style>
+    .book-description-content {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        color: #334155;
+        line-height: 1.8;
+    }
+    .book-description-content h1, 
+    .book-description-content h2, 
+    .book-description-content h3, 
+    .book-description-content h4 {
+        color: #0f172a;
+        font-weight: 700;
+        margin-top: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+    .book-description-content h2 { font-size: 1.35rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.25rem; }
+    .book-description-content h3 { font-size: 1.15rem; }
+    .book-description-content p { margin-bottom: 1rem; }
+    .book-description-content p:last-child { margin-bottom: 0; }
+    .book-description-content ul, 
+    .book-description-content ol {
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+        padding-left: 1.5rem;
+    }
+    .book-description-content ul { list-style-type: disc; }
+    .book-description-content ol { list-style-type: decimal; }
+    .book-description-content li { margin-bottom: 0.35rem; }
+    .book-description-content strong { color: #0f172a; font-weight: 600; }
+    .book-description-content a { color: #7a58a9; text-decoration: underline; }
+    .book-description-content blockquote {
+        border-left: 3px solid #7a58a9;
+        background-color: #faf5ff;
+        border-radius: 0 0.5rem 0.5rem 0;
+        padding: 0.6rem 1rem;
+        color: #4b5563;
+        margin: 1rem 0;
+        font-style: italic;
+    }
+    .book-description-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        font-size: 0.875rem;
+    }
+    .book-description-content th, 
+    .book-description-content td {
+        border: 1px solid #e2e8f0;
+        padding: 0.5rem 0.75rem;
+        text-align: left;
+    }
+    .book-description-content th { background-color: #f8fafc; font-weight: 600; }
+</style>
+@endpush
+
 @section('content')
 <div class="w-full space-y-6">
 
@@ -61,9 +117,9 @@
                         <p class="text-[11px] text-slate-400">Comprehensive overview & description</p>
                     </div>
                 </div>
-                <div class="text-sm text-slate-700 leading-relaxed space-y-3 font-normal">
+                <div class="text-sm text-slate-700 leading-relaxed font-normal book-description-content">
                     @if($book->description)
-                        <p class="whitespace-pre-line">{{ $book->description }}</p>
+                        {!! $book->description !!}
                     @else
                         <p class="text-slate-400 italic">No description provided for this e-book.</p>
                     @endif

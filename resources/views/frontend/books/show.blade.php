@@ -61,6 +61,134 @@
         mask-image: linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%);
         -webkit-mask-image: linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%);
     }
+
+    /* Hero Book Cover Frame: Constrained to fit within the viewport screen while strictly preserving 10/7 aspect ratio */
+    .book-cover-frame {
+        width: min(100%, calc((100vh - 15rem) * 10 / 7));
+        max-height: calc(100vh - 15rem);
+        aspect-ratio: 10 / 7;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    @media (min-width: 640px) {
+        .book-cover-frame {
+            max-height: min(calc(100vh - 14.5rem), 520px);
+            width: min(100%, calc(min(calc(100vh - 14.5rem), 520px) * 10 / 7));
+            max-width: 760px;
+        }
+    }
+    @media (max-width: 639px) {
+        .book-cover-frame {
+            width: 100%;
+            max-width: 100%;
+            max-height: none;
+            aspect-ratio: 10 / 7;
+        }
+    }
+
+    /* Formatted Rich Text for About The Book */
+    .book-description-content {
+        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        color: #334155;
+        line-height: 1.85;
+    }
+    .book-description-content h1, 
+    .book-description-content h2, 
+    .book-description-content h3, 
+    .book-description-content h4 {
+        color: #0f172a;
+        font-weight: 700;
+        letter-spacing: -0.015em;
+        margin-top: 1.5rem;
+        margin-bottom: 0.6rem;
+    }
+    .book-description-content h1 { font-size: 1.45rem; }
+    .book-description-content h2 { font-size: 1.25rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.35rem; }
+    .book-description-content h3 { font-size: 1.1rem; font-weight: 600; color: #1e293b; }
+    .book-description-content h4 { font-size: 1rem; font-weight: 600; }
+    .book-description-content p {
+        margin-bottom: 1.1rem;
+    }
+    .book-description-content p:last-child {
+        margin-bottom: 0;
+    }
+    .book-description-content ul, 
+    .book-description-content ol {
+        margin-top: 0.5rem;
+        margin-bottom: 1.25rem;
+        padding-left: 1.5rem;
+    }
+    .book-description-content ul {
+        list-style-type: disc;
+    }
+    .book-description-content ol {
+        list-style-type: decimal;
+    }
+    .book-description-content li {
+        margin-bottom: 0.45rem;
+        color: #475569;
+    }
+    .book-description-content strong {
+        color: #0f172a;
+        font-weight: 600;
+    }
+    .book-description-content em {
+        color: #334155;
+        font-style: italic;
+    }
+    .book-description-content a {
+        color: #7a58a9;
+        font-weight: 500;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        transition: color 0.15s ease;
+    }
+    .book-description-content a:hover {
+        color: #563c78;
+    }
+    .book-description-content blockquote {
+        border-left: 3px solid #7a58a9;
+        background-color: #faf5ff;
+        border-radius: 0 0.5rem 0.5rem 0;
+        padding: 0.75rem 1.25rem;
+        color: #4b5563;
+        margin: 1.25rem 0;
+        font-style: italic;
+    }
+    .book-description-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1.5rem 0;
+        font-size: 0.9rem;
+    }
+    .book-description-content th, 
+    .book-description-content td {
+        border: 1px solid #e2e8f0;
+        padding: 0.6rem 0.85rem;
+        text-align: left;
+    }
+    .book-description-content th {
+        background-color: #f8fafc;
+        font-weight: 600;
+        color: #0f172a;
+    }
+    .book-description-content code {
+        background-color: #f1f5f9;
+        color: #0f172a;
+        padding: 0.15rem 0.4rem;
+        border-radius: 0.25rem;
+        font-size: 0.875em;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    .book-description-content pre {
+        background-color: #0f172a;
+        color: #f8fafc;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        overflow-x: auto;
+        margin: 1.25rem 0;
+        font-size: 0.875rem;
+    }
 </style>
 @endpush
 
@@ -133,7 +261,7 @@
             </nav>
 
             <!-- Centered Book Title -->
-            <h1 class="font-brand text-3xl sm:text-4xl lg:text-5xl text-slate-900 uppercase tracking-wide leading-tight">
+            <h1 class="font-brand font-bold text-3xl sm:text-4xl lg:text-5xl text-slate-900 uppercase tracking-wide leading-tight">
                 {{ $book['title'] }}
             </h1>
 
@@ -155,9 +283,9 @@
             </div>
         </div>
 
-        <!-- 3. Centered Book Cover (Rectangular Aspect Ratio on Mobile) -->
-        <div id="book-hero-section" class="w-full max-w-5xl mx-auto flex flex-col items-center">
-            <div class="w-full aspect-[10/7] sm:aspect-auto sm:h-[70vh] lg:h-[80vh] rounded-2xl sm:rounded-3xl overflow-hidden relative shadow-[0_20px_50px_-15px_rgba(122,88,169,0.35)] bg-slate-950 ring-1 ring-black/10 group">
+        <!-- 3. Centered Book Cover (Constrained within viewport screen with consistent 10/7 ratio) -->
+        <div id="book-hero-section" class="w-full flex flex-col items-center justify-center mx-auto">
+            <div class="book-cover-frame rounded-2xl sm:rounded-3xl overflow-hidden relative shadow-[0_20px_50px_-15px_rgba(122,88,169,0.35)] bg-slate-950 ring-1 ring-black/10 group">
                 <img 
                     src="{{ asset($book['image']) }}" 
                     alt="{{ $book['title'] }}" 
@@ -191,19 +319,19 @@
                 </button>
 
                 <!-- Bottom Image Overlay Gradient + Buy / Download Button -->
-                <div class="absolute inset-x-0 bottom-0 pb-4 sm:pb-8 pt-14 sm:pt-20 bg-gradient-to-t from-slate-950/85 via-slate-950/40 to-transparent flex flex-col items-center justify-end px-4 z-10 pointer-events-auto">
+                <div class="absolute inset-x-0 bottom-0 pb-3 sm:pb-5 pt-10 sm:pt-14 bg-gradient-to-t from-slate-950/85 via-slate-950/40 to-transparent flex flex-col items-center justify-end px-4 z-10 pointer-events-auto">
                     @if($hasPurchased ?? false)
                         <a 
                             href="{{ route('purchases.download', $userPurchase->id) }}"
-                            class="w-full sm:w-auto min-w-[220px] sm:min-w-[280px] h-12 sm:h-14 inline-flex items-center justify-center gap-2.5 px-6 sm:px-10 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-brand text-lg sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.04] active:scale-[0.98] shadow-2xl text-center cursor-pointer group/btn"
+                            class="w-full sm:w-auto min-w-[200px] sm:min-w-[250px] h-11 sm:h-13 inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-brand text-base sm:text-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.04] active:scale-[0.98] shadow-2xl text-center cursor-pointer group/btn"
                         >
-                            <i class="fa-solid fa-download text-base"></i>
+                            <i class="fa-solid fa-download text-sm"></i>
                             <span>Download Full E-Book (PDF)</span>
                         </a>
                     @else
                         <a 
                             href="{{ route('payments.initiate', $book['slug'] ?? $book['id']) }}" data-purchase-action
-                            class="btn-buy-motion w-full sm:w-auto min-w-[220px] sm:min-w-[280px] h-12 sm:h-14 inline-flex items-center justify-center gap-2.5 px-6 sm:px-10 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-lg sm:text-2xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.04] active:scale-[0.98] shadow-2xl text-center cursor-pointer group/btn"
+                            class="btn-buy-motion w-full sm:w-auto min-w-[200px] sm:min-w-[250px] h-11 sm:h-13 inline-flex items-center justify-center gap-2.5 px-6 sm:px-8 rounded-full bg-gradient-to-r from-brand-600 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-500 active:from-brand-700 active:to-brand-700 text-white font-brand text-base sm:text-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-[1.04] active:scale-[0.98] shadow-2xl text-center cursor-pointer group/btn"
                         >
                             <span>Buy Now ({{ $book['price'] }}/-)</span>
                             <i class="fa-solid fa-arrow-right text-xs text-white/80 group-hover/btn:translate-x-1 transition-transform duration-300"></i>
@@ -216,13 +344,13 @@
         <!-- 4. About The Book & Specifications (Centered) -->
         <div class="w-full space-y-6 mx-auto text-center">
             <!-- About The Book -->
-            <div class="space-y-2">
+            <div class="space-y-4">
                 <h2 class="font-brand text-2xl sm:text-3xl text-slate-900 uppercase tracking-wide">
                     About The Book
                 </h2>
-                <p class="text-sm sm:text-base text-slate-600 leading-relaxed font-normal w-full mx-auto">
-                    {{ $book['description'] }}
-                </p>
+                <div class="book-description-content text-sm sm:text-base text-slate-700 leading-relaxed font-normal w-full mx-auto text-left max-w-3xl">
+                    {!! $book['description'] ?? '' !!}
+                </div>
             </div>
 
             <!-- Book Specifications (Clean & Centered) -->
@@ -378,7 +506,7 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-4 pt-1">
                 @foreach ($book['gallery_image_urls'] as $url)
                     <div 
-                        class="group relative overflow-hidden bg-slate-100 rounded-2xl border border-slate-200/80 hover:border-brand-400 hover:shadow-[0_16px_36px_-8px_rgba(122,88,169,0.30)] transition-all duration-500 aspect-square sm:aspect-[4/3] cursor-pointer"
+                        class="group relative overflow-hidden bg-slate-100 rounded-2xl border border-slate-200/80 hover:border-brand-400 hover:shadow-[0_16px_36px_-8px_rgba(122,88,169,0.30)] transition-all duration-500 aspect-[4/3] cursor-pointer"
                         onclick="openLightbox('{{ $url }}')"
                     >
                         <img src="{{ $url }}" alt="Gallery Image" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">

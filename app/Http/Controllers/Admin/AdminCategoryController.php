@@ -102,8 +102,22 @@ class AdminCategoryController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        // Always auto-generate slug from title
-        $request->merge(['slug' => Str::slug($request->string('title'))]);
+        $slug = trim((string) $request->input('slug', ''));
+        if ($slug !== '') {
+            $slug = Str::slug($slug);
+        } else {
+            $base = Str::slug((string) $request->input('title'));
+            if (empty($base)) {
+                $base = 'category';
+            }
+            $slug = $base;
+            $count = 1;
+            while (Category::where('slug', $slug)->exists()) {
+                $slug = "{$base}-{$count}";
+                $count++;
+            }
+        }
+        $request->merge(['slug' => $slug]);
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -139,8 +153,22 @@ class AdminCategoryController extends Controller
 
     public function update(Request $request, Category $category): RedirectResponse
     {
-        // Always auto-generate slug from title
-        $request->merge(['slug' => Str::slug($request->string('title'))]);
+        $slug = trim((string) $request->input('slug', ''));
+        if ($slug !== '') {
+            $slug = Str::slug($slug);
+        } else {
+            $base = Str::slug((string) $request->input('title'));
+            if (empty($base)) {
+                $base = $category->slug ?: 'category';
+            }
+            $slug = $base;
+            $count = 1;
+            while (Category::where('slug', $slug)->where('id', '!=', $category->id)->exists()) {
+                $slug = "{$base}-{$count}";
+                $count++;
+            }
+        }
+        $request->merge(['slug' => $slug]);
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],

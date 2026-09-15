@@ -120,9 +120,22 @@ class AdminBookController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        // Auto-generate slug from title
-        $baseSlug = Str::slug((string) $request->string('title'));
-        $request->merge(['slug' => $baseSlug]);
+        $slug = trim((string) $request->input('slug', ''));
+        if ($slug !== '') {
+            $slug = Str::slug($slug);
+        } else {
+            $base = Str::slug((string) $request->input('title'));
+            if (empty($base)) {
+                $base = 'ebook';
+            }
+            $slug = $base;
+            $count = 1;
+            while (Book::where('slug', $slug)->exists()) {
+                $slug = "{$base}-{$count}";
+                $count++;
+            }
+        }
+        $request->merge(['slug' => $slug]);
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -215,9 +228,22 @@ class AdminBookController extends Controller
 
     public function update(Request $request, Book $book): RedirectResponse
     {
-        // Auto-generate slug from title
-        $baseSlug = Str::slug((string) $request->string('title'));
-        $request->merge(['slug' => $baseSlug]);
+        $slug = trim((string) $request->input('slug', ''));
+        if ($slug !== '') {
+            $slug = Str::slug($slug);
+        } else {
+            $base = Str::slug((string) $request->input('title'));
+            if (empty($base)) {
+                $base = $book->slug ?: 'ebook';
+            }
+            $slug = $base;
+            $count = 1;
+            while (Book::where('slug', $slug)->where('id', '!=', $book->id)->exists()) {
+                $slug = "{$base}-{$count}";
+                $count++;
+            }
+        }
+        $request->merge(['slug' => $slug]);
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],

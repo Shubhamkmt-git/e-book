@@ -1,4 +1,4 @@
-﻿@extends('admin.layouts.app')
+@extends('admin.layouts.app')
 
 @section('title', 'Add Category')
 
@@ -48,7 +48,29 @@
                             placeholder="Category title..."
                             class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 focus:bg-white text-slate-800 placeholder-slate-400 text-sm border border-slate-200 focus:border-brand-500 focus:outline-none transition font-medium @error('title') border-rose-300 bg-rose-50/50 @enderror">
                         @error('title')<p class="text-xs text-rose-600 font-medium">{{ $message }}</p>@enderror
-                        <p class="text-[11px] text-slate-400">Slug will be auto-generated from the title.</p>
+                    </div>
+
+                    <!-- Slug / URL Identifier -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <label for="slug" class="block text-xs font-bold uppercase tracking-wider text-slate-700">URL Slug</label>
+                            <button type="button" onclick="autoGenerateCategorySlug()" class="text-[11px] font-semibold text-brand-600 hover:text-brand-700 cursor-pointer flex items-center gap-1 transition">
+                                <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i> Auto-generate
+                            </button>
+                        </div>
+                        <div class="relative flex items-center">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-xs font-mono">
+                                /categories/
+                            </span>
+                            <input type="text" name="slug" id="slug" value="{{ old('slug') }}"
+                                placeholder="e.g. technology-coding"
+                                class="w-full pl-26 pr-3.5 py-2.5 rounded-xl bg-slate-50 focus:bg-white text-slate-800 placeholder-slate-400 text-sm border border-slate-200 focus:border-brand-500 focus:outline-none transition font-mono @error('slug') border-rose-300 bg-rose-50/50 @enderror">
+                        </div>
+                        @error('slug')<p class="text-xs text-rose-600 font-medium">{{ $message }}</p>@enderror
+                        <p class="text-[11px] text-slate-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-link text-[10px] text-brand-500"></i>
+                            <span>Leave blank to automatically generate a clean URL slug from the title.</span>
+                        </p>
                     </div>
 
                     <!-- Description -->
@@ -168,6 +190,59 @@
             btn.classList.toggle('text-slate-500', !sel);
         });
     }
+
+    let isSlugManuallyEdited = false;
+
+    function slugify(text) {
+        return text.toString().toLowerCase().trim()
+            .replace(/\s+/g, '-')           // Replace spaces with -
+            .replace(/[^\w\-]+/g, '')       // Remove non-word characters
+            .replace(/\-\-+/g, '-')         // Replace multiple dashes with single dash
+            .replace(/^-+/, '')             // Trim dash from start
+            .replace(/-+$/, '');            // Trim dash from end
+    }
+
+    function handleTitleInput() {
+        const titleInput = document.getElementById('title');
+        const slugInput = document.getElementById('slug');
+        if (!titleInput || !slugInput) return;
+
+        if (!isSlugManuallyEdited || !slugInput.value.trim()) {
+            slugInput.value = slugify(titleInput.value);
+        }
+    }
+
+    function handleSlugInput() {
+        const slugInput = document.getElementById('slug');
+        if (!slugInput) return;
+        isSlugManuallyEdited = slugInput.value.trim() !== '';
+    }
+
+    function autoGenerateCategorySlug() {
+        const titleInput = document.getElementById('title');
+        const slugInput = document.getElementById('slug');
+        if (!titleInput || !slugInput) return;
+
+        slugInput.value = slugify(titleInput.value);
+        isSlugManuallyEdited = false;
+        slugInput.focus();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const titleInput = document.getElementById('title');
+        const slugInput = document.getElementById('slug');
+
+        if (slugInput && slugInput.value.trim()) {
+            isSlugManuallyEdited = true;
+        }
+
+        if (titleInput) {
+            titleInput.addEventListener('input', handleTitleInput);
+        }
+        if (slugInput) {
+            slugInput.addEventListener('input', handleSlugInput);
+        }
+    });
 </script>
 @endpush
 

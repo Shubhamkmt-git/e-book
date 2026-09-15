@@ -91,6 +91,14 @@
     "file": "assets/poppins-devanagari-800-normal-ACzlZF75.woff2",
     "src": "node_modules/@fontsource/poppins/files/poppins-devanagari-800-normal.woff2"
   },
+  "node_modules/@fontsource/poppins/files/poppins-devanagari-900-normal.woff": {
+    "file": "assets/poppins-devanagari-900-normal-CcN7yKeD.woff",
+    "src": "node_modules/@fontsource/poppins/files/poppins-devanagari-900-normal.woff"
+  },
+  "node_modules/@fontsource/poppins/files/poppins-devanagari-900-normal.woff2": {
+    "file": "assets/poppins-devanagari-900-normal-DntvEK6c.woff2",
+    "src": "node_modules/@fontsource/poppins/files/poppins-devanagari-900-normal.woff2"
+  },
   "node_modules/@fontsource/poppins/files/poppins-latin-300-normal.woff": {
     "file": "assets/poppins-latin-300-normal-DCNuMXUj.woff",
     "src": "node_modules/@fontsource/poppins/files/poppins-latin-300-normal.woff"
@@ -139,6 +147,14 @@
     "file": "assets/poppins-latin-800-normal-Bd8-pIP1.woff2",
     "src": "node_modules/@fontsource/poppins/files/poppins-latin-800-normal.woff2"
   },
+  "node_modules/@fontsource/poppins/files/poppins-latin-900-normal.woff": {
+    "file": "assets/poppins-latin-900-normal-By5LX1Cr.woff",
+    "src": "node_modules/@fontsource/poppins/files/poppins-latin-900-normal.woff"
+  },
+  "node_modules/@fontsource/poppins/files/poppins-latin-900-normal.woff2": {
+    "file": "assets/poppins-latin-900-normal-BmL1zqjw.woff2",
+    "src": "node_modules/@fontsource/poppins/files/poppins-latin-900-normal.woff2"
+  },
   "node_modules/@fontsource/poppins/files/poppins-latin-ext-300-normal.woff": {
     "file": "assets/poppins-latin-ext-300-normal-nf6F73WS.woff",
     "src": "node_modules/@fontsource/poppins/files/poppins-latin-ext-300-normal.woff"
@@ -186,6 +202,14 @@
   "node_modules/@fontsource/poppins/files/poppins-latin-ext-800-normal.woff2": {
     "file": "assets/poppins-latin-ext-800-normal-CDgOlX-1.woff2",
     "src": "node_modules/@fontsource/poppins/files/poppins-latin-ext-800-normal.woff2"
+  },
+  "node_modules/@fontsource/poppins/files/poppins-latin-ext-900-normal.woff": {
+    "file": "assets/poppins-latin-ext-900-normal-CddlvElL.woff",
+    "src": "node_modules/@fontsource/poppins/files/poppins-latin-ext-900-normal.woff"
+  },
+  "node_modules/@fontsource/poppins/files/poppins-latin-ext-900-normal.woff2": {
+    "file": "assets/poppins-latin-ext-900-normal-DPEExWNF.woff2",
+    "src": "node_modules/@fontsource/poppins/files/poppins-latin-ext-900-normal.woff2"
   },
   "node_modules/@fontsource/roboto/files/roboto-cyrillic-300-normal.woff": {
     "file": "assets/roboto-cyrillic-300-normal-D0x1uCa7.woff",
@@ -564,7 +588,7 @@
     "src": "node_modules/@fortawesome/fontawesome-free/webfonts/fa-v4compatibility.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-BipPR3Aq.css",
+    "file": "assets/app-Bdae1bpy.css",
     "name": "app",
     "names": [
       "app.css"
@@ -616,6 +640,12 @@
       "assets/poppins-latin-ext-800-normal-CIZaRbSk.woff",
       "assets/poppins-latin-800-normal-Bd8-pIP1.woff2",
       "assets/poppins-latin-800-normal-YoItoZZV.woff",
+      "assets/poppins-devanagari-900-normal-DntvEK6c.woff2",
+      "assets/poppins-devanagari-900-normal-CcN7yKeD.woff",
+      "assets/poppins-latin-ext-900-normal-DPEExWNF.woff2",
+      "assets/poppins-latin-ext-900-normal-CddlvElL.woff",
+      "assets/poppins-latin-900-normal-BmL1zqjw.woff2",
+      "assets/poppins-latin-900-normal-By5LX1Cr.woff",
       "assets/roboto-cyrillic-ext-300-normal-DIxttMbC.woff2",
       "assets/roboto-cyrillic-ext-300-normal-C0UYUNTV.woff",
       "assets/roboto-cyrillic-300-normal-DzUz0kzv.woff2",

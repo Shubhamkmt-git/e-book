@@ -101,4 +101,34 @@ class BookDetailTest extends TestCase
         $response->assertSee(route('purchases.download', $purchase->id));
         $response->assertDontSee('Buy Now (₹499/-)');
     }
+
+    public function test_book_detail_page_renders_formatted_html_description(): void
+    {
+        $book = Book::where('slug', 'algorithms-and-elegance')->firstOrFail();
+        $book->update([
+            'description' => '<p>Leading <strong>algorithms</strong> guide.</p><ul><li>Graph Search</li><li>Dynamic Programming</li></ul>',
+        ]);
+
+        $response = $this->get(route('books.show', 'algorithms-and-elegance'));
+
+        $response->assertStatus(200);
+        $response->assertSee('<div class="book-description-content', false);
+        $response->assertSee('<p>Leading <strong>algorithms</strong> guide.</p>', false);
+        $response->assertSee('<li>Graph Search</li>', false);
+    }
+
+    public function test_book_detail_page_renders_hindi_title_with_font_bold(): void
+    {
+        $book = Book::where('slug', 'algorithms-and-elegance')->firstOrFail();
+        $book->update([
+            'title' => 'श्रीमद् भगवद्गीता - सरल हिंदी व्याख्या',
+        ]);
+
+        $response = $this->get(route('books.show', 'algorithms-and-elegance'));
+
+        $response->assertStatus(200);
+        $response->assertSee('श्रीमद् भगवद्गीता - सरल हिंदी व्याख्या');
+        // Verify h1 tag has font-bold class so Hindi Devanagari text renders bold
+        $response->assertSee('<h1 class="font-brand font-bold', false);
+    }
 }

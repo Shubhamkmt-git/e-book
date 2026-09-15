@@ -310,4 +310,116 @@ class AdminBookCrudTest extends TestCase
         $showResponse->assertSee('UPSC Aspirants');
         $showResponse->assertSee('fa-solid fa-building-columns');
     }
+
+    public function test_create_and_edit_book_pages_include_tinymce_and_show_renders_html_description(): void
+    {
+        // 1. Create page includes TinyMCE
+        $createResponse = $this->actingAs($this->admin)->get(route('admin.books.create'));
+        $createResponse->assertOk();
+        $createResponse->assertSee('tinymce.min.js');
+        $createResponse->assertSee('initBookDescriptionEditor');
+
+        // 2. Store book with rich HTML description
+        $richHtml = '<h2>Overview</h2><p>This is a <strong>comprehensive</strong> guide.</p><ul><li>Topic 1</li><li>Topic 2</li></ul>';
+        $payload = [
+            'title' => 'HTML Description Master Book',
+            'author_name' => 'Rich Author',
+            'category_id' => $this->category->id,
+            'price' => 499.00,
+            'selling_price' => 299.00,
+            'status' => 'active',
+            'description' => $richHtml,
+        ];
+
+        $storeResponse = $this->actingAs($this->admin)->post(route('admin.books.store'), $payload);
+        $storeResponse->assertRedirect(route('admin.books.index'));
+
+        $book = Book::where('slug', 'html-description-master-book')->firstOrFail();
+        $this->assertEquals($richHtml, $book->description);
+
+        // 3. Edit page includes TinyMCE and the existing description content in textarea
+        $editResponse = $this->actingAs($this->admin)->get(route('admin.books.edit', $book));
+        $editResponse->assertOk();
+        $editResponse->assertSee('tinymce.min.js');
+        $editResponse->assertSee('initBookDescriptionEditor');
+        $editResponse->assertSee(e($richHtml), false);
+
+        // 4. Admin show page renders unescaped HTML formatted description
+        $showResponse = $this->actingAs($this->admin)->get(route('admin.books.show', $book));
+        $showResponse->assertOk();
+        $showResponse->assertSee('<h2>Overview</h2>', false);
+        $showResponse->assertSee('<strong>comprehensive</strong>', false);
+        $showResponse->assertSee('<li>Topic 1</li>', false);
+    }
+
+    public function test_book_custom_slug_and_auto_generated_slug_when_blank(): void
+    {
+        // 1. Create with custom slug
+        $customResponse = $this->actingAs($this->admin)->post(route('admin.books.store'), [
+            'title' => 'Custom Slug Book Edition',
+            'slug' => 'my-own-custom-slug',
+            'author_name' => 'Author One',
+            'category_id' => $this->category->id,
+            'price' => 299.00,
+            'selling_price' => 199.00,
+            'status' => 'active',
+        ]);
+        $customResponse->assertRedirect(route('admin.books.index'));
+        $book1 = Book::where('title', 'Custom Slug Book Edition')->firstOrFail();
+        $this->assertEquals('my-own-custom-slug', $book1->slug);
+
+        // 2. Create with blank slug - should auto-generate from title
+        $blankResponse = $this->actingAs($this->admin)->post(route('admin.books.store'), [
+            'title' => 'Auto Generated Slug Book',
+            'slug' => '',
+            'author_name' => 'Author Two',
+            'category_id' => $this->category->id,
+            'price' => 399.00,
+            'selling_price' => 249.00,
+            'status' => 'active',
+        ]);
+        $blankResponse->assertRedirect(route('admin.books.index'));
+        $book2 = Book::where('title', 'Auto Generated Slug Book')->firstOrFail();
+        $this->assertEquals('auto-generated-slug-book', $book2->slug);
+
+        // 3. Create another book with same title and blank slug - should auto-generate unique slug
+        $dupResponse = $this->actingAs($this->admin)->post(route('admin.books.store'), [
+            'title' => 'Auto Generated Slug Book',
+            'slug' => '',
+            'author_name' => 'Author Three',
+            'category_id' => $this->category->id,
+            'price' => 399.00,
+            'selling_price' => 249.00,
+            'status' => 'active',
+        ]);
+        $dupResponse->assertRedirect(route('admin.books.index'));
+        $book3 = Book::where('author_name', 'Author Three')->firstOrFail();
+        $this->assertEquals('auto-generated-slug-book-1', $book3->slug);
+
+        // 4. Update with custom slug
+        $updateResponse = $this->actingAs($this->admin)->put(route('admin.books.update', $book1), [
+            'title' => 'Custom Slug Book Edition',
+            'slug' => 'updated-custom-slug',
+            'author_name' => 'Author One',
+            'category_id' => $this->category->id,
+            'price' => 299.00,
+            'selling_price' => 199.00,
+            'status' => 'active',
+        ]);
+        $updateResponse->assertRedirect(route('admin.books.index'));
+        $this->assertEquals('updated-custom-slug', $book1->fresh()->slug);
+
+        // 5. Update with blank slug - should auto-generate from title
+        $updateBlankResponse = $this->actingAs($this->admin)->put(route('admin.books.update', $book1), [
+            'title' => 'A Brand New Title For Book One',
+            'slug' => '',
+            'author_name' => 'Author One',
+            'category_id' => $this->category->id,
+            'price' => 299.00,
+            'selling_price' => 199.00,
+            'status' => 'active',
+        ]);
+        $updateBlankResponse->assertRedirect(route('admin.books.index'));
+        $this->assertEquals('a-brand-new-title-for-book-one', $book1->fresh()->slug);
+    }
 }

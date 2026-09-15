@@ -219,7 +219,9 @@
         @endif
     @else
         <h2 class="section-title">Sample Introduction</h2>
-        <p>{{ $book['description'] }}</p>
+        <div class="sample-description-content" style="color: #334155; line-height: 1.8; margin-bottom: 20px;">
+            {!! $book['description'] !!}
+        </div>
     @endif
 
     <!-- CTA Box -->

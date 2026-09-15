@@ -108,9 +108,28 @@
                             placeholder="e.g. Masterclass in Scalable Distributed Architecture"
                             class="w-full px-4 py-3 rounded-xl bg-slate-50 focus:bg-white text-slate-900 placeholder-slate-400 text-sm border border-slate-200 focus:border-brand-500 focus:outline-none transition font-medium @error('title') border-rose-300 bg-rose-50/50 @enderror">
                         @error('title')<p class="text-xs text-rose-600 font-medium">{{ $message }}</p>@enderror
+                    </div>
+
+                    <!-- URL Slug -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <label for="slug" class="block text-xs font-bold uppercase tracking-wider text-slate-700">URL Slug</label>
+                            <button type="button" onclick="autoGenerateBookSlug()" class="text-[11px] font-semibold text-brand-600 hover:text-brand-700 cursor-pointer flex items-center gap-1 transition">
+                                <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i> Auto-generate
+                            </button>
+                        </div>
+                        <div class="relative flex items-center">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 text-xs font-mono">
+                                /books/
+                            </span>
+                            <input type="text" name="slug" id="slug" value="{{ old('slug', $book->slug) }}"
+                                placeholder="e.g. masterclass-in-scalable-distributed-architecture"
+                                class="w-full pl-20 pr-3.5 py-3 rounded-xl bg-slate-50 focus:bg-white text-slate-900 placeholder-slate-400 text-sm border border-slate-200 focus:border-brand-500 focus:outline-none transition font-mono @error('slug') border-rose-300 bg-rose-50/50 @enderror">
+                        </div>
+                        @error('slug')<p class="text-xs text-rose-600 font-medium">{{ $message }}</p>@enderror
                         <p class="text-[11px] text-slate-400 flex items-center gap-1.5">
                             <i class="fa-solid fa-link text-[10px] text-brand-500"></i>
-                            <span>Current Slug: <span class="font-mono font-bold text-slate-700">{{ $book->slug }}</span> (auto-refreshes on title update)</span>
+                            <span>Leave blank to automatically regenerate a clean URL slug from the title.</span>
                         </p>
                     </div>
 
@@ -315,7 +334,7 @@
                 <!-- About / Description -->
                 <div class="space-y-1.5">
                     <label for="description" class="block text-xs font-bold uppercase tracking-wider text-slate-700">About the Book (Description)</label>
-                    <textarea name="description" id="description" rows="5"
+                    <textarea name="description" id="description" rows="8"
                         placeholder="Write a clear, engaging overview and summary of this e-book..."
                         class="w-full p-4 rounded-xl bg-slate-50 focus:bg-white text-slate-900 placeholder-slate-400 text-sm border border-slate-200 focus:border-brand-500 focus:outline-none transition leading-relaxed resize-y @error('description') border-rose-300 @enderror"
                     >{{ old('description', $book->description) }}</textarea>
@@ -751,9 +770,57 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
 </div>
 
 @push('scripts')
+{{-- TinyMCE WYSIWYG Text Editor --}}
+@php
+    $tinyApiKey = config('services.tinymce.key', 'no-api-key');
+@endphp
+<script src="https://cdn.tiny.cloud/1/{{ $tinyApiKey }}/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
     let currentStep = 1;
     const totalSteps = 5;
+
+    function initBookDescriptionEditor() {
+        if (typeof tinymce === 'undefined') return;
+        if (tinymce.get('description')) {
+            return;
+        }
+
+        tinymce.init({
+            selector: 'textarea#description',
+            height: 400,
+            menubar: 'edit insert view format table tools help',
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | ' +
+                'forecolor backcolor | alignleft aligncenter alignright alignjustify | ' +
+                'bullist numlist outdent indent | link table | removeformat | code fullscreen',
+            content_style: `
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                    font-size: 15px;
+                    line-height: 1.8;
+                    color: #1e293b;
+                    padding: 16px;
+                }
+                h2 { font-size: 1.5rem; font-weight: 700; color: #0f172a; margin-top: 1.25rem; margin-bottom: 0.5rem; }
+                h3 { font-size: 1.25rem; font-weight: 600; color: #334155; margin-top: 1rem; }
+                p { margin-bottom: 1rem; color: #475569; }
+                ul, ol { margin-bottom: 1rem; padding-left: 1.5rem; color: #475569; }
+                a { color: #7a58a9; text-decoration: underline; }
+                strong { color: #0f172a; }
+            `,
+            branding: false,
+            promotion: false,
+            setup: function (editor) {
+                editor.on('change keyup NodeChange', function () {
+                    editor.save();
+                });
+            }
+        });
+    }
 
     function goToStep(step) {
         if (step < 1 || step > totalSteps) return;
@@ -780,6 +847,10 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
                     num.className = 'step-num w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center text-xs font-extrabold shrink-0';
                 }
             }
+        }
+
+        if (step === 3) {
+            initBookDescriptionEditor();
         }
 
         currentStep = step;
@@ -1164,9 +1235,66 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
         input.focus();
     }
 
+    let isBookSlugManuallyEdited = {{ old('slug') || $book->slug ? 'true' : 'false' }};
+
+    function slugify(text) {
+        return text.toString().toLowerCase().trim()
+            .replace(/\s+/g, '-')           // Replace spaces with -
+            .replace(/[^\w\-]+/g, '')       // Remove non-word characters
+            .replace(/\-\-+/g, '-')         // Replace multiple dashes with single dash
+            .replace(/^-+/, '')             // Trim dash from start
+            .replace(/-+$/, '');            // Trim dash from end
+    }
+
+    function handleBookTitleInput() {
+        const titleInput = document.getElementById('title');
+        const slugInput = document.getElementById('slug');
+        if (!titleInput || !slugInput) return;
+
+        if (!isBookSlugManuallyEdited || !slugInput.value.trim()) {
+            slugInput.value = slugify(titleInput.value);
+        }
+    }
+
+    function handleBookSlugInput() {
+        const slugInput = document.getElementById('slug');
+        if (!slugInput) return;
+        isBookSlugManuallyEdited = slugInput.value.trim() !== '';
+    }
+
+    function autoGenerateBookSlug() {
+        const titleInput = document.getElementById('title');
+        const slugInput = document.getElementById('slug');
+        if (!titleInput || !slugInput) return;
+
+        slugInput.value = slugify(titleInput.value);
+        isBookSlugManuallyEdited = false;
+        slugInput.focus();
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
+        initBookDescriptionEditor();
         calculateDiscount();
         updateCustomAudienceCount();
+
+        const titleInput = document.getElementById('title');
+        const slugInput = document.getElementById('slug');
+
+        if (titleInput) {
+            titleInput.addEventListener('input', handleBookTitleInput);
+        }
+        if (slugInput) {
+            slugInput.addEventListener('input', handleBookSlugInput);
+        }
+
+        const bookForm = document.getElementById('book-form');
+        if (bookForm) {
+            bookForm.addEventListener('submit', function() {
+                if (typeof tinymce !== 'undefined') {
+                    tinymce.triggerSave();
+                }
+            });
+        }
     });
 </script>
 @endpush

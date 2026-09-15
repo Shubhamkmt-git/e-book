@@ -121,7 +121,9 @@
 
         <div class="content">
             <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: #0f172a; margin-bottom: 15px; text-transform: uppercase;">About This Publication</h2>
-            <p>{{ $book['description'] }}</p>
+            <div style="color: #334155; line-height: 1.8; margin-bottom: 20px;">
+                {!! $book['description'] !!}
+            </div>
 
             <div class="highlight-box">
                 {{ $book['highlights'][0] ?? 'Timeless mental models, robust system design, and practical architecture patterns designed for lifelong compounding leverage.' }}

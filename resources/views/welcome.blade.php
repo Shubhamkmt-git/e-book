@@ -230,7 +230,7 @@
                     
                     <!-- Title -->
                     <a href="{{ route('books.show', $spotlightBook->slug) }}" class="block">
-                        <h2 class="font-brand text-3xl sm:text-5xl lg:text-6xl text-slate-900 hover:text-brand-600 transition-colors tracking-wide uppercase leading-tight sm:leading-[0.95] mb-2.5">
+                        <h2 class="font-brand font-bold text-3xl sm:text-5xl lg:text-6xl text-slate-900 hover:text-brand-600 transition-colors tracking-wide uppercase leading-tight sm:leading-[0.95] mb-2.5">
                             {{ $spotlight?->effective_title ?: $spotlightBook->title }}
                         </h2>
                     </a>
@@ -260,7 +260,7 @@
 
                     <!-- Description -->
                     <p class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mb-6 font-normal">
-                        {{ $spotlight?->effective_description ?: $spotlightBook->description }}
+                        {{ strip_tags($spotlight?->effective_description ?: $spotlightBook->description) }}
                     </p>
 
                     <!-- Price & Actions Row -->

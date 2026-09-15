@@ -19,7 +19,7 @@
                     <i class="fa-solid fa-shield-halved text-emerald-400 text-xs"></i>
                 </div>
                 <div>
-                    <h3 id="quick-checkout-title" class="font-brand text-xl sm:text-2xl text-white tracking-wide uppercase leading-tight">
+                    <h3 id="quick-checkout-title" class="font-brand font-bold text-xl sm:text-2xl text-white tracking-wide uppercase leading-tight">
                         Secure Checkout
                     </h3>
                     <p class="text-[11px] text-brand-200/90 font-medium leading-none mt-0.5">Instant DRM-Free PDF &bull; Cashfree Verified</p>
