@@ -489,38 +489,6 @@
         </div>
         @endif
 
-        <!-- 5.5 Gallery Section -->
-        @if(!empty($book['gallery_image_urls']))
-        <div class="w-full pt-8 pb-3 border-t border-slate-200/80 space-y-6 mx-auto">
-            <!-- Centered Header -->
-            <div class="text-center space-y-1">
-                <h2 class="font-brand text-2xl sm:text-3xl text-slate-900 uppercase tracking-wide">
-                    Inside The Book
-                </h2>
-                <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
-                    A sneak peek into the pages and content
-                </p>
-            </div>
-
-            <!-- 4 Images Per Row Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-4 pt-1">
-                @foreach ($book['gallery_image_urls'] as $url)
-                    <div 
-                        class="group relative overflow-hidden bg-slate-100 rounded-2xl border border-slate-200/80 hover:border-brand-400 hover:shadow-[0_16px_36px_-8px_rgba(122,88,169,0.30)] transition-all duration-500 aspect-[4/3] cursor-pointer"
-                        onclick="openLightbox('{{ $url }}')"
-                    >
-                        <img src="{{ $url }}" alt="Gallery Image" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/20 transition-colors duration-300 flex items-center justify-center">
-                            <div class="w-10 h-10 rounded-full bg-white/90 text-brand-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
-                                <i class="fa-solid fa-magnifying-glass-plus text-sm"></i>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-        @endif
-
         <!-- 6. Table of Contents (Clean Minimal Table with Visible Grid Lines) -->
         @if(!empty($book['chapters']))
         <div class="w-full pt-8 pb-3 border-t border-slate-200/80 space-y-5 mx-auto">
@@ -590,6 +558,51 @@
         </div>
         @endif
 
+
+        <!-- Reference Images Section (Visual Previews & Inside Pages) -->
+        @if(!empty($book['gallery_image_urls']))
+        <div class="w-full pt-8 pb-3 border-t border-slate-200/80 space-y-6 mx-auto">
+            <!-- Centered Header -->
+            <div class="text-center space-y-1">
+                <h2 class="font-brand font-bold text-2xl sm:text-3xl text-slate-900 uppercase tracking-wide">
+                    Reference Images
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
+                    Visual previews, diagrams, and sample pages from this book
+                </p>
+            </div>
+
+            <!-- Reference Images Grid (Equal size to Suggested For Cards: 4 columns on desktop/tablet, 2 on mobile) -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5 sm:gap-4 pt-1">
+                @foreach ($book['gallery_image_urls'] as $idx => $url)
+                    <div 
+                        class="group relative overflow-hidden bg-slate-900 rounded-2xl border border-slate-200/80 hover:border-brand-500 hover:shadow-[0_16px_36px_-8px_rgba(122,88,169,0.30)] transition-all duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] aspect-[4/3] cursor-pointer flex items-center justify-center"
+                        onclick="openLightbox({{ $idx }})"
+                        title="Click to preview image {{ $idx + 1 }}"
+                    >
+                        <img 
+                            src="{{ $url }}" 
+                            alt="{{ $book['title'] }} Reference Image {{ $idx + 1 }}" 
+                            class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                            loading="lazy"
+                        >
+                        <!-- Subtle hover darken overlay -->
+                        <div class="absolute inset-0 bg-slate-950/0 group-hover:bg-slate-950/25 transition-colors duration-300 flex items-center justify-center">
+                            <div class="w-10 h-10 rounded-full bg-white/95 text-brand-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
+                                <i class="fa-solid fa-magnifying-glass-plus text-sm"></i>
+                            </div>
+                        </div>
+
+                        <!-- Preview Badge on Hover -->
+                        <div class="absolute bottom-3 left-3 px-2 py-0.5 rounded-md bg-slate-950/75 backdrop-blur-sm text-white text-[10px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-1 shadow-sm pointer-events-none">
+                            <i class="fa-solid fa-expand text-[9px]"></i>
+                            <span>Preview</span>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
 
         <!-- 7. "Suggested For" Section (Who This Book Is Relevant To - 8 Mini-Cards) -->
         @php
@@ -959,18 +972,62 @@
 </div>
 
 <!-- ==========================================
-     IMAGE GALLERY LIGHTBOX MODAL
+     IMAGE GALLERY LIGHTBOX MODAL WITH NEXT & PREVIOUS
      ========================================== -->
 <div 
     id="gallery-lightbox-modal" 
-    class="fixed inset-0 z-[60] bg-slate-950/95 backdrop-blur-sm hidden flex items-center justify-center p-2 sm:p-4 opacity-0 transition-opacity duration-300"
-    onclick="closeLightbox()"
+    class="fixed inset-0 z-[60] bg-slate-950/95 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4 opacity-0 transition-opacity duration-300 select-none"
+    onclick="closeLightbox(event)"
 >
-    <button type="button" onclick="closeLightbox()" class="absolute top-4 right-4 sm:top-6 sm:right-6 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition backdrop-blur-md z-10 cursor-pointer">
-        <i class="fa-solid fa-xmark text-xl"></i>
+    <!-- Counter Badge (Top Left) -->
+    <div class="absolute top-4 left-4 sm:top-6 sm:left-6 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/15 text-white text-xs font-semibold tracking-wider backdrop-blur-md border border-white/15 shadow-lg flex items-center gap-2 pointer-events-none">
+        <i class="fa-regular fa-image text-brand-300 text-xs"></i>
+        <span id="lightbox-counter">1 / 1</span>
+    </div>
+
+    <!-- Close Button (Top Right) -->
+    <button 
+        type="button" 
+        onclick="closeLightbox(event)" 
+        class="absolute top-4 right-4 sm:top-6 sm:right-6 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 text-white flex items-center justify-center transition backdrop-blur-md z-30 cursor-pointer border border-white/15 shadow-xl"
+        title="Close (Esc)"
+        aria-label="Close Lightbox"
+    >
+        <i class="fa-solid fa-xmark text-lg sm:text-xl"></i>
     </button>
-    <div class="relative w-full max-w-5xl max-h-[90vh] flex items-center justify-center pointer-events-none" onclick="event.stopPropagation()">
-        <img id="lightbox-image" src="" alt="Gallery Preview" class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl pointer-events-auto transform scale-95 transition-transform duration-300">
+
+    <!-- Previous Button (Left) -->
+    <button 
+        type="button" 
+        id="lightbox-prev-btn"
+        onclick="prevLightbox(event)" 
+        class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-white/15 hover:bg-white/30 active:scale-90 text-white flex items-center justify-center transition-all backdrop-blur-md z-30 cursor-pointer border border-white/20 shadow-2xl hover:shadow-brand-500/20"
+        title="Previous Image (Left Arrow)"
+        aria-label="Previous Image"
+    >
+        <i class="fa-solid fa-chevron-left text-base sm:text-lg"></i>
+    </button>
+
+    <!-- Next Button (Right) -->
+    <button 
+        type="button" 
+        id="lightbox-next-btn"
+        onclick="nextLightbox(event)" 
+        class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-white/15 hover:bg-white/30 active:scale-90 text-white flex items-center justify-center transition-all backdrop-blur-md z-30 cursor-pointer border border-white/20 shadow-2xl hover:shadow-brand-500/20"
+        title="Next Image (Right Arrow)"
+        aria-label="Next Image"
+    >
+        <i class="fa-solid fa-chevron-right text-base sm:text-lg"></i>
+    </button>
+
+    <!-- Center Image Container -->
+    <div class="relative w-full max-w-5xl max-h-[85vh] flex items-center justify-center pointer-events-none px-12 sm:px-16" onclick="event.stopPropagation()">
+        <img 
+            id="lightbox-image" 
+            src="" 
+            alt="Reference Image Preview" 
+            class="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl pointer-events-auto transform scale-95 transition-all duration-300"
+        >
     </div>
 </div>
 
@@ -1279,10 +1336,47 @@
         });
     @endif
 
-    function openLightbox(url) {
+    const galleryImageUrls = @json($book['gallery_image_urls'] ?? []);
+    let currentLightboxIndex = 0;
+
+    function updateLightboxImage(index) {
+        if (!galleryImageUrls || !galleryImageUrls.length) return;
+        if (index < 0) index = galleryImageUrls.length - 1;
+        if (index >= galleryImageUrls.length) index = 0;
+        currentLightboxIndex = index;
+
+        const img = document.getElementById('lightbox-image');
+        const counter = document.getElementById('lightbox-counter');
+        const prevBtn = document.getElementById('lightbox-prev-btn');
+        const nextBtn = document.getElementById('lightbox-next-btn');
+
+        if (img) {
+            img.src = galleryImageUrls[currentLightboxIndex];
+        }
+        if (counter) {
+            counter.textContent = `${currentLightboxIndex + 1} / ${galleryImageUrls.length}`;
+        }
+        if (prevBtn && nextBtn) {
+            const display = galleryImageUrls.length > 1 ? 'flex' : 'none';
+            prevBtn.style.display = display;
+            nextBtn.style.display = display;
+        }
+    }
+
+    function openLightbox(indexOrUrl) {
         const modal = document.getElementById('gallery-lightbox-modal');
         const img = document.getElementById('lightbox-image');
-        img.src = url;
+        if (!modal || !img) return;
+
+        if (typeof indexOrUrl === 'number') {
+            updateLightboxImage(indexOrUrl);
+        } else if (typeof indexOrUrl === 'string') {
+            const foundIdx = galleryImageUrls.indexOf(indexOrUrl);
+            updateLightboxImage(foundIdx >= 0 ? foundIdx : 0);
+        } else {
+            updateLightboxImage(0);
+        }
+
         modal.classList.remove('hidden');
         setTimeout(() => {
             modal.classList.remove('opacity-0');
@@ -1292,9 +1386,11 @@
         document.body.style.overflow = 'hidden';
     }
 
-    function closeLightbox() {
+    function closeLightbox(e) {
+        if (e && e.stopPropagation) e.stopPropagation();
         const modal = document.getElementById('gallery-lightbox-modal');
         const img = document.getElementById('lightbox-image');
+        if (!modal || !img) return;
         modal.classList.add('opacity-0');
         img.classList.remove('scale-100');
         img.classList.add('scale-95');
@@ -1304,6 +1400,29 @@
             document.body.style.overflow = '';
         }, 300);
     }
+
+    function prevLightbox(e) {
+        if (e && e.stopPropagation) e.stopPropagation();
+        updateLightboxImage(currentLightboxIndex - 1);
+    }
+
+    function nextLightbox(e) {
+        if (e && e.stopPropagation) e.stopPropagation();
+        updateLightboxImage(currentLightboxIndex + 1);
+    }
+
+    document.addEventListener('keydown', function(e) {
+        const modal = document.getElementById('gallery-lightbox-modal');
+        if (!modal || modal.classList.contains('hidden')) return;
+
+        if (e.key === 'Escape') {
+            closeLightbox();
+        } else if (e.key === 'ArrowLeft') {
+            prevLightbox();
+        } else if (e.key === 'ArrowRight') {
+            nextLightbox();
+        }
+    });
 </script>
 
 @endsection

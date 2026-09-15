@@ -464,6 +464,8 @@ class BookController extends Controller
             'reviews_list' => $reviews,
             'sample_file' => $book->sample_file,
             'sample_file_url' => $book->sample_file_url,
+            'gallery_images' => $book->gallery_images ?? [],
+            'gallery_image_urls' => $book->gallery_image_urls ?? [],
             'sample_content' => [
                 'chapter_title' => 'Chapter 1: Core Principles & Foundations',
                 'reading_time' => '15 min read',

@@ -131,4 +131,37 @@ class BookDetailTest extends TestCase
         // Verify h1 tag has font-bold class so Hindi Devanagari text renders bold
         $response->assertSee('<h1 class="font-brand font-bold', false);
     }
+
+    public function test_book_detail_page_renders_reference_images_and_lightbox_modal(): void
+    {
+        $book = Book::where('slug', 'algorithms-and-elegance')->firstOrFail();
+        $book->update([
+            'gallery_images' => [
+                'books/gallery/test_image_1.jpg',
+                'books/gallery/test_image_2.jpg',
+            ],
+        ]);
+
+        $response = $this->get(route('books.show', 'algorithms-and-elegance'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Reference Images');
+        $response->assertSee('books/gallery/test_image_1.jpg');
+        $response->assertSee('books/gallery/test_image_2.jpg');
+        $response->assertSee('id="gallery-lightbox-modal"', false);
+        $response->assertSee('id="lightbox-prev-btn"', false);
+        $response->assertSee('id="lightbox-next-btn"', false);
+        $response->assertSee('id="lightbox-counter"', false);
+        $response->assertSee('openLightbox', false);
+        $response->assertSee('prevLightbox', false);
+        $response->assertSee('nextLightbox', false);
+
+        // Verify Reference Images is placed BEFORE Suggested For section
+        $content = $response->getContent();
+        $refPos = strpos($content, 'Reference Images');
+        $sugPos = strpos($content, 'Suggested For');
+        $this->assertNotFalse($refPos);
+        $this->assertNotFalse($sugPos);
+        $this->assertLessThan($sugPos, $refPos, 'Reference Images section should be placed before Suggested For section');
+    }
 }
