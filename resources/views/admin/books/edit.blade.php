@@ -435,6 +435,7 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
                             <p class="text-xs font-bold text-slate-800">Upload Cover</p>
                             <p class="text-[10px] text-slate-400 mt-0.5">Click or drag image</p>
                             <input type="file" name="cover_image" id="cover_image" accept="image/*" class="hidden" onchange="previewCoverImage(this)">
+                            <input type="hidden" name="remove_cover_image" id="remove_cover_image" value="0">
                         </div>
                         @error('cover_image')<p class="text-xs text-rose-600 font-medium">{{ $message }}</p>@enderror
                     </div>
@@ -469,6 +470,7 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
                             <p class="text-xs font-bold text-slate-800">Upload Sample PDF</p>
                             <p class="text-[10px] text-slate-400 mt-0.5">PDF, EPUB, DOC (No size limit)</p>
                             <input type="file" name="sample_file" id="sample_file" accept=".pdf,.epub,.doc,.docx" class="hidden" onchange="previewSampleFile(this)">
+                            <input type="hidden" name="remove_sample_file" id="remove_sample_file" value="0">
                         </div>
                         @error('sample_file')<p class="text-xs text-rose-600 font-medium">{{ $message }}</p>@enderror
                     </div>
@@ -503,6 +505,7 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
                             <p class="text-xs font-bold text-slate-800">Upload Full E-Book</p>
                             <p class="text-[10px] text-slate-400 mt-0.5">PDF, EPUB, ZIP (No size limit)</p>
                             <input type="file" name="ebook_file" id="ebook_file" accept=".pdf,.epub,.mobi,.zip,.rar,.doc,.docx" class="hidden" onchange="previewEbookFile(this)">
+                            <input type="hidden" name="remove_ebook_file" id="remove_ebook_file" value="0">
                         </div>
                         @error('ebook_file')<p class="text-xs text-rose-600 font-medium">{{ $message }}</p>@enderror
                     </div>
@@ -533,6 +536,7 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
                             <p class="text-xs font-bold text-slate-800">Upload Gallery Images</p>
                             <p class="text-[10px] text-slate-400 mt-0.5">Click to select multiple images (replaces existing)</p>
                             <input type="file" name="gallery_images[]" id="gallery_images" accept="image/*" multiple class="hidden" onchange="previewGalleryImages(this)">
+                            <input type="hidden" name="remove_gallery_images" id="remove_gallery_images" value="0">
                         </div>
                         <div class="flex justify-end items-center {{ $hasGallery ? '' : 'hidden' }}" id="gallery-actions">
                             <button type="button" onclick="removeGalleryImages()" class="text-xs text-rose-600 hover:text-rose-700 font-bold px-3 py-1.5 rounded hover:bg-rose-50 cursor-pointer transition">
@@ -936,6 +940,8 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
 
     function previewCoverImage(input) {
         if (input.files && input.files[0]) {
+            const removeInput = document.getElementById('remove_cover_image');
+            if (removeInput) removeInput.value = '0';
             const reader = new FileReader();
             reader.onload = function(e) {
                 document.getElementById('cover-preview-img').src = e.target.result;
@@ -948,6 +954,8 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
 
     function removeCoverImage() {
         document.getElementById('cover_image').value = '';
+        const removeInput = document.getElementById('remove_cover_image');
+        if (removeInput) removeInput.value = '1';
         document.getElementById('cover-preview-img').src = '';
         document.getElementById('cover-preview-container').classList.add('hidden');
         document.getElementById('cover-dropzone').classList.remove('hidden');
@@ -1047,6 +1055,8 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
     function removeGalleryImages() {
         galleryDataTransfer = new DataTransfer();
         document.getElementById('gallery_images').files = galleryDataTransfer.files;
+        const removeInput = document.getElementById('remove_gallery_images');
+        if (removeInput) removeInput.value = '1';
         document.getElementById('gallery-preview-container').innerHTML = '';
         document.getElementById('gallery-preview-container').classList.add('hidden');
         document.getElementById('gallery-actions').classList.add('hidden');
@@ -1057,6 +1067,8 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
 
     function previewSampleFile(input) {
         if (input.files && input.files[0]) {
+            const removeInput = document.getElementById('remove_sample_file');
+            if (removeInput) removeInput.value = '0';
             document.getElementById('sample-filename').textContent = input.files[0].name;
             document.getElementById('sample-preview-box').classList.remove('hidden');
             document.getElementById('sample-dropzone').classList.add('hidden');
@@ -1065,6 +1077,8 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
 
     function removeSampleFile() {
         document.getElementById('sample_file').value = '';
+        const removeInput = document.getElementById('remove_sample_file');
+        if (removeInput) removeInput.value = '1';
         document.getElementById('sample-preview-box').classList.add('hidden');
         document.getElementById('sample-dropzone').classList.remove('hidden');
     }
@@ -1072,6 +1086,8 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
     function previewEbookFile(input) {
         if (input.files && input.files[0]) {
             const file = input.files[0];
+            const removeInput = document.getElementById('remove_ebook_file');
+            if (removeInput) removeInput.value = '0';
             document.getElementById('ebook-filename').textContent = file.name;
             document.getElementById('ebook-preview-box').classList.remove('hidden');
             document.getElementById('ebook-dropzone').classList.add('hidden');
@@ -1090,6 +1106,8 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
 
     function removeEbookFile() {
         document.getElementById('ebook_file').value = '';
+        const removeInput = document.getElementById('remove_ebook_file');
+        if (removeInput) removeInput.value = '1';
         document.getElementById('ebook-preview-box').classList.add('hidden');
         document.getElementById('ebook-dropzone').classList.remove('hidden');
     }

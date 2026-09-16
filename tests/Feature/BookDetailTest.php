@@ -46,17 +46,26 @@ class BookDetailTest extends TestCase
      */
     public function test_book_detail_page_loads_with_rich_content(): void
     {
+        // 1. Without sample_file uploaded, Download Sample button should not be shown
         $response = $this->get(route('books.show', 'algorithms-and-elegance'));
 
         $response->assertStatus(200);
         $response->assertSee('Algorithms &amp; Elegance', false);
         $response->assertSee('Prof. Julian Hayes');
         $response->assertSee('Buy Now (₹499/-)');
-        $response->assertSee('Download Sample (PDF)');
+        $response->assertDontSee('Download Sample (PDF)');
         $response->assertSee('About The Book');
         $response->assertSee('412 Pages');
         $response->assertSee('Table of Contents');
         $response->assertSee('Write a Review');
+
+        // 2. When sample_file is uploaded in admin, Download Sample button should be shown
+        $book = Book::where('slug', 'algorithms-and-elegance')->firstOrFail();
+        $book->update(['sample_file' => 'books/samples/algorithms-sample.pdf']);
+
+        $responseWithSample = $this->get(route('books.show', 'algorithms-and-elegance'));
+        $responseWithSample->assertStatus(200);
+        $responseWithSample->assertSee('Download Sample (PDF)');
     }
 
     /**

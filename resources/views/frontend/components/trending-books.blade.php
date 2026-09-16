@@ -35,7 +35,7 @@
                     $displayPrice = '₹' . number_format($bookSellingPrice, 0);
                     $displayOriginal = $bookOriginalPrice > $bookSellingPrice ? ('₹' . number_format($bookOriginalPrice, 0)) : null;
                     $bookRating = $isObj ? '5.0' : ($book['rating'] ?? '5.0');
-                    $bookReviews = $isObj ? '120+' : ($book['reviews'] ?? '120+');
+                    $bookReviews = $isObj ? $book->formatted_review_count : ($book['reviews'] ?? '2,450');
                 @endphp
                 <div class="group bg-white rounded-3xl border border-brand-200/80 hover:border-brand-400/90 hover:shadow-[0_20px_45px_-12px_rgba(122,88,169,0.22)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full overflow-hidden">
                     

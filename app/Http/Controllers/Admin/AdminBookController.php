@@ -275,7 +275,12 @@ class AdminBookController extends Controller
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['suggested_for'] = array_values(array_unique(array_filter(array_map('trim', (array) $request->input('suggested_for', [])))));
 
-        if ($request->hasFile('cover_image')) {
+        if ($request->boolean('remove_cover_image')) {
+            if ($book->cover_image && ! str_starts_with($book->cover_image, 'http') && ! str_starts_with($book->cover_image, 'images/')) {
+                Storage::disk('public')->delete($book->cover_image);
+            }
+            $validated['cover_image'] = null;
+        } elseif ($request->hasFile('cover_image')) {
             if ($book->cover_image && ! str_starts_with($book->cover_image, 'http') && ! str_starts_with($book->cover_image, 'images/')) {
                 Storage::disk('public')->delete($book->cover_image);
             }
@@ -283,7 +288,16 @@ class AdminBookController extends Controller
             $validated['cover_image'] = $path;
         }
 
-        if ($request->hasFile('gallery_images')) {
+        if ($request->boolean('remove_gallery_images')) {
+            if (! empty($book->gallery_images) && is_array($book->gallery_images)) {
+                foreach ($book->gallery_images as $oldImage) {
+                    if (! str_starts_with($oldImage, 'http') && ! str_starts_with($oldImage, 'images/')) {
+                        Storage::disk('public')->delete($oldImage);
+                    }
+                }
+            }
+            $validated['gallery_images'] = [];
+        } elseif ($request->hasFile('gallery_images')) {
             // Delete old gallery images if replacing
             if (! empty($book->gallery_images) && is_array($book->gallery_images)) {
                 foreach ($book->gallery_images as $oldImage) {
@@ -304,7 +318,12 @@ class AdminBookController extends Controller
             }
         }
 
-        if ($request->hasFile('sample_file')) {
+        if ($request->boolean('remove_sample_file')) {
+            if ($book->sample_file && ! str_starts_with($book->sample_file, 'http')) {
+                Storage::disk('public')->delete($book->sample_file);
+            }
+            $validated['sample_file'] = null;
+        } elseif ($request->hasFile('sample_file')) {
             if ($book->sample_file && ! str_starts_with($book->sample_file, 'http')) {
                 Storage::disk('public')->delete($book->sample_file);
             }
@@ -312,7 +331,12 @@ class AdminBookController extends Controller
             $validated['sample_file'] = $path;
         }
 
-        if ($request->hasFile('ebook_file')) {
+        if ($request->boolean('remove_ebook_file')) {
+            if ($book->ebook_file && ! str_starts_with($book->ebook_file, 'http')) {
+                Storage::disk('public')->delete($book->ebook_file);
+            }
+            $validated['ebook_file'] = null;
+        } elseif ($request->hasFile('ebook_file')) {
             if ($book->ebook_file && ! str_starts_with($book->ebook_file, 'http')) {
                 Storage::disk('public')->delete($book->ebook_file);
             }

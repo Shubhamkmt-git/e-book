@@ -10,6 +10,7 @@ use App\Models\Testimonial;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
 class BookController extends Controller
@@ -300,6 +301,19 @@ class BookController extends Controller
             abort(404, 'Book preview not found.');
         }
 
+        if (! empty($dbBook->sample_file)) {
+            if (str_starts_with($dbBook->sample_file, 'http://') || str_starts_with($dbBook->sample_file, 'https://')) {
+                return redirect()->away($dbBook->sample_file);
+            }
+
+            if (Storage::disk('public')->exists($dbBook->sample_file)) {
+                $extension = pathinfo($dbBook->sample_file, PATHINFO_EXTENSION) ?: 'pdf';
+                $downloadName = ($dbBook->slug ?: 'ebook').'-sample.'.$extension;
+
+                return Storage::disk('public')->download($dbBook->sample_file, $downloadName);
+            }
+        }
+
         $book = $this->formatBookDetails($dbBook);
         $filename = ($book['slug'] ?? 'ebook').'-sample-preview.html';
 
@@ -334,7 +348,7 @@ class BookController extends Controller
             'original_price' => $originalPrice > $sellingPrice ? ('₹'.number_format($originalPrice, 0)) : '',
             'discount' => $discount,
             'rating' => '5.0',
-            'reviews' => '120+',
+            'reviews' => $book->formatted_review_count,
             'image' => $book->cover_image ? $book->cover_image_url : asset('images/books/algorithms.jpg'),
             'pages' => $book->pages ?: 320,
             'format' => $book->format ?: 'EPUB & PDF',
@@ -443,7 +457,7 @@ class BookController extends Controller
             'original_price' => $originalPrice > $sellingPrice ? ('₹'.number_format($originalPrice, 0)) : '',
             'discount' => $discount,
             'rating' => '5.0',
-            'reviews' => count($reviews) > 0 ? (string) count($reviews) : '120+',
+            'reviews' => $book->formatted_review_count,
             'rating_breakdown' => ['5' => 92, '4' => 6, '3' => 2, '2' => 0, '1' => 0],
             'image' => $book->cover_image ? $book->cover_image_url : asset('images/books/algorithms.jpg'),
             'pages' => $book->pages ?: 320,

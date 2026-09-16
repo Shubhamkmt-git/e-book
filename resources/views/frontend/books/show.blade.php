@@ -428,7 +428,8 @@
                         <i class="fa-solid fa-arrow-right text-base text-white/80 group-hover:translate-x-1.5 transition-transform duration-300"></i>
                     </a>
 
-                    <!-- Download Sample Button Below Buy -->
+                    <!-- Download Sample Button Below Buy (Only if sample file is uploaded in admin) -->
+                    @if(!empty($book['sample_file']))
                     <a 
                         href="{{ route('books.preview', $book['slug'] ?? $book['id']) }}" 
                         download
@@ -437,6 +438,7 @@
                         <i class="fa-solid fa-file-arrow-down text-brand-600"></i>
                         <span>Download Sample (PDF)</span>
                     </a>
+                    @endif
                 @endif
             </div>
         </div>
@@ -702,7 +704,7 @@
                         <i class="fa-solid fa-star"></i>
                         <i class="fa-solid fa-star"></i>
                     </div>
-                    <span class="text-xs text-slate-500 font-medium">(<span id="reviews-count-display">{{ $reviewCount ?? count($reviews) }}</span> reviews)</span>
+                    <span class="text-xs text-slate-500 font-medium">(<span id="reviews-count-display">{{ $book['reviews'] ?? ($reviewCount ?? count($reviews)) }}</span> reviews)</span>
                 </div>
 
                 <div class="hidden sm:block h-5 w-px bg-slate-200"></div>
@@ -868,6 +870,7 @@
             </div>
 
             <div class="flex items-center gap-2 shrink-0">
+                @if(!empty($book['sample_file']))
                 <a
                     href="{{ route('books.preview', $book['slug'] ?? $book['id']) }}"
                     download
@@ -875,6 +878,7 @@
                     <i class="fa-solid fa-file-arrow-down text-xs"></i>
                     <span>Download PDF</span>
                 </a>
+                @endif
 
                 <button
                     type="button"

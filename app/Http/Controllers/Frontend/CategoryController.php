@@ -65,7 +65,7 @@ class CategoryController extends Controller
                     'price' => '₹'.number_format((float) $b->selling_price, 0),
                     'original_price' => $b->price > $b->selling_price ? ('₹'.number_format((float) $b->price, 0)) : null,
                     'rating' => '5.0',
-                    'reviews' => '120',
+                    'reviews' => $b->formatted_review_count,
                     'image' => $b->cover_image ? $b->cover_image_url : asset('images/books/algorithms.jpg'),
                     'format' => $b->format ?: 'EPUB & PDF',
                 ];

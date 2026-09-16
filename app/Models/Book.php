@@ -230,4 +230,22 @@ class Book extends Model
 
         return $result;
     }
+
+    /**
+     * Get realistic social proof review / feedback count in thousands (e.g., 2354, 4688, 5775, 7688).
+     */
+    public function getReviewCountAttribute(): int
+    {
+        $seed = ($this->id ?: 1) * 739 + abs(crc32($this->title ?: 'book')) % 5000;
+
+        return 2000 + ($seed % 6000) + 124;
+    }
+
+    /**
+     * Get formatted review count string (e.g., "2,354", "4,688", "7,688").
+     */
+    public function getFormattedReviewCountAttribute(): string
+    {
+        return number_format($this->review_count);
+    }
 }
