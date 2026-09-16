@@ -509,7 +509,6 @@
                         <tr class="border-b border-slate-200 text-xs font-bold tracking-wider text-slate-500 uppercase">
                             <th class="pb-2.5 pr-3 w-12 text-center">#</th>
                             <th class="pb-2.5 px-3">Title</th>
-                            <th class="pb-2.5 pl-3 text-right w-24">Pages</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200">
@@ -518,8 +517,6 @@
                         $isArr = is_array($ch);
                         $num = $isArr ? ($ch['number'] ?? $loop->iteration) : $loop->iteration;
                         $title = $isArr ? ($ch['title'] ?? '') : $ch;
-                        $rawPages = $isArr ? ($ch['pages'] ?? null) : null;
-                        $pages = $rawPages ? preg_replace('/^pp\.\s*/i', '', $rawPages) : null;
                         @endphp
                         <tr class="hover:bg-slate-50/80 transition">
                             <td class="py-3 pr-3 font-bold text-xs text-brand-600 tracking-wider align-middle text-center">
@@ -527,9 +524,6 @@
                             </td>
                             <td class="py-3 px-3 font-medium text-xs sm:text-sm text-slate-800 align-middle">
                                 {{ $title }}
-                            </td>
-                            <td class="py-3 pl-3 text-right text-xs text-slate-500 font-medium whitespace-nowrap align-middle">
-                                {{ $pages ?? '—' }}
                             </td>
                         </tr>
                         @endforeach
