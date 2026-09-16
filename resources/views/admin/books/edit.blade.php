@@ -415,6 +415,7 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
 
                     <!-- 1. Cover Image Upload -->
                     <div class="space-y-3 p-5 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col justify-between">
+                        <input type="hidden" name="remove_cover_image" id="remove_cover_image" value="0">
                         <div>
                             <div class="flex items-center gap-2 text-purple-700 font-bold text-sm mb-1">
                                 <i class="fa-solid fa-image"></i>
@@ -435,13 +436,13 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
                             <p class="text-xs font-bold text-slate-800">Upload Cover</p>
                             <p class="text-[10px] text-slate-400 mt-0.5">Click or drag image</p>
                             <input type="file" name="cover_image" id="cover_image" accept="image/*" class="hidden" onchange="previewCoverImage(this)">
-                            <input type="hidden" name="remove_cover_image" id="remove_cover_image" value="0">
                         </div>
                         @error('cover_image')<p class="text-xs text-rose-600 font-medium">{{ $message }}</p>@enderror
                     </div>
 
                     <!-- 2. Sample Download PDF Upload -->
                     <div class="space-y-3 p-5 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col justify-between">
+                        <input type="hidden" name="remove_sample_file" id="remove_sample_file" value="0">
                         <div>
                             <div class="flex items-center gap-2 text-sky-700 font-bold text-sm mb-1">
                                 <i class="fa-solid fa-file-arrow-down"></i>
@@ -470,13 +471,13 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
                             <p class="text-xs font-bold text-slate-800">Upload Sample PDF</p>
                             <p class="text-[10px] text-slate-400 mt-0.5">PDF, EPUB, DOC (No size limit)</p>
                             <input type="file" name="sample_file" id="sample_file" accept=".pdf,.epub,.doc,.docx" class="hidden" onchange="previewSampleFile(this)">
-                            <input type="hidden" name="remove_sample_file" id="remove_sample_file" value="0">
                         </div>
                         @error('sample_file')<p class="text-xs text-rose-600 font-medium">{{ $message }}</p>@enderror
                     </div>
 
                     <!-- 3. Full E-Book PDF Upload -->
                     <div class="space-y-3 p-5 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col justify-between">
+                        <input type="hidden" name="remove_ebook_file" id="remove_ebook_file" value="0">
                         <div>
                             <div class="flex items-center gap-2 text-emerald-700 font-bold text-sm mb-1">
                                 <i class="fa-solid fa-book-bookmark"></i>
@@ -505,13 +506,13 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
                             <p class="text-xs font-bold text-slate-800">Upload Full E-Book</p>
                             <p class="text-[10px] text-slate-400 mt-0.5">PDF, EPUB, ZIP (No size limit)</p>
                             <input type="file" name="ebook_file" id="ebook_file" accept=".pdf,.epub,.mobi,.zip,.rar,.doc,.docx" class="hidden" onchange="previewEbookFile(this)">
-                            <input type="hidden" name="remove_ebook_file" id="remove_ebook_file" value="0">
                         </div>
                         @error('ebook_file')<p class="text-xs text-rose-600 font-medium">{{ $message }}</p>@enderror
                     </div>
 
                     <!-- 4. Gallery Images Upload -->
                     <div class="col-span-1 md:col-span-3 space-y-3 p-5 rounded-2xl bg-slate-50 border border-slate-200/90 flex flex-col justify-between">
+                        <input type="hidden" name="remove_gallery_images" id="remove_gallery_images" value="0">
                         <div>
                             <div class="flex items-center gap-2 text-indigo-700 font-bold text-sm mb-1">
                                 <i class="fa-solid fa-images"></i>
@@ -536,7 +537,6 @@ Chapter 5: Production Case Studies & Bottleneck Hunting"
                             <p class="text-xs font-bold text-slate-800">Upload Gallery Images</p>
                             <p class="text-[10px] text-slate-400 mt-0.5">Click to select multiple images (replaces existing)</p>
                             <input type="file" name="gallery_images[]" id="gallery_images" accept="image/*" multiple class="hidden" onchange="previewGalleryImages(this)">
-                            <input type="hidden" name="remove_gallery_images" id="remove_gallery_images" value="0">
                         </div>
                         <div class="flex justify-end items-center {{ $hasGallery ? '' : 'hidden' }}" id="gallery-actions">
                             <button type="button" onclick="removeGalleryImages()" class="text-xs text-rose-600 hover:text-rose-700 font-bold px-3 py-1.5 rounded hover:bg-rose-50 cursor-pointer transition">

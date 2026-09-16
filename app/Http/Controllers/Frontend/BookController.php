@@ -314,16 +314,7 @@ class BookController extends Controller
             }
         }
 
-        $book = $this->formatBookDetails($dbBook);
-        $filename = ($book['slug'] ?? 'ebook').'-sample-preview.html';
-
-        $html = view('frontend.books.preview-download', [
-            'book' => $book,
-        ])->render();
-
-        return response($html)
-            ->header('Content-Type', 'text/html; charset=UTF-8')
-            ->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
+        return redirect()->route('books.show', $dbBook->slug)->with('error', 'Sample preview is not available for this e-book.');
     }
 
     /**

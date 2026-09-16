@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Purchase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class BookDetailTest extends TestCase
@@ -69,17 +70,25 @@ class BookDetailTest extends TestCase
     }
 
     /**
-     * Test download preview sample route works and returns downloadable document.
+     * Test download preview sample route works and returns downloadable document when sample exists.
      */
     public function test_book_preview_sample_download(): void
     {
+        // 1. When no sample file exists, preview redirects to book show page
         $response = $this->get(route('books.preview', 'algorithms-and-elegance'));
+        $response->assertRedirect(route('books.show', 'algorithms-and-elegance'));
 
-        $response->assertStatus(200);
-        $response->assertHeader('Content-Disposition', 'attachment; filename="algorithms-and-elegance-sample-preview.html"');
-        $response->assertSee('Official Free Sample Preview');
-        $response->assertSee('Algorithms &amp; Elegance', false);
-        $response->assertSee('Table of Contents (Full Book Overview)');
+        // 2. When sample file is attached, it initiates the download
+        Storage::fake('public');
+        $samplePath = 'books/samples/test_sample.pdf';
+        Storage::disk('public')->put($samplePath, 'Dummy PDF content');
+
+        $book = Book::where('slug', 'algorithms-and-elegance')->firstOrFail();
+        $book->update(['sample_file' => $samplePath]);
+
+        $responseWithSample = $this->get(route('books.preview', 'algorithms-and-elegance'));
+        $responseWithSample->assertStatus(200);
+        $responseWithSample->assertHeader('Content-Disposition', 'attachment; filename=algorithms-and-elegance-sample.pdf');
     }
 
     /**
