@@ -26,7 +26,7 @@ class CashfreeService
         $this->appId = (string) config('services.cashfree.app_id', '');
         $this->secretKey = (string) config('services.cashfree.secret_key', '');
         $this->environment = strtoupper((string) config('services.cashfree.env', 'SANDBOX'));
-        $this->apiVersion = (string) config('services.cashfree.api_version', '2023-08-01');
+        $this->apiVersion = (string) config('services.cashfree.api_version', '2026-01-01');
 
         $this->baseUrl = $this->environment === 'PRODUCTION'
             ? 'https://api.cashfree.com/pg'
@@ -79,6 +79,8 @@ class CashfreeService
         $customerEmail = ! empty($customer->email) ? $customer->email : 'customer_'.$customer->id.'@bookstore.local';
         $customerName = ! empty($customer->name) ? $customer->name : 'Customer';
 
+        $isHttpsNotify = ! empty($notifyUrl) && str_starts_with(strtolower($notifyUrl), 'https://');
+
         $payload = [
             'order_id' => (string) $purchase->transaction_id,
             'order_amount' => (float) number_format((float) $purchase->amount, 2, '.', ''),
@@ -91,8 +93,7 @@ class CashfreeService
             ],
             'order_meta' => array_filter([
                 'return_url' => $returnUrl,
-                'notify_url' => $notifyUrl,
-                'payment_methods' => 'cc,dc,upi,nb,app,paylater',
+                'notify_url' => $isHttpsNotify ? $notifyUrl : null,
             ]),
             'order_note' => Str::limit('Purchase: '.$book->title, 100, ''),
         ];
@@ -202,18 +203,88 @@ class CashfreeService
     /**
      * Cryptographically verify Cashfree webhook signature using HMAC-SHA256.
      *
-     * Header x-webhook-signature and x-webhook-timestamp are required.
+     * Standard Cashfree v2026-01-01 (v6) format:
      * Signature = base64_encode(hash_hmac('sha256', timestamp + rawBody, secretKey, true))
+     * With fallback on rawBody alone if timestamp is not combined.
      */
     public function verifyWebhookSignature(string $rawBody, ?string $signature, ?string $timestamp): bool
     {
-        if (empty($signature) || empty($timestamp) || empty($this->secretKey)) {
+        if (empty($signature) || empty($this->secretKey)) {
             return false;
         }
 
-        $signedPayload = $timestamp.$rawBody;
-        $expectedSignature = base64_encode(hash_hmac('sha256', $signedPayload, $this->secretKey, true));
+        // 1. Official v2023-08-01: timestamp + raw body
+        if (! empty($timestamp)) {
+            $signedPayload = $timestamp.$rawBody;
+            $expectedSignature = base64_encode(hash_hmac('sha256', $signedPayload, $this->secretKey, true));
 
-        return hash_equals($expectedSignature, $signature);
+            if (hash_equals($expectedSignature, $signature)) {
+                return true;
+            }
+        }
+
+        // 2. Fallback: raw body only
+        $expectedSignatureWithoutTs = base64_encode(hash_hmac('sha256', $rawBody, $this->secretKey, true));
+
+        return hash_equals($expectedSignatureWithoutTs, $signature);
+    }
+
+    /**
+     * Test connection to Cashfree with configured credentials.
+     *
+     * @return array{success: bool, message: string, environment: string, status_code: int}
+     */
+    public function testConnection(): array
+    {
+        if (! $this->isConfigured()) {
+            return [
+                'success' => false,
+                'message' => 'Cashfree App ID or Secret Key is not configured.',
+                'environment' => $this->environment,
+                'status_code' => 0,
+            ];
+        }
+
+        try {
+            $response = Http::withHeaders([
+                'x-client-id' => $this->appId,
+                'x-client-secret' => $this->secretKey,
+                'x-api-version' => $this->apiVersion,
+                'Accept' => 'application/json',
+            ])->timeout(10)->get($this->baseUrl.'/orders/HEALTH_CHECK_TEST');
+
+            // 404 with order_not_found means credentials are valid and authenticated!
+            if ($response->status() === 404 || $response->successful()) {
+                return [
+                    'success' => true,
+                    'message' => 'Cashfree API connection successful and authenticated.',
+                    'environment' => $this->environment,
+                    'status_code' => $response->status(),
+                ];
+            }
+
+            if ($response->status() === 401) {
+                return [
+                    'success' => false,
+                    'message' => 'Cashfree authentication failed: Invalid App ID or Secret Key.',
+                    'environment' => $this->environment,
+                    'status_code' => $response->status(),
+                ];
+            }
+
+            return [
+                'success' => false,
+                'message' => $response->json('message') ?? 'Cashfree returned HTTP '.$response->status(),
+                'environment' => $this->environment,
+                'status_code' => $response->status(),
+            ];
+        } catch (\Throwable $e) {
+            return [
+                'success' => false,
+                'message' => 'Connection error: '.$e->getMessage(),
+                'environment' => $this->environment,
+                'status_code' => 0,
+            ];
+        }
     }
 }

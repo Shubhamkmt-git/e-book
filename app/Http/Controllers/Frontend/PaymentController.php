@@ -48,26 +48,47 @@ class PaymentController extends Controller
                 $mobile = trim($validated['mobile'] ?? '') ?: null;
 
                 if ($email) {
-                    $customer = Customer::firstOrCreate(
-                        ['email' => $email],
-                        [
+                    $customer = Customer::where('email', $email)->first();
+
+                    if (! $customer && $mobile) {
+                        $customer = Customer::where('mobile', $mobile)->first();
+                    }
+
+                    if (! $customer) {
+                        $customer = Customer::create([
+                            'email' => $email,
                             'name' => $name,
                             'mobile' => $mobile,
-                        ]
-                    );
+                        ]);
+                    } else {
+                        $updates = [];
+                        if (! $customer->email) {
+                            $updates['email'] = $email;
+                        }
+                        if ($mobile && ! $customer->mobile) {
+                            $updates['mobile'] = $mobile;
+                        }
+                        if ($name !== 'Customer' && (! $customer->name || $customer->name === 'Customer')) {
+                            $updates['name'] = $name;
+                        }
+                        if (! empty($updates)) {
+                            $customer->update($updates);
+                        }
+                    }
                 } elseif ($mobile) {
-                    $customer = Customer::firstOrCreate(
-                        ['mobile' => $mobile],
-                        [
+                    $customer = Customer::where('mobile', $mobile)->first();
+
+                    if (! $customer) {
+                        $customer = Customer::create([
+                            'mobile' => $mobile,
                             'name' => $name,
-                        ]
-                    );
+                        ]);
+                    } elseif ($name !== 'Customer' && (! $customer->name || $customer->name === 'Customer')) {
+                        $customer->update(['name' => $name]);
+                    }
                 }
 
                 if ($customer) {
-                    if ($mobile && ! $customer->mobile) {
-                        $customer->update(['mobile' => $mobile]);
-                    }
                     Auth::guard('customer')->login($customer);
                 }
             }
@@ -193,6 +214,10 @@ class PaymentController extends Controller
     {
         $orderId = $request->query('order_id') ?? $request->input('order_id');
 
+        if (empty($orderId) || $orderId === '{order_id}') {
+            $orderId = $request->query('cf_order_id') ?? $request->input('cf_order_id') ?? $request->query('orderId');
+        }
+
         if (empty($orderId)) {
             return redirect()->route('home')->with('payment_error', 'No order ID provided in payment return.');
         }
@@ -301,11 +326,38 @@ class PaymentController extends Controller
             return response()->json(['error' => 'Invalid JSON payload'], 400);
         }
 
-        $type = $data['type'] ?? '';
-        $orderData = $data['data']['order'] ?? [];
-        $paymentData = $data['data']['payment'] ?? [];
+        $type = (string) ($data['type'] ?? '');
+        $orderData = (array) ($data['data']['order'] ?? []);
+        $paymentData = (array) ($data['data']['payment'] ?? []);
 
-        $orderId = $orderData['order_id'] ?? $data['data']['order_id'] ?? null;
+        $orderId = $orderData['order_id']
+            ?? $data['data']['order_id']
+            ?? $data['order_id']
+            ?? $data['orderId']
+            ?? null;
+
+        $paymentId = (string) (
+            $paymentData['cf_payment_id']
+            ?? $data['data']['cf_payment_id']
+            ?? $data['cf_payment_id']
+            ?? $data['referenceId']
+            ?? ''
+        );
+
+        $paymentStatus = strtoupper((string) (
+            $paymentData['payment_status']
+            ?? $orderData['order_status']
+            ?? $data['data']['payment_status']
+            ?? $data['txStatus']
+            ?? ''
+        ));
+
+        Log::info('Cashfree Webhook Received', [
+            'type' => $type,
+            'order_id' => $orderId,
+            'payment_id' => $paymentId,
+            'payment_status' => $paymentStatus,
+        ]);
 
         if ($orderId) {
             $purchase = Purchase::where('transaction_id', $orderId)
@@ -313,12 +365,24 @@ class PaymentController extends Controller
                 ->first();
 
             if ($purchase && $purchase->status !== 'paid') {
-                $paymentStatus = strtoupper((string) ($paymentData['payment_status'] ?? $orderData['order_status'] ?? ''));
+                $isSuccessful = $paymentStatus === 'SUCCESS'
+                    || $paymentStatus === 'PAID'
+                    || $type === 'PAYMENT_SUCCESS_WEBHOOK';
 
-                if ($paymentStatus === 'SUCCESS' || $paymentStatus === 'PAID' || $type === 'PAYMENT_SUCCESS_WEBHOOK') {
+                if ($isSuccessful) {
+                    // Safety check: verify order amount if present
+                    $reportedAmount = (float) ($orderData['order_amount'] ?? $paymentData['payment_amount'] ?? 0);
+                    if ($reportedAmount > 0 && abs($reportedAmount - (float) $purchase->amount) > 1.00) {
+                        Log::warning('Cashfree Webhook: Amount Mismatch Warning', [
+                            'purchase_id' => $purchase->id,
+                            'purchase_amount' => $purchase->amount,
+                            'reported_amount' => $reportedAmount,
+                        ]);
+                    }
+
                     $purchase->update([
                         'status' => 'paid',
-                        'cashfree_payment_id' => (string) ($paymentData['cf_payment_id'] ?? ''),
+                        'cashfree_payment_id' => $paymentId ?: $purchase->cashfree_payment_id,
                         'gateway_response' => $data,
                     ]);
 
@@ -327,7 +391,7 @@ class PaymentController extends Controller
                         ->first();
 
                     $this->finalizePaidPurchase($purchase, $purchase->customer, $dbBook);
-                } elseif (in_array($paymentStatus, ['FAILED', 'USER_DROPPED', 'CANCELLED'])) {
+                } elseif (in_array($paymentStatus, ['FAILED', 'USER_DROPPED', 'CANCELLED']) || in_array($type, ['PAYMENT_FAILED_WEBHOOK', 'PAYMENT_USER_DROPPED_WEBHOOK'])) {
                     $purchase->update([
                         'status' => 'failed',
                         'gateway_response' => $data,

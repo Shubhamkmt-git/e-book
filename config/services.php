@@ -59,7 +59,7 @@ return [
         'app_id' => env('CASHFREE_APP_ID'),
         'secret_key' => env('CASHFREE_SECRET_KEY'),
         'env' => env('CASHFREE_ENV', 'SANDBOX'),
-        'api_version' => env('CASHFREE_API_VERSION', '2023-08-01'),
+        'api_version' => env('CASHFREE_API_VERSION', '2026-01-01'),
     ],
 
 ];

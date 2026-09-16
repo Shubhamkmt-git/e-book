@@ -65,7 +65,7 @@ class LegalPage extends Model
 </ul>
 
 <h2>3. Payment Processing & Security</h2>
-<p>All financial transactions are handled securely through encrypted payment gateways (such as Easebuzz) using industry-standard 256-Bit SSL encryption. We never hold or store sensitive payment card details on our application servers.</p>
+<p>All financial transactions are handled securely through encrypted payment gateways (such as Cashfree) using industry-standard 256-Bit SSL encryption. We never hold or store sensitive payment card details on our application servers.</p>
 
 <h2>4. DRM-Free Digital Delivery</h2>
 <p>Our publications are delivered in DRM-free formats (such as PDF and EPUB). Once purchased, you receive an automated email containing your download access and your account maintains lifetime access to re-download files.</p>

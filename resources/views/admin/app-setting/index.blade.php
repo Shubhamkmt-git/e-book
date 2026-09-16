@@ -653,20 +653,47 @@
                         </label>
                     </div>
 
-                    <div class="pt-3 border-t border-slate-200/60 flex items-center justify-between text-xs">
-                        <span class="text-slate-500 flex items-center gap-1.5">
-                            <i class="fa-solid fa-key text-[10px] text-slate-400"></i>
-                            Environment Status ({{ config('services.cashfree.env', 'SANDBOX') }}):
-                        </span>
-                        @if(config('services.cashfree.app_id') && config('services.cashfree.secret_key'))
-                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                <i class="fa-solid fa-circle-check text-[9px]"></i> Configured
+                    <div class="pt-3 border-t border-slate-200/60 flex flex-col gap-2.5 text-xs">
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-500 flex items-center gap-1.5">
+                                <i class="fa-solid fa-server text-[10px] text-slate-400"></i>
+                                Environment:
+                                <span class="font-bold text-slate-700">{{ strtoupper(config('services.cashfree.env', 'SANDBOX')) }}</span>
+                                <span class="text-slate-400 font-mono text-[10px]">(v{{ config('services.cashfree.api_version', '2026-01-01') }})</span>
                             </span>
-                        @else
-                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                                <i class="fa-solid fa-triangle-exclamation text-[9px]"></i> APP_ID/SECRET_KEY Missing in .env
-                            </span>
-                        @endif
+                            @if(config('services.cashfree.app_id') && config('services.cashfree.secret_key'))
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    <i class="fa-solid fa-circle-check text-[9px]"></i> Configured
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                                    <i class="fa-solid fa-triangle-exclamation text-[9px]"></i> Missing in .env
+                                </span>
+                            @endif
+                        </div>
+
+                        <!-- Webhook & Callback Helper -->
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/70 space-y-2 text-[11px]">
+                            <div>
+                                <div class="flex items-center justify-between font-semibold text-slate-600 mb-0.5">
+                                    <span>Webhook Endpoint (Cashfree Dashboard):</span>
+                                    <span class="text-[10px] text-purple-600 font-bold uppercase">v6 (2026-01-01)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <input type="text" readonly value="{{ route('payments.cashfree.webhook') }}" class="w-full bg-white px-2.5 py-1 rounded border border-slate-200 text-slate-700 font-mono text-[10px] select-all cursor-pointer">
+                                </div>
+                            </div>
+
+                            <div>
+                                <span class="font-semibold text-slate-600 block mb-0.5">Return Callback URL:</span>
+                                <input type="text" readonly value="{{ route('payments.cashfree.callback') }}?order_id={order_id}" class="w-full bg-white px-2.5 py-1 rounded border border-slate-200 text-slate-700 font-mono text-[10px] select-all cursor-pointer">
+                            </div>
+
+                            <p class="text-[10px] text-slate-500 pt-1 border-t border-slate-200/60 leading-relaxed">
+                                <i class="fa-solid fa-circle-info text-purple-500 mr-1"></i>
+                                <strong>Setup Note:</strong> In Cashfree Dashboard &gt; <em>Developers &gt; Webhooks</em>, add this Webhook URL, select API Version <strong>2026-01-01 (v6)</strong>, and subscribe to <code>PAYMENT_SUCCESS_WEBHOOK</code> and <code>PAYMENT_FAILED_WEBHOOK</code>.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
